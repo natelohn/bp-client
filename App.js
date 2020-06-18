@@ -1,18 +1,21 @@
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import HomeScreen from "./src/screens/HomeScreen";
-import WinnerScreen from "./src/screens/WinnerScreen";
+import EasyModeScreen from "./src/screens/EasyModeScreen";
+import HardModeScreen from "./src/screens/HardModeScreen";
+
 
 const navigator = createStackNavigator(
   {
-    Home: HomeScreen,
-    Winner: WinnerScreen
+      Home: HomeScreen,
+      EasyMode: EasyModeScreen,
+      HardMode: HardModeScreen
   },
   {
-    initialRouteName: "Home",
-    defaultNavigationOptions: {
-      title: "App"
-    }
+      initialRouteName: "Home",
+      defaultNavigationOptions: {
+          title: ""
+      },
   }
 );
 
