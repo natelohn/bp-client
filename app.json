@@ -3,7 +3,6 @@
     "name": "Button Push",
     "slug": "button-push",
     "privacy": "public",
-    "sdkVersion": "36.0.0",
     "platforms": [
       "ios",
       "android"
