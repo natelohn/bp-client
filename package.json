@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@react-native-community/masked-view": "0.1.10",
+    "@react-navigation/native": "^5.7.3",
     "expo": "^38.0.0",
     "react": "16.11.0",
     "react-dom": "16.11.0",
@@ -21,8 +22,8 @@
     "react-navigation-stack": "^2.0.16"
   },
   "devDependencies": {
-    "babel-preset-expo": "^8.2.3",
-    "@babel/core": "^7.0.0"
+    "@babel/core": "^7.0.0",
+    "babel-preset-expo": "^8.2.3"
   },
   "private": true
 }

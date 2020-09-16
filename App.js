@@ -15,9 +15,6 @@ const navigator = createStackNavigator(
   },
   {
       initialRouteName: "Launch",
-      defaultNavigationOptions: {
-          title: ""
-      },
   }
 );
 
