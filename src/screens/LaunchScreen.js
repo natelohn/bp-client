@@ -5,7 +5,7 @@ import { View, Text } from 'react-native';
 const LaunchScreen = () => {
     return (
         <View>
-            <Text>LAUNCH! BABY LAUNCH!!</Text>
+            <Text>LAUNCH! BABY LAUNCH!</Text>
         </View>
     );
 }
