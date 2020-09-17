@@ -1,16 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-const ButtonView = ({ text }) => {
-    return (
-        <View style={styles.view}>
-            <TouchableOpacity style={styles.circle}>
-                {text ? <Text style={styles.text}>{text}</Text>: null}
-            </TouchableOpacity>
-        </View>
-    );
-}
-
 const styles = StyleSheet.create({
     view: {
         justifyContent: 'center',
@@ -32,5 +22,16 @@ const styles = StyleSheet.create({
         fontFamily: 'TextMeOne_400Regular',
     },
 });
+
+const ButtonView = ({ text, onPressCallback}) => {
+    return (
+        <View style={styles.view}>
+            <TouchableOpacity style={styles.circle} onPress={onPressCallback}>
+                {text ? <Text style={styles.text}>{text}</Text>: null}
+            </TouchableOpacity>
+        </View>
+    );
+}
+
 
 export default ButtonView;

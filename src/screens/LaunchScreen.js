@@ -2,15 +2,6 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import ButtonView from '../components/ButtonView'
 
-const LaunchScreen = () => {
-    return (
-        <View style={styles.view}>
-            <ButtonView text="Sign Up"/>
-            <Text style={styles.login}>Login</Text>
-        </View>
-    );
-}
-
 const styles = StyleSheet.create({
     view: {
         justifyContent: 'center',
@@ -25,5 +16,19 @@ const styles = StyleSheet.create({
         margin: 20
     }
 });
+
+
+const signUp = () => {
+    console.log('Sign Up');
+}
+
+const LaunchScreen = () => {
+    return (
+        <View style={styles.view}>
+            <ButtonView text="Sign Up" onPressCallback={signUp}/>
+            <Text style={styles.login}>Login</Text>
+        </View>
+    );
+}
 
 export default LaunchScreen;
