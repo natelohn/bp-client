@@ -1,5 +1,5 @@
 import React, { useReducer } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import ButtonView from '../components/ButtonView'
 
 const styles = StyleSheet.create({
@@ -14,6 +14,21 @@ const styles = StyleSheet.create({
         textDecorationLine: 'underline',
         fontFamily: 'TextMeOne_400Regular',
         margin: 20
+    },
+    inputView: {
+        alignSelf: 'center',
+        width: '80%',
+        marginBottom: 20,
+        color: '#5C240F'
+    },
+    textInput: {
+        height: 40,
+        margin: 10,
+        borderBottomColor: '#5C240F',
+        borderBottomWidth: 0.25,
+        fontFamily: 'TextMeOne_400Regular',
+        fontSize: 18,
+       
     }
 });
 
@@ -59,6 +74,10 @@ const LaunchScreen = () => {
     
     return (
         <View style={styles.view}>
+            <View style={styles.inputView}>
+                {signingUp ? <TextInput style={styles.textInput} placeholder='Username'/> : null }
+                <TextInput style={styles.textInput} placeholder='Phone'/>
+            </View>
             <ButtonView text={buttonText} onPressCallback={mainButtonPressed}/>
             <TouchableOpacity onPress={() => dispatch({type: 'sub_button'})}>
                 <Text style={styles.subButton}>{subButtonText}</Text>
