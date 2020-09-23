@@ -1,5 +1,5 @@
-import React, { useReducer } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useReducer, useRef } from 'react';
+import { Animated, Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import ButtonView from '../components/ButtonView'
 
 const styles = StyleSheet.create({
@@ -45,20 +45,48 @@ const reducer = (state, action) => {
 };
 
 const LaunchScreen = () => {
+    // State 
     const [state, dispatch] = useReducer(reducer, {
         signingUp: true,
         buttonText: 'Sign Up',
         subButtonText: 'Login'
     });
     const { signingUp, buttonText, subButtonText} = state;
-    
+
+    // Animation
+    const offScreenRight = Dimensions.get('window').width
+    const offScreenLeft = -1 * offScreenRight
+    const onScreen = 0
+    const usernameX = useRef(new Animated.Value(offScreenLeft)).current;
+    const phoneX = useRef(new Animated.Value(offScreenRight)).current;
+
+    const moveTextbox = (textbox, x) => {
+        Animated.timing(textbox, {
+            toValue: x,
+            duration: 250,
+            useNativeDriver: true
+        }).start();
+    }
+
+    const inputsToSignUp = () => {
+        moveTextbox(usernameX, onScreen);
+        moveTextbox(phoneX, onScreen);
+    }
+
+    const inputsToLogin = () => {
+        moveTextbox(usernameX, offScreenLeft);
+        moveTextbox(phoneX, onScreen);
+    }
+
+    // Helper Functions
     const pressSignUp = () => {
+        inputsToSignUp();
         console.log('Sign Up', signingUp);
         console.log('---------------------------------');
-        
     }
 
     const pressLogIn = () => {
+        inputsToLogin();
         console.log('Log In', !signingUp);
         console.log('---------------------------------');
     }
@@ -66,20 +94,34 @@ const LaunchScreen = () => {
     const mainButtonPressed = () => {
         console.log('Main');
         if (signingUp) {
-            pressSignUp()
+            pressSignUp();
         } else {
-            pressLogIn()
+            pressLogIn();
         };
     }
+
+    const subButtonPressed = () => {
+        if (signingUp) {
+            inputsToLogin();
+        } else {
+            inputsToSignUp();
+        };
+        dispatch({type: 'sub_button'});
+    }
     
+    // Component
     return (
         <View style={styles.view}>
             <View style={styles.inputView}>
-                {signingUp ? <TextInput style={styles.textInput} placeholder='Username'/> : null }
-                <TextInput style={styles.textInput} placeholder='Phone'/>
+                <Animated.View style={[{ transform: [{ translateX: usernameX }]}]}>
+                    <TextInput style={styles.textInput} placeholder='Username'/> 
+                </Animated.View>
+                <Animated.View style={[{ transform: [{ translateX: phoneX }]}]}>
+                    <TextInput style={styles.textInput} placeholder='Phone'/>
+                </Animated.View>
             </View>
             <ButtonView text={buttonText} onPressCallback={mainButtonPressed}/>
-            <TouchableOpacity onPress={() => dispatch({type: 'sub_button'})}>
+            <TouchableOpacity onPress={subButtonPressed}>
                 <Text style={styles.subButton}>{subButtonText}</Text>
             </TouchableOpacity>
         </View>
