@@ -42,7 +42,9 @@ const reducer = (state, action) => {
         case 'sub_button':
             return { ...state,
                     submitState: true,
-                    signingUp: !state.signingUp};
+                    signingUp: !state.signingUp,
+                    mainButtonText: state.subButtonText,
+                    subButtonText: state.mainButtonText };
         default:
             return state;
     }
@@ -52,9 +54,11 @@ const LaunchScreen = () => {
     // State Management
     const [state, dispatch] = useReducer(reducer, {
         submitState: false,
-        signingUp: true
+        signingUp: true,
+        mainButtonText: 'Sign Up',
+        subButtonText: 'Login'
     });
-    const { submitState, signingUp } = state;
+    const { submitState, signingUp, mainButtonText, subButtonText } = state;
 
     // Animation
     const screenWidth = Dimensions.get('window').width;
@@ -161,14 +165,11 @@ const LaunchScreen = () => {
                 </Animated.View>
             </View>
             <Animated.View style={[{transform: [{scale: buttonScale}, {translateX: mainX}, {translateY: mainY}]}]}>
-                { signingUp ? <ButtonView text="Sign Up" onPressCallback={mainButtonPressed}/>
-                            : <ButtonView text="Login" onPressCallback={mainButtonPressed}/> }
+                <ButtonView text={mainButtonText} onPressCallback={mainButtonPressed}/>
             </Animated.View>
             <Animated.View style={[{transform: [{translateX: subX}, {translateY: subY}]}]}>
                 <TouchableOpacity style={styles.subButton} onPress={subButtonPressed}>
-                    { signingUp ? <Text style={styles.subButtonText}>Login</Text>
-                                : <Text style={styles.subButtonText}>Sign Up</Text>
-                    }
+                    <Text style={styles.subButtonText}>{subButtonText}</Text>
                 </TouchableOpacity>
             </Animated.View>
         </View>
