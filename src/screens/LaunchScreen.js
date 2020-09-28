@@ -1,4 +1,4 @@
-import React, { useReducer, useRef } from 'react';
+import React, { useReducer, useRef, useState } from 'react';
 import { Animated, Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import ButtonView from '../components/ButtonView'
 
@@ -8,9 +8,12 @@ const styles = StyleSheet.create({
         flex: 1
     },
     subButton: {
+        alignSelf: 'center'
+    },
+    subButtonText: {
         alignSelf: 'center',
         color: '#5C240F',
-        fontSize: 24,
+        fontSize: 22,
         textDecorationLine: 'underline',
         fontFamily: 'TextMeOne_400Regular',
         margin: 20
@@ -34,31 +37,69 @@ const styles = StyleSheet.create({
 
 const reducer = (state, action) => {
     switch (action.type) {
+        case 'main_button':
+            return { ...state, submitState: true };
         case 'sub_button':
             return { ...state,
-                    signingUp: !state.signingUp,
-                    buttonText: state.subButtonText,
-                    subButtonText: state.buttonText };
+                    submitState: true,
+                    signingUp: !state.signingUp};
         default:
             return state;
     }
 };
 
 const LaunchScreen = () => {
-    // State 
+    // State Management
     const [state, dispatch] = useReducer(reducer, {
-        signingUp: true,
-        buttonText: 'Sign Up',
-        subButtonText: 'Login'
+        submitState: false,
+        signingUp: true
     });
-    const { signingUp, buttonText, subButtonText} = state;
+    const { submitState, signingUp } = state;
 
     // Animation
-    const offScreenRight = Dimensions.get('window').width
-    const offScreenLeft = -1 * offScreenRight
-    const onScreen = 0
+    const screenWidth = Dimensions.get('window').width;
+    const screenHeight = Dimensions.get('window').height;
+    // Text Inputs - Animation
+    const offScreenRight = screenWidth;
+    const offScreenLeft = -1 * offScreenRight;
+    const onScreen = 0;
     const usernameX = useRef(new Animated.Value(offScreenLeft)).current;
     const phoneX = useRef(new Animated.Value(offScreenRight)).current;
+    // Button Scale - Animation
+    const buttonAnimation = useRef(new Animated.Value(0)).current;
+    const inputRange = [0, 1];
+    const outputRange = [1, 0.6];
+    const buttonScale = buttonAnimation.interpolate({inputRange, outputRange});
+    // Button Location - Animation
+    const mainX = useRef(new Animated.Value(0)).current;
+    const mainY = useRef(new Animated.Value(0)).current;
+    const subX = useRef(new Animated.Value(0)).current;
+    const subY = useRef(new Animated.Value(0)).current;
+    const buttonsMoveX = screenWidth / 5;
+    const buttonsMoveY = (screenHeight / 7) * -1
+    
+    const buttonsToSubmitState = () => {
+        Animated.spring(mainX, {
+            toValue: buttonsMoveX,
+            useNativeDriver: true,
+        }).start();
+        Animated.spring(mainY, {
+            toValue: buttonsMoveY,
+            useNativeDriver: true,
+        }).start();
+        Animated.spring(subX, {
+            toValue: buttonsMoveX * -1,
+            useNativeDriver: true,
+        }).start();
+        Animated.spring(subY, {
+            toValue: buttonsMoveY * 2,
+            useNativeDriver: true,
+        }).start();
+        Animated.spring(buttonAnimation, {
+            toValue: 1,
+            useNativeDriver: true,
+          }).start();
+    };
 
     const moveTextbox = (textbox, x) => {
         Animated.timing(textbox, {
@@ -68,6 +109,7 @@ const LaunchScreen = () => {
         }).start();
     }
 
+    // Helper Functions
     const inputsToSignUp = () => {
         moveTextbox(usernameX, onScreen);
         moveTextbox(phoneX, onScreen);
@@ -78,29 +120,27 @@ const LaunchScreen = () => {
         moveTextbox(phoneX, onScreen);
     }
 
-    // Helper Functions
-    const pressSignUp = () => {
-        inputsToSignUp();
-        console.log('Sign Up', signingUp);
-        console.log('---------------------------------');
-    }
-
-    const pressLogIn = () => {
-        inputsToLogin();
-        console.log('Log In', !signingUp);
-        console.log('---------------------------------');
-    }
-
     const mainButtonPressed = () => {
-        console.log('Main');
+        buttonsToSubmitState();
         if (signingUp) {
-            pressSignUp();
+            inputsToSignUp();
         } else {
-            pressLogIn();
+            inputsToLogin();
         };
+        if (submitState){
+            if (signingUp) {
+                console.log('SIGNING UP');
+                // TODO: Add sign up call/error checking
+            } else {
+                console.log('LOGGING IN');
+                // TODO: Add login call/error checking
+            }
+        }
+        dispatch({type: 'main_button'});
     }
 
     const subButtonPressed = () => {
+        buttonsToSubmitState();
         if (signingUp) {
             inputsToLogin();
         } else {
@@ -120,10 +160,17 @@ const LaunchScreen = () => {
                     <TextInput style={styles.textInput} placeholder='Phone'/>
                 </Animated.View>
             </View>
-            <ButtonView text={buttonText} onPressCallback={mainButtonPressed}/>
-            <TouchableOpacity onPress={subButtonPressed}>
-                <Text style={styles.subButton}>{subButtonText}</Text>
-            </TouchableOpacity>
+            <Animated.View style={[{transform: [{scale: buttonScale}, {translateX: mainX}, {translateY: mainY}]}]}>
+                { signingUp ? <ButtonView text="Sign Up" onPressCallback={mainButtonPressed}/>
+                            : <ButtonView text="Login" onPressCallback={mainButtonPressed}/> }
+            </Animated.View>
+            <Animated.View style={[{transform: [{translateX: subX}, {translateY: subY}]}]}>
+                <TouchableOpacity style={styles.subButton} onPress={subButtonPressed}>
+                    { signingUp ? <Text style={styles.subButtonText}>Login</Text>
+                                : <Text style={styles.subButtonText}>Sign Up</Text>
+                    }
+                </TouchableOpacity>
+            </Animated.View>
         </View>
     );
 }

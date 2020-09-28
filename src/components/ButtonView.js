@@ -4,20 +4,21 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 const styles = StyleSheet.create({
     view: {
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'center'
     },
     circle: {
+        zIndex : 0,
         borderWidth: 1,
-        borderColor:'#5C240F',
-        alignItems:'center',
-        justifyContent:'center',
-        width:200,
-        height:200,
-        backgroundColor:'#CF0000',
-        borderRadius:100,
+        borderColor: '#5C240F',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 200,
+        width: 200,
+        backgroundColor: '#CF0000',
+        borderRadius: 100
     },
     text: {
-        fontSize: 36,
+        fontSize: 42,
         color: '#5C240F',
         fontFamily: 'TextMeOne_400Regular',
     },
