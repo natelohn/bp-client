@@ -35,16 +35,27 @@ const styles = StyleSheet.create({
     }
 });
 
-const reducer = (state, action) => {
-    switch (action.type) {
+const reducer = (state, {type, username, phone}) => {
+    switch (type) {
         case 'main_button':
-            return { ...state, submitState: true };
+            return { ...state,
+                        submitState: true,
+                        formIsValid: false };
         case 'sub_button':
             return { ...state,
-                    submitState: true,
-                    signingUp: !state.signingUp,
-                    mainButtonText: state.subButtonText,
-                    subButtonText: state.mainButtonText };
+                        submitState: true,
+                        signingUp: !state.signingUp,
+                        mainButtonText: state.subButtonText,
+                        subButtonText: state.mainButtonText,
+                        formIsValid: false };
+        case 'username_edit':
+            return { ...state,
+                        username,
+                        formIsValid: username.length > 0 && state.phone.length === 10 };
+        case 'phone_edit':
+            return { ...state,
+                        phone, 
+                        formIsValid: phone.length === 10 && (!state.signingUp || state.username.length > 0) };
         default:
             return state;
     }
@@ -56,9 +67,12 @@ const LaunchScreen = () => {
         submitState: false,
         signingUp: true,
         mainButtonText: 'Sign Up',
-        subButtonText: 'Login'
+        subButtonText: 'Login',
+        username: '',
+        phone: '',
+        formIsValid: true
     });
-    const { submitState, signingUp, mainButtonText, subButtonText } = state;
+    const { submitState, signingUp, mainButtonText, subButtonText, username, phone, formIsValid } = state;
 
     // Animation
     const screenWidth = Dimensions.get('window').width;
@@ -158,14 +172,27 @@ const LaunchScreen = () => {
         <View style={styles.view}>
             <View style={styles.inputView}>
                 <Animated.View style={[{ transform: [{ translateX: usernameX }]}]}>
-                    <TextInput style={styles.textInput} placeholder='Username'/> 
+                    <TextInput 
+                        style={styles.textInput}
+                        placeholder='Username'
+                        value={username}
+                        maxLength={32}
+                        autoCompleteType={'username'}
+                        onChangeText={(username) => {dispatch({type: 'username_edit', username});}}/> 
                 </Animated.View>
                 <Animated.View style={[{ transform: [{ translateX: phoneX }]}]}>
-                    <TextInput style={styles.textInput} placeholder='Phone'/>
+                    <TextInput 
+                            style={styles.textInput}
+                            placeholder='Phone'
+                            value={phone}
+                            autoCompleteType={'tel'}
+                            keyboardType={'phone-pad'}
+                            maxLength={10}
+                            onChangeText={(phone) => {dispatch({type: 'phone_edit', phone})}}/> 
                 </Animated.View>
             </View>
             <Animated.View style={[{transform: [{scale: buttonScale}, {translateX: mainX}, {translateY: mainY}]}]}>
-                <ButtonView text={mainButtonText} onPressCallback={mainButtonPressed}/>
+                <ButtonView text={mainButtonText} onPressCallback={mainButtonPressed} disabled={!formIsValid}/>
             </Animated.View>
             <Animated.View style={[{transform: [{translateX: subX}, {translateY: subY}]}]}>
                 <TouchableOpacity style={styles.subButton} onPress={subButtonPressed}>

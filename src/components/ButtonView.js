@@ -9,25 +9,27 @@ const styles = StyleSheet.create({
     circle: {
         zIndex : 0,
         borderWidth: 1,
-        borderColor: '#5C240F',
         alignItems: 'center',
         justifyContent: 'center',
         height: 200,
         width: 200,
+        borderRadius: 100,
         backgroundColor: '#CF0000',
-        borderRadius: 100
+        borderColor: '#5C240F'
     },
     text: {
         fontSize: 42,
-        color: '#5C240F',
         fontFamily: 'TextMeOne_400Regular',
+        color: '#5C240F'
     },
 });
 
-const ButtonView = ({ text, onPressCallback}) => {
+const ButtonView = ({ text, onPressCallback, disabled}) => {
+    const enabledColors = { backgroundColor: '#CF0000', color: '#5C240F', borderColor: '#5C240F' };
+    const opacity = disabled ? 0.4: 1;
     return (
-        <View style={styles.view}>
-            <TouchableOpacity style={styles.circle} onPress={onPressCallback}>
+        <View style={{ ...styles.view, opacity: opacity}}>
+            <TouchableOpacity disabled={disabled} style={styles.circle} onPress={onPressCallback}>
                 {text ? <Text style={styles.text}>{text}</Text>: null}
             </TouchableOpacity>
         </View>
