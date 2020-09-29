@@ -36,26 +36,29 @@ const styles = StyleSheet.create({
 });
 
 const reducer = (state, {type, username, phone}) => {
+    const phone_passed = typeof(phone) !== 'undefined' || phone != null;
+    const phone_length = phone_passed ? phone.replace(/\D/g, "").length : state.phone.length;
+    const formIsValid = phone_length === 10 && (!state.signingUp || state.username.length > 0);
     switch (type) {
         case 'main_button':
             return { ...state,
                         submitState: true,
-                        formIsValid: false };
+                        formIsValid };
         case 'sub_button':
             return { ...state,
                         submitState: true,
                         signingUp: !state.signingUp,
                         mainButtonText: state.subButtonText,
                         subButtonText: state.mainButtonText,
-                        formIsValid: false };
+                        formIsValid };
         case 'username_edit':
             return { ...state,
                         username,
-                        formIsValid: username.length > 0 && state.phone.length === 10 };
+                        formIsValid};
         case 'phone_edit':
             return { ...state,
-                        phone, 
-                        formIsValid: phone.length === 10 && (!state.signingUp || state.username.length > 0) };
+                        phone: phone.replace(/\D/g, ""), 
+                        formIsValid };
         default:
             return state;
     }
@@ -70,9 +73,17 @@ const LaunchScreen = () => {
         subButtonText: 'Login',
         username: '',
         phone: '',
-        formIsValid: true
+        formIsValid: true,
+        errorString: ''
     });
-    const { submitState, signingUp, mainButtonText, subButtonText, username, phone, formIsValid } = state;
+    const { submitState,
+            signingUp,
+            mainButtonText,
+            subButtonText,
+            username,
+            phone,
+            formIsValid,
+            errorString } = state;
 
     // Animation
     const screenWidth = Dimensions.get('window').width;
@@ -145,7 +156,7 @@ const LaunchScreen = () => {
         } else {
             inputsToLogin();
         };
-        if (submitState){
+        if (submitState && formIsValid){
             if (signingUp) {
                 console.log('SIGNING UP');
                 // TODO: Add sign up call/error checking
@@ -166,6 +177,23 @@ const LaunchScreen = () => {
         };
         dispatch({type: 'sub_button'});
     }
+
+    const formatMobileNumber = (text) => {
+        let formated = text.replace(/\D/g, "");
+        const length = formated.length
+        if (length >= 1) {
+            formated = "(" + formated
+        } 
+        if (length >= 4) {
+            formated = formated.slice(0, 4) + ") " + formated.slice(4);
+        }
+        if (length >= 7) {
+            formated = formated.slice(0, 9) + "-" + formated.slice(9);
+        }
+        return formated;
+    }
+
+    const phone_input = useRef();
     
     // Component
     return (
@@ -178,17 +206,25 @@ const LaunchScreen = () => {
                         value={username}
                         maxLength={32}
                         autoCompleteType={'username'}
-                        onChangeText={(username) => {dispatch({type: 'username_edit', username});}}/> 
+                        onChangeText={(username) => {dispatch({type: 'username_edit', username});}}
+                        autoFocus={submitState}
+                        returnKeyType="next"
+                        onSubmitEditing={() => phone_input.current.focus()}
+                        blurOnSubmit={false} /> 
                 </Animated.View>
                 <Animated.View style={[{ transform: [{ translateX: phoneX }]}]}>
                     <TextInput 
-                            style={styles.textInput}
-                            placeholder='Phone'
-                            value={phone}
-                            autoCompleteType={'tel'}
-                            keyboardType={'phone-pad'}
-                            maxLength={10}
-                            onChangeText={(phone) => {dispatch({type: 'phone_edit', phone})}}/> 
+                        style={styles.textInput}
+                        placeholder='Phone'
+                        value={formatMobileNumber(phone)}
+                        autoCompleteType={'tel'}
+                        keyboardType={'phone-pad'}
+                        maxLength={14}
+                        onChangeText={(phone) => {dispatch({type: 'phone_edit', phone})}}
+                        returnKeyType="done"
+                        onSubmitEditing={() => mainButtonPressed()}
+                        ref={phone_input}
+                        autoFocus={submitState && !signingUp}/> 
                 </Animated.View>
             </View>
             <Animated.View style={[{transform: [{scale: buttonScale}, {translateX: mainX}, {translateY: mainY}]}]}>
