@@ -1,4 +1,4 @@
-import React, { useReducer, useRef, useState } from 'react';
+import React, { useReducer, useRef } from 'react';
 import { Animated, Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import ButtonView from '../components/ButtonView'
 import { sendServerAlert, sendTwoButtonAlert } from '../components/Alerts'
