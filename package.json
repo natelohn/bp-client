@@ -8,6 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@apollo/client": "^3.2.1",
     "@expo-google-fonts/inter": "^0.1.0",
     "@expo-google-fonts/text-me-one": "^0.1.0",
     "@react-native-community/masked-view": "0.1.10",
