@@ -1,6 +1,9 @@
 import React, { useReducer, useRef, useState } from 'react';
 import { Animated, Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import ButtonView from '../components/ButtonView'
+import { sendServerAlert, sendTwoButtonAlert } from '../components/Alerts'
+import appoloClient from '../apollo/index'
+import { INIT_VERIFICATION_QUERY } from '../apollo/queries'
 
 const styles = StyleSheet.create({
     view: {
@@ -73,8 +76,7 @@ const LaunchScreen = () => {
         subButtonText: 'Login',
         username: '',
         phone: '',
-        formIsValid: true,
-        errorString: ''
+        formIsValid: true
     });
     const { submitState,
             signingUp,
@@ -82,8 +84,8 @@ const LaunchScreen = () => {
             subButtonText,
             username,
             phone,
-            formIsValid,
-            errorString } = state;
+            formIsValid
+            } = state;
 
     // Animation
     const screenWidth = Dimensions.get('window').width;
@@ -130,6 +132,13 @@ const LaunchScreen = () => {
           }).start();
     };
 
+    const mainButtonOffScreenRight = () => {
+        Animated.spring(mainX, {
+            toValue: screenWidth * 1.5,
+            useNativeDriver: true,
+        }).start();
+    };
+
     const moveTextbox = (textbox, x) => {
         Animated.timing(textbox, {
             toValue: x,
@@ -148,6 +157,22 @@ const LaunchScreen = () => {
         moveTextbox(usernameX, offScreenLeft);
         moveTextbox(phoneX, onScreen);
     }
+    
+    const showSignUpError = () => {
+        const mainText = 'SIGN UP ERROR';
+        const subText = 'It looks like this number belongs to a current user. Would you like to log in instead?';
+        const leftText = 'Edit Number';
+        const rightText = 'Log In';
+        sendTwoButtonAlert(mainText, subText, leftText, () => {}, rightText, subButtonPressed)
+    }
+
+    const showLogInError = () => {
+        const mainText = 'LOG IN ERROR';
+        const subText = 'It looks like this is a new number. Would you like to sign up instead?';
+        const leftText = 'Edit Number';
+        const rightText = 'Sign Up';
+        sendTwoButtonAlert(mainText, subText, leftText, () => {}, rightText, subButtonPressed)
+    }
 
     const mainButtonPressed = () => {
         buttonsToSubmitState();
@@ -157,13 +182,26 @@ const LaunchScreen = () => {
             inputsToLogin();
         };
         if (submitState && formIsValid){
-            if (signingUp) {
-                console.log('SIGNING UP');
-                // TODO: Add sign up call/error checking
-            } else {
-                console.log('LOGGING IN');
-                // TODO: Add login call/error checking
-            }
+            // send the init verification query
+            const queryPhone = '+1' + phone
+            appoloClient.query({
+                query: INIT_VERIFICATION_QUERY,
+                variables: { signingUp, phone: queryPhone }
+            })
+            .then(({data}) => {
+                // if success -> go to input code screen
+                if (data.initiateVerification) {
+                    mainButtonOffScreenRight()
+                    console.log('GO TO SUBMIT CODE SCREEN');
+                } 
+                // if call returns false -> send init verification error
+                else {
+                    const showError = signingUp ? showSignUpError : showLogInError
+                    showError()
+                }
+            })
+            // if failure -> send server issue error (?)
+            .catch(() => sendServerAlert());
         }
         dispatch({type: 'main_button'});
     }
