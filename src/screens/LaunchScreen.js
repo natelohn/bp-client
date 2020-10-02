@@ -1,6 +1,5 @@
 import React, { useReducer, useRef } from 'react';
 import { Animated, Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
 import appoloClient from '../apollo/index'
 import { sendServerAlert, sendTwoButtonAlert } from '../components/Alerts'
 import ButtonView from '../components/ButtonView'
@@ -90,6 +89,7 @@ const LaunchScreen = ({ navigation }) => {
         subButtonText: 'Login',
         username: '',
         phone: '',
+        otp: '',
         formIsValid: true,
         verifying: false
     });
@@ -99,6 +99,7 @@ const LaunchScreen = ({ navigation }) => {
             subButtonText,
             username,
             phone,
+            otp,
             formIsValid,
             verifying
             } = state;
@@ -112,6 +113,7 @@ const LaunchScreen = ({ navigation }) => {
     const onScreen = 0;
     const usernameX = useRef(new Animated.Value(offScreenLeft)).current;
     const phoneX = useRef(new Animated.Value(offScreenRight)).current;
+    const otpX = useRef(new Animated.Value(offScreenRight)).current;
     // Button Scale - Animation
     const buttonAnimation = useRef(new Animated.Value(0)).current;
     const inputRange = [0, 1];
@@ -170,6 +172,7 @@ const LaunchScreen = ({ navigation }) => {
     const inputsToVerify = () => {
         moveTextbox(usernameX, offScreenLeft);
         moveTextbox(phoneX, offScreenLeft);
+        moveTextbox(otpX, onScreen);
     }
     
     const showSignUpError = () => {
@@ -279,6 +282,7 @@ const LaunchScreen = ({ navigation }) => {
                         onSubmitEditing={() => phone_input.current.focus()}
                         blurOnSubmit={false} /> 
                 </Animated.View>
+                { !verifying && 
                 <Animated.View style={[{ transform: [{ translateX: phoneX }]}]}>
                     <TextInput 
                         style={styles.textInput}
@@ -293,6 +297,21 @@ const LaunchScreen = ({ navigation }) => {
                         ref={phone_input}
                         autoFocus={submitState && !signingUp}/> 
                 </Animated.View>
+                }
+                { verifying && 
+                <Animated.View style={[{ transform: [{ translateX: otpX }]}]}>
+                    <TextInput 
+                        style={styles.textInput}
+                        value={otp}
+                        textContentType={'oneTimeCode'}
+                        keyboardType={'number-pad'}
+                        maxLength={5}
+                        onChangeText={(otp) => {dispatch({type: 'otp_edit', otp})}}
+                        returnKeyType="send"
+                        onSubmitEditing={() => mainButtonPressed()}
+                        autoFocus={verifying}/> 
+                </Animated.View>
+                }
             </View>
             <Animated.View style={[{transform: [{scale: buttonScale}, {translateX: mainX}, {translateY: mainY}]}]}>
                 <ButtonView text={mainButtonText} onPressCallback={mainButtonPressed} disabled={!formIsValid}/>
