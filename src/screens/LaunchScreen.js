@@ -1,8 +1,9 @@
 import React, { useReducer, useRef } from 'react';
 import { Animated, Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import ButtonView from '../components/ButtonView'
-import { sendServerAlert, sendTwoButtonAlert } from '../components/Alerts'
+import { useFocusEffect } from '@react-navigation/native';
 import appoloClient from '../apollo/index'
+import { sendServerAlert, sendTwoButtonAlert } from '../components/Alerts'
+import ButtonView from '../components/ButtonView'
 import { INIT_VERIFICATION_QUERY } from '../apollo/queries'
 
 const styles = StyleSheet.create({
@@ -62,12 +63,25 @@ const reducer = (state, {type, username, phone}) => {
             return { ...state,
                         phone: phone.replace(/\D/g, ""), 
                         formIsValid };
+        case 'verify':
+            return { ...state,
+                        verifying: true,
+                        mainButtonText: 'Verify',
+                        subButtonText: 'Back', 
+                        formIsValid };
+        case 'back':
+            return { ...state,
+                        verifying: false,
+                        mainButtonText: state.signingUp ? 'Sign Up' : 'Login',
+                        subButtonText: state.signingUp ? 'Login' : 'Sign Up', 
+                        formIsValid };
         default:
             return state;
     }
 };
 
 const LaunchScreen = ({ navigation }) => {
+    
     // State Management
     const [state, dispatch] = useReducer(reducer, {
         submitState: false,
@@ -76,7 +90,8 @@ const LaunchScreen = ({ navigation }) => {
         subButtonText: 'Login',
         username: '',
         phone: '',
-        formIsValid: true
+        formIsValid: true,
+        verifying: false
     });
     const { submitState,
             signingUp,
@@ -84,7 +99,8 @@ const LaunchScreen = ({ navigation }) => {
             subButtonText,
             username,
             phone,
-            formIsValid
+            formIsValid,
+            verifying
             } = state;
 
     // Animation
@@ -132,13 +148,6 @@ const LaunchScreen = ({ navigation }) => {
           }).start();
     };
 
-    const mainButtonOffScreenRight = () => {
-        Animated.spring(mainX, {
-            toValue: screenWidth * 1.5,
-            useNativeDriver: true,
-        }).start();
-    };
-
     const moveTextbox = (textbox, x) => {
         Animated.timing(textbox, {
             toValue: x,
@@ -156,6 +165,11 @@ const LaunchScreen = ({ navigation }) => {
     const inputsToLogin = () => {
         moveTextbox(usernameX, offScreenLeft);
         moveTextbox(phoneX, onScreen);
+    }
+
+    const inputsToVerify = () => {
+        moveTextbox(usernameX, offScreenLeft);
+        moveTextbox(phoneX, offScreenLeft);
     }
     
     const showSignUpError = () => {
@@ -176,44 +190,58 @@ const LaunchScreen = ({ navigation }) => {
 
     const mainButtonPressed = () => {
         buttonsToSubmitState();
-        if (signingUp) {
-            inputsToSignUp();
+        if (!verifying) {
+            if (signingUp) {
+                inputsToSignUp();
+            } else {
+                inputsToLogin();
+            };
+            if (submitState && formIsValid){
+                // send the init verification query
+                const queryPhone = '+1' + phone
+                appoloClient.query({
+                    query: INIT_VERIFICATION_QUERY,
+                    variables: { signingUp, phone: queryPhone }
+                })
+                .then(({data}) => {
+                    // if success -> go to input code state
+                    if (data.initiateVerification) {
+                        inputsToVerify();
+                        dispatch({type: 'verify'});
+                    } 
+                    // if call returns false -> send init verification error
+                    else {
+                        const showError = signingUp ? showSignUpError : showLogInError
+                        showError()
+                    }
+                })
+                // if failure -> send server issue error (?)
+                .catch(() => sendServerAlert());
+            }
+            dispatch({type: 'main_button'});
         } else {
-            inputsToLogin();
-        };
-        if (submitState && formIsValid){
-            // send the init verification query
-            const queryPhone = '+1' + phone
-            appoloClient.query({
-                query: INIT_VERIFICATION_QUERY,
-                variables: { signingUp, phone: queryPhone }
-            })
-            .then(({data}) => {
-                // if success -> go to input code screen
-                if (data.initiateVerification) {
-                    mainButtonOffScreenRight()
-                    navigation.navigate('Verify')
-                } 
-                // if call returns false -> send init verification error
-                else {
-                    const showError = signingUp ? showSignUpError : showLogInError
-                    showError()
-                }
-            })
-            // if failure -> send server issue error (?)
-            .catch(() => sendServerAlert());
+            console.log('VERIFY:', signingUp, username, phone);
         }
-        dispatch({type: 'main_button'});
     }
 
     const subButtonPressed = () => {
-        buttonsToSubmitState();
-        if (signingUp) {
-            inputsToLogin();
+        if (!verifying) {
+            dispatch({type: 'sub_button'});
+            buttonsToSubmitState();
+            if (signingUp) {
+                inputsToLogin();
+            } else {
+                inputsToSignUp();
+            };
         } else {
-            inputsToSignUp();
-        };
-        dispatch({type: 'sub_button'});
+            if (signingUp) {
+                inputsToSignUp();
+            } else {
+                inputsToLogin();
+            };
+            dispatch({type: 'back'});
+        }
+
     }
 
     const formatMobileNumber = (text) => {
@@ -232,6 +260,7 @@ const LaunchScreen = ({ navigation }) => {
     }
 
     const phone_input = useRef();
+
     
     // Component
     return (
