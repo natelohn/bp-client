@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LaunchScreen from './src/screens/LaunchScreen';
-import HomeScreen from "./src/screens/HomeScreen";
-import EasyModeScreen from "./src/screens/EasyModeScreen";
-import HardModeScreen from "./src/screens/HardModeScreen";
+import HomeScreen from './src/screens/HomeScreen';
+import EasyModeScreen from './src/screens/EasyModeScreen';
+import HardModeScreen from './src/screens/HardModeScreen';
+import VerifyScreen from './src/screens/VerifyScreen';
 import { AppLoading } from 'expo';
 import { useFonts, TextMeOne_400Regular } from '@expo-google-fonts/text-me-one';
 
@@ -21,9 +21,10 @@ function App() {
     return (
         <NavigationContainer>
         <Stack.Navigator
-            initialRouteName="Launch"
+            initialRouteName='Launch'
             screenOptions={{
-                headerStyle: { 
+                headerTitle: 'Button Push',
+                headerStyle: {
                     backgroundColor: '#DBA28D',
                     elevation: 0,
                     shadowColor: 'transparent'
@@ -31,30 +32,31 @@ function App() {
                 headerTintColor: '#5C240F',
                 headerTitleStyle: {
                     fontFamily: 'TextMeOne_400Regular',
-                    fontSize: 30,
-                    
+                    fontSize: 30
                 },
                 headerTitleAlign: 'center',
                 cardStyle: { 
-                    backgroundColor: '#DBA28D',
+                    backgroundColor: '#DBA28D'
                 }
-
             }}>
             <Stack.Screen 
-                name="Launch"
+                name='Launch'
                 component={LaunchScreen}
-                options={{ title: 'Button Push' }}
             />
             <Stack.Screen 
-                name="Home"
+                name='Verify'
+                component={VerifyScreen}
+            />
+            <Stack.Screen 
+                name='Home'
                 component={HomeScreen}
             />
             <Stack.Screen 
-                name="EasyMode"
+                name='EasyMode'
                 component={EasyModeScreen}
             />
             <Stack.Screen 
-                name="HardMode"
+                name='HardMode'
                 component={HardModeScreen}
             />
         </Stack.Navigator>

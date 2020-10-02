@@ -67,7 +67,7 @@ const reducer = (state, {type, username, phone}) => {
     }
 };
 
-const LaunchScreen = () => {
+const LaunchScreen = ({ navigation }) => {
     // State Management
     const [state, dispatch] = useReducer(reducer, {
         submitState: false,
@@ -192,7 +192,7 @@ const LaunchScreen = () => {
                 // if success -> go to input code screen
                 if (data.initiateVerification) {
                     mainButtonOffScreenRight()
-                    console.log('GO TO SUBMIT CODE SCREEN');
+                    navigation.navigate('Verify')
                 } 
                 // if call returns false -> send init verification error
                 else {
