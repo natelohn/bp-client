@@ -5,6 +5,15 @@ import { sendServerAlert, sendTwoButtonAlert } from '../components/Alerts'
 import ButtonView from '../components/ButtonView'
 import { INIT_VERIFICATION_QUERY } from '../apollo/queries'
 
+
+const textInput = {
+    height: 40,
+    margin: 10,
+    borderBottomColor: '#5C240F',
+    borderBottomWidth: 0.25,
+    fontFamily: 'TextMeOne_400Regular',
+    fontSize: 18
+}
 const styles = StyleSheet.create({
     view: {
         justifyContent: 'center',
@@ -28,17 +37,16 @@ const styles = StyleSheet.create({
         color: '#5C240F'
     },
     textInput: {
-        height: 40,
-        margin: 10,
-        borderBottomColor: '#5C240F',
-        borderBottomWidth: 0.25,
-        fontFamily: 'TextMeOne_400Regular',
-        fontSize: 18,
-       
+        ...textInput
+    },
+    codeInput: {
+        ...textInput,
+        fontSize: 38,
+        textAlign: 'center'
     }
 });
 
-const reducer = (state, {type, username, phone}) => {
+const reducer = (state, {type, username, phone, otp}) => {
     const phone_passed = typeof(phone) !== 'undefined' || phone != null;
     const phone_length = phone_passed ? phone.replace(/\D/g, "").length : state.phone.length;
     const formIsValid = phone_length === 10 && (!state.signingUp || state.username.length > 0);
@@ -62,12 +70,17 @@ const reducer = (state, {type, username, phone}) => {
             return { ...state,
                         phone: phone.replace(/\D/g, ""), 
                         formIsValid };
+        case 'otp_edit':
+            return { ...state,
+                        otp, 
+                        formIsValid: otp.length === 5 };
         case 'verify':
             return { ...state,
                         verifying: true,
                         mainButtonText: 'Verify',
-                        subButtonText: 'Back', 
-                        formIsValid };
+                        subButtonText: 'Back',
+                        otp: '',
+                        formIsValid: false };
         case 'back':
             return { ...state,
                         verifying: false,
@@ -292,7 +305,6 @@ const LaunchScreen = ({ navigation }) => {
                         keyboardType={'phone-pad'}
                         maxLength={14}
                         onChangeText={(phone) => {dispatch({type: 'phone_edit', phone})}}
-                        returnKeyType="done"
                         onSubmitEditing={() => mainButtonPressed()}
                         ref={phone_input}
                         autoFocus={submitState && !signingUp}/> 
@@ -301,7 +313,7 @@ const LaunchScreen = ({ navigation }) => {
                 { verifying && 
                 <Animated.View style={[{ transform: [{ translateX: otpX }]}]}>
                     <TextInput 
-                        style={styles.textInput}
+                        style={styles.codeInput}
                         value={otp}
                         textContentType={'oneTimeCode'}
                         keyboardType={'number-pad'}
