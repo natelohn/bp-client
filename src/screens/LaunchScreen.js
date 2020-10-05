@@ -3,7 +3,8 @@ import { Animated, Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, Vi
 import appoloClient from '../apollo/index'
 import { sendServerAlert, sendTwoButtonAlert } from '../components/Alerts'
 import ButtonView from '../components/ButtonView'
-import { INIT_VERIFICATION_QUERY } from '../apollo/queries'
+import { useMutation } from '@apollo/client'
+import { INIT_VERIFICATION_MUTATION, REGISTER_MUTATION, LOGIN_MUTATION } from '../apollo/gql'
 
 
 const textInput = {
@@ -92,8 +93,16 @@ const reducer = (state, {type, username, phone, otp}) => {
     }
 };
 
+
+
+
 const LaunchScreen = ({ navigation }) => {
-    
+
+    // Apollo Client Hooks
+    const [callInitiateVerification] = useMutation(INIT_VERIFICATION_MUTATION);
+    const [callSignUp] = useMutation(REGISTER_MUTATION);
+    const [callLogin] = useMutation(LOGIN_MUTATION);
+        
     // State Management
     const [state, dispatch] = useReducer(reducer, {
         submitState: false,
@@ -204,6 +213,76 @@ const LaunchScreen = ({ navigation }) => {
         sendTwoButtonAlert(mainText, subText, leftText, () => {}, rightText, subButtonPressed)
     }
 
+    const showOTPError = () => {
+        const formatedPhone = formatMobileNumber(phone)
+        const mainText = 'INCORRECT CODE';
+        const subText = 'The code was sent to +1' + formatedPhone + '. Try again?';
+        const leftText = 'Back';
+        const rightText = 'Resend';
+        sendTwoButtonAlert(mainText, subText, leftText, subButtonPressed, rightText, initiateVerification)
+    }
+
+    const usPhoneNumber = (phone) => {
+        return '+1' + phone
+    }
+
+    const initiateVerification = () => {
+        callInitiateVerification({ 
+            variables: { signingUp, phone: usPhoneNumber(phone) }
+        })
+        .then(({data}) => {
+                // if success -> go to input code state
+            if (data.initiateVerification) {
+                inputsToVerify();
+                dispatch({type: 'verify'});
+            } 
+            // if call returns false -> send init verification error
+            else {
+                const showError = signingUp ? showSignUpError : showLogInError
+                showError()
+            }
+        })
+        // if failure -> send server issue error (?)
+        .catch(() => sendServerAlert());
+    }
+
+    const signUp = () => {
+        
+        callSignUp({ 
+            variables: { name: username, phone: usPhoneNumber(phone), key: otp }
+        })
+        .then(({data}) => {
+            // if success -> go to home screen
+            if (data.register.accessToken) {
+                console.log('REGISTER SUCCESS:', data.register.accessToken);
+            } 
+            // if call returns false -> show passcode erro
+            else {
+                showOTPError();
+            }
+        })
+        // if failure -> send server issue error
+        .catch(() => sendServerAlert());
+    }
+
+    const login = () => {
+        callLogin({ 
+            variables: { phone: usPhoneNumber(phone), key: otp }
+        })
+        .then(({data}) => {
+            // if success -> go to home screen
+            if (data.register.accessToken) {
+                console.log('LOGIN SUCCESS:', data.register.accessToken);
+            } 
+            // if call returns false -> show passcode erro
+            else {
+                showOTPError();
+            }
+        })
+        // if failure -> send server issue error
+        .catch(() => sendServerAlert());
+    }
+
     const mainButtonPressed = () => {
         buttonsToSubmitState();
         if (!verifying) {
@@ -214,29 +293,17 @@ const LaunchScreen = ({ navigation }) => {
             };
             if (submitState && formIsValid){
                 // send the init verification query
-                const queryPhone = '+1' + phone
-                appoloClient.query({
-                    query: INIT_VERIFICATION_QUERY,
-                    variables: { signingUp, phone: queryPhone }
-                })
-                .then(({data}) => {
-                    // if success -> go to input code state
-                    if (data.initiateVerification) {
-                        inputsToVerify();
-                        dispatch({type: 'verify'});
-                    } 
-                    // if call returns false -> send init verification error
-                    else {
-                        const showError = signingUp ? showSignUpError : showLogInError
-                        showError()
-                    }
-                })
-                // if failure -> send server issue error (?)
-                .catch(() => sendServerAlert());
+                initiateVerification();
             }
             dispatch({type: 'main_button'});
         } else {
-            console.log('VERIFY:', signingUp, username, phone);
+            // send the init verification query
+            if (signingUp) {
+                signUp();
+            } else {
+                login();
+            }
+
         }
     }
 
@@ -315,6 +382,7 @@ const LaunchScreen = ({ navigation }) => {
                     <TextInput 
                         style={styles.codeInput}
                         value={otp}
+                        placeholder='Passcode'
                         textContentType={'oneTimeCode'}
                         keyboardType={'number-pad'}
                         maxLength={5}
