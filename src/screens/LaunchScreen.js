@@ -270,7 +270,6 @@ const LaunchScreen = ({ navigation }) => {
             variables: { phone: usPhoneNumber(phone), key: otp }
         })
         .then(({data}) => {
-            console.log(data)
             // if success -> go to home screen
             if (data.login.accessToken) {
                 console.log('LOGIN SUCCESS:', data.login.accessToken);
