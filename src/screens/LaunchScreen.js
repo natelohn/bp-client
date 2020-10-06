@@ -1,6 +1,5 @@
 import React, { useReducer, useRef } from 'react';
 import { Animated, Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import appoloClient from '../apollo/index'
 import { sendServerAlert, sendTwoButtonAlert } from '../components/Alerts'
 import ButtonView from '../components/ButtonView'
 import { useMutation } from '@apollo/client'
