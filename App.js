@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { ApolloProvider } from 'react-apollo';
-import appoloClient from '../apollo/index';
+import { ApolloProvider } from '@apollo/client';
+import apoloClient from './src/apollo/index';
 import LaunchScreen from './src/screens/LaunchScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import EasyModeScreen from './src/screens/EasyModeScreen';
@@ -20,48 +20,52 @@ function App() {
         return <AppLoading />;
     }
     return (
-        <ApolloProvider client={appoloClient}>
+        
             <NavigationContainer>
-                <Stack.Navigator
-                    initialRouteName='Launch'
-                    screenOptions={{
-                        headerStyle: { 
-                            backgroundColor: '#DBA28D',
-                            elevation: 0,
-                            shadowColor: 'transparent'
-                        },
-                        headerTintColor: '#5C240F',
-                        headerTitleStyle: {
-                            fontFamily: 'TextMeOne_400Regular',
-                            fontSize: 30,
-                            
-                        },
-                        headerTitleAlign: 'center',
-                        cardStyle: { 
-                            backgroundColor: '#DBA28D',
-                        }
+                <ApolloProvider client={apoloClient}>
+                    <Stack.Navigator
+                        initialRouteName='Launch'
+                        screenOptions={{
+                            headerStyle: { 
+                                backgroundColor: '#DBA28D',
+                                elevation: 0,
+                                shadowColor: 'transparent'
+                            },
+                            headerTintColor: '#5C240F',
+                            headerTitleStyle: {
+                                fontFamily: 'TextMeOne_400Regular',
+                                fontSize: 30,
+                                
+                            },
+                            headerTitleAlign: 'center',
+                            cardStyle: { 
+                                backgroundColor: '#DBA28D',
+                            }
 
-                    }}>
-                    <Stack.Screen 
-                        name='Launch'
-                        component={LaunchScreen}
-                        options={{ title: 'Button Push' }}
-                    />
-                    <Stack.Screen 
-                        name='Home'
-                        component={HomeScreen}
-                    />
-                    <Stack.Screen 
-                        name='EasyMode'
-                        component={EasyModeScreen}
-                    />
-                    <Stack.Screen 
-                        name='HardMode'
-                        component={HardModeScreen}
-                    />
-                </Stack.Navigator>
+                        }}>
+                            
+                                
+                            
+                        <Stack.Screen 
+                            name='Launch'
+                            component={LaunchScreen}
+                            options={{ title: 'Button Push' }}
+                        />
+                        <Stack.Screen 
+                            name='Home'
+                            component={HomeScreen}
+                        />
+                        <Stack.Screen 
+                            name='EasyMode'
+                            component={EasyModeScreen}
+                        />
+                        <Stack.Screen 
+                            name='HardMode'
+                            component={HardModeScreen}
+                        />
+                    </Stack.Navigator>
+                </ApolloProvider>
             </NavigationContainer>
-        </ApolloProvider>
   );
 }
 

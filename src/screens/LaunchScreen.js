@@ -1,6 +1,7 @@
 import React, { useReducer, useRef } from 'react';
 import { Animated, Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { sendServerAlert, sendTwoButtonAlert } from '../components/Alerts'
+import apoloClient from '../apollo/index';
 import ButtonView from '../components/ButtonView'
 import { useMutation } from '@apollo/client'
 import { INIT_VERIFICATION_MUTATION, REGISTER_MUTATION, LOGIN_MUTATION } from '../apollo/gql'
@@ -227,7 +228,7 @@ const LaunchScreen = ({ navigation }) => {
 
     const initiateVerification = () => {
         callInitiateVerification({ 
-            variables: { signingUp, phone: usPhoneNumber(phone) }
+            variables: { signingUp, phone: usPhoneNumber(phone) },
         })
         .then(({data}) => {
                 // if success -> go to input code state
@@ -242,13 +243,13 @@ const LaunchScreen = ({ navigation }) => {
             }
         })
         // if failure -> send server issue error (?)
-        .catch(() => sendServerAlert());
+        .catch((e) => {console.log(e)});
     }
 
     const signUp = () => {
         
         callSignUp({ 
-            variables: { name: username, phone: usPhoneNumber(phone), key: otp }
+            variables: { name: username, phone: usPhoneNumber(phone), key: otp },
         })
         .then(({data}) => {
             // if success -> go to home screen
@@ -261,7 +262,7 @@ const LaunchScreen = ({ navigation }) => {
             }
         })
         // if failure -> send server issue error
-        .catch(() => sendServerAlert());
+        .catch((e) => {console.log(e)});
     }
 
     const login = () => {
@@ -269,9 +270,10 @@ const LaunchScreen = ({ navigation }) => {
             variables: { phone: usPhoneNumber(phone), key: otp }
         })
         .then(({data}) => {
+            console.log(data)
             // if success -> go to home screen
-            if (data.register.accessToken) {
-                console.log('LOGIN SUCCESS:', data.register.accessToken);
+            if (data.login.accessToken) {
+                console.log('LOGIN SUCCESS:', data.login.accessToken);
             } 
             // if call returns false -> show passcode erro
             else {
@@ -279,7 +281,7 @@ const LaunchScreen = ({ navigation }) => {
             }
         })
         // if failure -> send server issue error
-        .catch(() => sendServerAlert());
+        .catch((e) => {console.log(e)});
     }
 
     const mainButtonPressed = () => {
