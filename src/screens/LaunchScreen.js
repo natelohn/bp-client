@@ -1,7 +1,6 @@
 import React, { useReducer, useRef } from 'react';
 import { Animated, Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { sendServerAlert, sendTwoButtonAlert } from '../components/Alerts'
-import apoloClient from '../apollo/index';
 import ButtonView from '../components/ButtonView'
 import { useMutation } from '@apollo/client'
 import { INIT_VERIFICATION_MUTATION, REGISTER_MUTATION, LOGIN_MUTATION } from '../apollo/gql'
@@ -243,7 +242,7 @@ const LaunchScreen = ({ navigation }) => {
             }
         })
         // if failure -> send server issue error (?)
-        .catch((e) => {console.log(e)});
+        .catch(() => {sendServerAlert()});
     }
 
     const signUp = () => {
@@ -262,7 +261,7 @@ const LaunchScreen = ({ navigation }) => {
             }
         })
         // if failure -> send server issue error
-        .catch((e) => {console.log(e)});
+        .catch(() => {sendServerAlert()});
     }
 
     const login = () => {
@@ -280,7 +279,7 @@ const LaunchScreen = ({ navigation }) => {
             }
         })
         // if failure -> send server issue error
-        .catch((e) => {console.log(e)});
+        .catch(() => {sendServerAlert()});
     }
 
     const mainButtonPressed = () => {
