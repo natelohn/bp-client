@@ -3,12 +3,14 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { ApolloProvider } from '@apollo/client';
 import apoloClient from './src/apollo/index';
-import LaunchScreen from './src/screens/LaunchScreen';
+import AuthScreen from './src/screens/AuthScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import EasyModeScreen from './src/screens/EasyModeScreen';
 import HardModeScreen from './src/screens/HardModeScreen';
+import LaunchScreen from './src/screens/LaunchScreen';
 import { AppLoading } from 'expo';
 import { useFonts, TextMeOne_400Regular } from '@expo-google-fonts/text-me-one';
+
 
 
 const Stack = createStackNavigator();
@@ -45,10 +47,14 @@ function App() {
                         }}>
                             
                                 
-                            
                         <Stack.Screen 
                             name='Launch'
                             component={LaunchScreen}
+                            options={{ title: 'Button Push' }}
+                        />  
+                        <Stack.Screen 
+                            name='Auth'
+                            component={AuthScreen}
                             options={{ title: 'Button Push' }}
                         />
                         <Stack.Screen 
