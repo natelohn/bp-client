@@ -1,5 +1,6 @@
-import React, { useReducer, useRef } from 'react';
+import React, { useReducer, useRef, useEffect } from 'react';
 import { Animated, Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
 import { sendServerAlert, sendTwoButtonAlert } from '../components/Alerts'
 import ButtonView from '../components/ButtonView'
 import { useMutation } from '@apollo/client'
@@ -96,6 +97,19 @@ const reducer = (state, {type, username, phone, otp}) => {
 
 
 const LaunchScreen = ({ navigation }) => {
+
+    // TEST
+    useEffect(() => {
+        SecureStore.getItemAsync('jwt')
+        .then((jwt) => {
+            if ( jwt !== null ){
+                // Check jwt (correct/non-expired)
+                console.log('JWT FOUND', jwt)
+                navigation.navigate('Home')
+            }
+        })
+        .catch((e) => { console.log('SECURE STORE ERR:', e)})
+      }, []);
 
     // Apollo Client Hooks
     const [callInitiateVerification] = useMutation(INIT_VERIFICATION_MUTATION);
@@ -245,6 +259,11 @@ const LaunchScreen = ({ navigation }) => {
         .catch(() => {sendServerAlert()});
     }
 
+    const storeJWT = (jwt) => {
+        SecureStore.setItemAsync('jwt', jwt)
+        .catch((e) => console.log('Store JWT FAILURE', e));
+    }
+
     const signUp = () => {
         
         callSignUp({ 
@@ -253,7 +272,7 @@ const LaunchScreen = ({ navigation }) => {
         .then(({data}) => {
             // if success -> go to home screen
             if (data.register.accessToken) {
-                console.log('REGISTER SUCCESS:', data.register.accessToken);
+                storeJWT(data.register.accessToken)
             } 
             // if call returns false -> show passcode erro
             else {
@@ -271,7 +290,7 @@ const LaunchScreen = ({ navigation }) => {
         .then(({data}) => {
             // if success -> go to home screen
             if (data.login.accessToken) {
-                console.log('LOGIN SUCCESS:', data.login.accessToken);
+                storeJWT(data.login.accessToken);
             } 
             // if call returns false -> show passcode erro
             else {
@@ -343,7 +362,6 @@ const LaunchScreen = ({ navigation }) => {
 
     const phone_input = useRef();
 
-    
     // Component
     return (
         <View style={styles.view}>
