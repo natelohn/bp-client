@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 
 export const USER_ID_QUERY = gql`
   {
-    getUserId
+    userId
   }
 `;
 
@@ -22,16 +22,16 @@ export const INIT_VERIFICATION_MUTATION = gql`
 `
 
 export const REGISTER_MUTATION = gql`
-  mutation Register($name: String!, $phone: String!, $key: String!){
-    register(name: $name, phone: $phone, key: $key){
+  mutation Register($name: String!, $phone: String!, $otp: String!){
+    register(name: $name, phone: $phone, otp: $otp){
       accessToken
     }
   }
 `
 
 export const LOGIN_MUTATION = gql`
-  mutation Login($phone: String!, $key: String!){
-    login(phone: $phone, key: $key){
+  mutation Login($phone: String!, $otp: String!){
+    login(phone: $phone, otp: $otp){
       accessToken
     }
   }

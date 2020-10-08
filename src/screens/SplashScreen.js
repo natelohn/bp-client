@@ -1,16 +1,14 @@
 import React from 'react';
 import { Text, View } from 'react-native';
-import { AppLoading } from 'expo';
 
-const LaunchScreen = ({ navigation }) => {
+const SplashScreen = () => {
     return (
         <View>
             <Text>
-                LAUNCH!
+                SPLASH SCREEN!
             </Text>
         </View>
     );
 }
 
-
-export default LaunchScreen;
+export default SplashScreen;

@@ -1,10 +1,9 @@
-import React, { useReducer, useRef, useEffect } from 'react';
+import React, { useReducer, useRef } from 'react';
 import { Animated, Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import * as SecureStore from 'expo-secure-store';
 import { sendServerAlert, sendTwoButtonAlert } from '../components/Alerts'
 import ButtonView from '../components/ButtonView'
-import { useMutation, useQuery } from '@apollo/client';
-import { USER_ID_QUERY, INIT_VERIFICATION_MUTATION, REGISTER_MUTATION, LOGIN_MUTATION } from '../apollo/gql'
+import { useMutation } from '@apollo/client';
+import {  INIT_VERIFICATION_MUTATION } from '../apollo/gql'
 
 
 const textInput = {
@@ -97,21 +96,9 @@ const reducer = (state, {type, username, phone, otp}) => {
 
 
 const AuthScreen = ({ navigation }) => {
+    const { signUp, login } = React.useContext(AuthContext);
     // Apollo Client Hooks
-    const { loading, error, data } = useQuery(USER_ID_QUERY);
     const [callInitiateVerification] = useMutation(INIT_VERIFICATION_MUTATION);
-    const [callSignUp] = useMutation(REGISTER_MUTATION);
-    const [callLogin] = useMutation(LOGIN_MUTATION);
-
-    // TEST
-    useEffect(() => {
-        // Check for jwt & direct to home or launch screens
-        if (data) {
-            console.log('WE HAVE DATA!', data)
-        }
-      }, []);
-
-
         
     // State Management
     const [state, dispatch] = useReducer(reducer, {
@@ -223,15 +210,6 @@ const AuthScreen = ({ navigation }) => {
         sendTwoButtonAlert(mainText, subText, leftText, () => {}, rightText, subButtonPressed)
     }
 
-    const showOTPError = () => {
-        const formatedPhone = formatMobileNumber(phone)
-        const mainText = 'INCORRECT CODE';
-        const subText = 'The code was sent to +1' + formatedPhone + '. Try again?';
-        const leftText = 'Back';
-        const rightText = 'Resend';
-        sendTwoButtonAlert(mainText, subText, leftText, subButtonPressed, rightText, initiateVerification)
-    }
-
     const usPhoneNumber = (phone) => {
         return '+1' + phone
     }
@@ -256,49 +234,6 @@ const AuthScreen = ({ navigation }) => {
         .catch(() => {sendServerAlert()});
     }
 
-    const storeJWT = (jwt) => {
-        SecureStore.setItemAsync('jwt', jwt)
-        .catch((e) => console.log('Store JWT FAILURE', e));
-    }
-
-    const signUp = () => {
-        
-        callSignUp({ 
-            variables: { name: username, phone: usPhoneNumber(phone), key: otp },
-        })
-        .then(({data}) => {
-            // if success -> go to home screen
-            if (data.register.accessToken) {
-                storeJWT(data.register.accessToken)
-            } 
-            // if call returns false -> show passcode erro
-            else {
-                showOTPError();
-            }
-        })
-        // if failure -> send server issue error
-        .catch(() => {sendServerAlert()});
-    }
-
-    const login = () => {
-        callLogin({ 
-            variables: { phone: usPhoneNumber(phone), key: otp }
-        })
-        .then(({data}) => {
-            // if success -> go to home screen
-            if (data.login.accessToken) {
-                storeJWT(data.login.accessToken);
-            } 
-            // if call returns false -> show passcode erro
-            else {
-                showOTPError();
-            }
-        })
-        // if failure -> send server issue error
-        // .catch(() => {sendServerAlert()});
-        .catch((e) => {console.log(e)});
-    }
-
     const mainButtonPressed = () => {
         buttonsToSubmitState();
         if (!verifying) {
@@ -315,9 +250,9 @@ const AuthScreen = ({ navigation }) => {
         } else {
             // send the init verification query
             if (signingUp) {
-                signUp();
+                signUp({ name, phone, otp });
             } else {
-                login();
+                login({ phone, otp });
             }
 
         }
@@ -359,15 +294,6 @@ const AuthScreen = ({ navigation }) => {
     }
 
     const phone_input = useRef();
-
-    // TODO: Create a Loading screen to return if userIdLoading...
-    if (loading) {
-        return <View><Text>LOADING</Text></View>
-    }
-    // // TODO: Create a Error screen to return if userIdError...
-    if (error) {
-        return <View><Text>ERROR</Text></View>
-    }
 
     // Component
     return (

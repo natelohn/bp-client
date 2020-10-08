@@ -9,7 +9,7 @@ const httpLink = createHttpLink({
 
 const authLink = setContext(async (_, { headers }) => {
   // get the authentication token from local storage if it exists
-  const jwt = await SecureStore.getItemAsync('jwt');
+  const jwt = await SecureStore.getItemAsync('jwt'); // TODO: GET USER TOKEN FROM CONTEXT?
   return {
     headers: {
       ...headers,
