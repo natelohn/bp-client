@@ -1,50 +1,14 @@
-import React, { useReducer, useRef } from 'react';
-import { Animated, Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { sendServerAlert, sendTwoButtonAlert } from '../components/Alerts'
+import React, { useContext, useReducer, useRef } from 'react';
+import { Animated, Dimensions, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { sendServerAlert, showSignUpError, showLogInError } from '../components/Alerts'
 import ButtonView from '../components/ButtonView'
 import { useMutation } from '@apollo/client';
 import {  INIT_VERIFICATION_MUTATION } from '../apollo/gql'
+import { Context as AuthContext } from "../context/AuthContext";
+import styles from '../styles/auth';
+import { formatMobileNumber, usPhoneNumber } from '../utils';
 
 
-const textInput = {
-    height: 40,
-    margin: 10,
-    borderBottomColor: '#5C240F',
-    borderBottomWidth: 0.25,
-    fontFamily: 'TextMeOne_400Regular',
-    fontSize: 18
-}
-const styles = StyleSheet.create({
-    view: {
-        justifyContent: 'center',
-        flex: 1
-    },
-    subButton: {
-        alignSelf: 'center'
-    },
-    subButtonText: {
-        alignSelf: 'center',
-        color: '#5C240F',
-        fontSize: 22,
-        textDecorationLine: 'underline',
-        fontFamily: 'TextMeOne_400Regular',
-        margin: 20
-    },
-    inputView: {
-        alignSelf: 'center',
-        width: '80%',
-        marginBottom: 20,
-        color: '#5C240F'
-    },
-    textInput: {
-        ...textInput
-    },
-    codeInput: {
-        ...textInput,
-        fontSize: 38,
-        textAlign: 'center'
-    }
-});
 
 const reducer = (state, {type, username, phone, otp}) => {
     const phone_passed = typeof(phone) !== 'undefined' || phone != null;
@@ -93,10 +57,8 @@ const reducer = (state, {type, username, phone, otp}) => {
 };
 
 
-
-
 const AuthScreen = ({ navigation }) => {
-    const { signUp, login } = React.useContext(AuthContext);
+    const { signup, login } = useContext(AuthContext);
     // Apollo Client Hooks
     const [callInitiateVerification] = useMutation(INIT_VERIFICATION_MUTATION);
         
@@ -193,26 +155,6 @@ const AuthScreen = ({ navigation }) => {
         moveTextbox(phoneX, offScreenLeft);
         moveTextbox(otpX, onScreen);
     }
-    
-    const showSignUpError = () => {
-        const mainText = 'SIGN UP ERROR';
-        const subText = 'It looks like this number belongs to a current user. Would you like to log in instead?';
-        const leftText = 'Edit Number';
-        const rightText = 'Log In';
-        sendTwoButtonAlert(mainText, subText, leftText, () => {}, rightText, subButtonPressed)
-    }
-
-    const showLogInError = () => {
-        const mainText = 'LOG IN ERROR';
-        const subText = 'It looks like this is a new number. Would you like to sign up instead?';
-        const leftText = 'Edit Number';
-        const rightText = 'Sign Up';
-        sendTwoButtonAlert(mainText, subText, leftText, () => {}, rightText, subButtonPressed)
-    }
-
-    const usPhoneNumber = (phone) => {
-        return '+1' + phone
-    }
 
     const initiateVerification = () => {
         callInitiateVerification({ 
@@ -250,7 +192,7 @@ const AuthScreen = ({ navigation }) => {
         } else {
             // send the init verification query
             if (signingUp) {
-                signUp({ name, phone, otp });
+                signup({ username, phone, otp });
             } else {
                 login({ phone, otp });
             }
@@ -276,21 +218,6 @@ const AuthScreen = ({ navigation }) => {
             dispatch({type: 'back'});
         }
 
-    }
-
-    const formatMobileNumber = (text) => {
-        let formated = text.replace(/\D/g, "");
-        const length = formated.length
-        if (length >= 1) {
-            formated = "(" + formated
-        } 
-        if (length >= 4) {
-            formated = formated.slice(0, 4) + ") " + formated.slice(4);
-        }
-        if (length >= 7) {
-            formated = formated.slice(0, 9) + "-" + formated.slice(9);
-        }
-        return formated;
     }
 
     const phone_input = useRef();
