@@ -3,7 +3,7 @@ import { Animated, Dimensions, Text, TextInput, TouchableOpacity, View } from 'r
 import { sendServerAlert, showSignUpError, showLogInError } from '../components/Alerts'
 import ButtonView from '../components/ButtonView'
 import { useMutation } from '@apollo/client';
-import {  INIT_VERIFICATION_MUTATION } from '../apollo/gql'
+import {  INIT_VERIFICATION_MUTATION, REGISTER_MUTATION, LOGIN_MUTATION } from '../apollo/gql'
 import { Context as AuthContext } from "../context/AuthContext";
 import styles from '../styles/auth';
 import { formatMobileNumber, usPhoneNumber } from '../utils';
@@ -13,13 +13,16 @@ import { formatMobileNumber, usPhoneNumber } from '../utils';
 const reducer = (state, {type, username, phone, otp}) => {
     const phone_passed = typeof(phone) !== 'undefined' || phone != null;
     const phone_length = phone_passed ? phone.replace(/\D/g, "").length : state.phone.length;
-    const formIsValid = phone_length === 10 && (!state.signingUp || state.username.length > 0);
+    const username_passed = typeof(username) !== 'undefined' || username != null;
+    const username_length = username_passed ? username.length : state.username.length;
+    let formIsValid = phone_length === 10 && (!state.signingUp || username_length > 0);
     switch (type) {
         case 'main_button':
             return { ...state,
                         submitState: true,
                         formIsValid };
         case 'sub_button':
+            formIsValid = state.signingUp ? phone_length === 10: phone_length === 10 && username_length > 0;
             return { ...state,
                         submitState: true,
                         signingUp: !state.signingUp,
@@ -61,6 +64,8 @@ const AuthScreen = ({ navigation }) => {
     const { signup, login } = useContext(AuthContext);
     // Apollo Client Hooks
     const [callInitiateVerification] = useMutation(INIT_VERIFICATION_MUTATION);
+    const [callLogin] = useMutation(LOGIN_MUTATION);
+    const [callSignUp] = useMutation(REGISTER_MUTATION);
         
     // State Management
     const [state, dispatch] = useReducer(reducer, {
@@ -169,7 +174,7 @@ const AuthScreen = ({ navigation }) => {
             // if call returns false -> send init verification error
             else {
                 const showError = signingUp ? showSignUpError : showLogInError
-                showError()
+                showError(subButtonPressed)
             }
         })
         // if failure -> send server issue error (?)
@@ -192,9 +197,9 @@ const AuthScreen = ({ navigation }) => {
         } else {
             // send the init verification query
             if (signingUp) {
-                signup({ username, phone, otp });
+                signup({ username, phone: usPhoneNumber(phone), otp }, callSignUp);
             } else {
-                login({ phone, otp });
+                login({ phone: usPhoneNumber(phone), otp }, callLogin);
             }
 
         }

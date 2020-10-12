@@ -1,12 +1,24 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useContext } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Context as AuthContext } from "../context/AuthContext";
 import PlayView from "../components/PlayView";
+import { promptLogout } from '../components/Alerts'
 
 const HomeScreen = () => {
+    const { signout } = useContext(AuthContext);
+
+
+    const sendLogoutAlert = () => {
+        promptLogout(signout)
+    }
+
     return (
         <View style={styles.view}>
             <Text style={styles.header}>Hard Mode</Text>
             <PlayView mode="hard"/>
+            <TouchableOpacity onPress={sendLogoutAlert}>
+                <Text>LOGOUT</Text>
+            </TouchableOpacity>
         </View>
     );
 };

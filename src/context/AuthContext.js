@@ -1,30 +1,23 @@
 import { AsyncStorage } from 'react-native';
 import createDataContext from "./createDataContext";
 import { navigate } from "../navigationRef";
-import { useMutation } from '@apollo/client';
-import {  REGISTER_MUTATION, LOGIN_MUTATION } from '../apollo/gql';
 import { sendServerAlert, showOTPError } from '../components/Alerts'
 
 
 const authReducer = (state, action) => {
   switch (action.type) {
-      case 'add_error':
-          return {...state, errorMessage: action.payload };
-      case 'clear_error_message':
-          return {...state, errorMessage: ''};
       case 'signin':
-          return {...state, errorMessage: '', token: action.payload };
+          return {...state, token: action.payload };
       case 'signout':
-          return {...state, errorMessage: '', token: null };
+          return {...state, token: null };
       default:
           return state;
   }
 };
 
-const signup = dispatch => async ({ username, phone, otp }) => {
-    const [callSignUp] = useMutation(REGISTER_MUTATION);
+const signup = dispatch => async ({ username, phone, otp }, signUpCallback) => {
     // Send sign up data to the server and get a token and id
-    callSignUp({ 
+    signUpCallback({ 
         variables: { username, phone, otp  },
     })
     .then( async ({data}) => {
@@ -42,23 +35,12 @@ const signup = dispatch => async ({ username, phone, otp }) => {
         }
     })
     // if failure -> send server issue error
-    .catch(() => {sendServerAlert()});
-
-    try {
-        // TODO: Verify inputs with server
-
-    } catch (err) {
-        dispatch({
-            type: 'add_error',
-            payload: 'Something failed while signing up :/'
-        });
-    }
+    .catch(() => { sendServerAlert()});
 };
 
-const login = dispatch => async ({ phone, otp }) => {
+const login = dispatch => async ({ phone, otp }, loginCallback) => {
     // Verify inputs with server
-    const [callLogin] = useMutation(LOGIN_MUTATION);
-    callLogin({ 
+    loginCallback({ 
         variables: { phone, otp },
     })
     .then(async ({data}) => {
@@ -67,7 +49,7 @@ const login = dispatch => async ({ phone, otp }) => {
             // Persist the token in local storage
             await AsyncStorage.setItem('jwt', data.login.accessToken);
             // Update state to direct to home screen
-            dispatch({type: 'signin', payload: jwt});
+            dispatch({type: 'signin', payload: data.login.accessToken});
             navigate('Home');
         } 
         // Handle errors if login failed
@@ -97,12 +79,8 @@ const tryLocalSignIn = dispatch => async () => {
     }
 }
 
-const clearErrorMessage = dispatch => () => {
-    dispatch({type: 'clear_error_message'});
-};
-
 export const {Provider, Context} = createDataContext(
     authReducer,
-    { login, signout, signup, clearErrorMessage, tryLocalSignIn},
+    { login, signout, signup, tryLocalSignIn},
     {token: null, errorMessage: ''}
 );

@@ -22,8 +22,8 @@ export const INIT_VERIFICATION_MUTATION = gql`
 `
 
 export const REGISTER_MUTATION = gql`
-  mutation Register($name: String!, $phone: String!, $otp: String!){
-    register(name: $name, phone: $phone, otp: $otp){
+  mutation Register($username: String!, $phone: String!, $otp: String!){
+    register(username: $username, phone: $phone, otp: $otp){
       accessToken
     }
   }
