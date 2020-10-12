@@ -25,6 +25,7 @@ export const REGISTER_MUTATION = gql`
   mutation Register($username: String!, $phone: String!, $otp: String!){
     register(username: $username, phone: $phone, otp: $otp){
       accessToken
+      userId
     }
   }
 `
@@ -33,6 +34,7 @@ export const LOGIN_MUTATION = gql`
   mutation Login($phone: String!, $otp: String!){
     login(phone: $phone, otp: $otp){
       accessToken
+      userId
     }
   }
 `

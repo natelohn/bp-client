@@ -1,6 +1,6 @@
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
-import * as SecureStore from 'expo-secure-store';
+import { AsyncStorage } from 'react-native';
 
 
 const httpLink = createHttpLink({
@@ -9,7 +9,7 @@ const httpLink = createHttpLink({
 
 const authLink = setContext(async (_, { headers }) => {
   // get the authentication token from local storage if it exists
-  const jwt = await SecureStore.getItemAsync('jwt'); // TODO: GET USER TOKEN FROM CONTEXT?
+  const jwt = await AsyncStorage.getItem('jwt');
   return {
     headers: {
       ...headers,

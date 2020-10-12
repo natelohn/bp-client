@@ -197,9 +197,9 @@ const AuthScreen = ({ navigation }) => {
         } else {
             // send the init verification query
             if (signingUp) {
-                signup({ username, phone: usPhoneNumber(phone), otp }, callSignUp);
+                signup({ username, phone: usPhoneNumber(phone), otp }, callSignUp, subButtonPressed, initiateVerification);
             } else {
-                login({ phone: usPhoneNumber(phone), otp }, callLogin);
+                login({ phone: usPhoneNumber(phone), otp }, callLogin, subButtonPressed, initiateVerification);
             }
 
         }

@@ -1,4 +1,5 @@
 import { Alert } from "react-native";
+import { formatMobileNumber } from '../utils';
 
 export const sendTwoButtonAlert = (title, message, leftText, leftCallback, rightText, rightCallback) =>
     Alert.alert( title, message,
@@ -29,6 +30,15 @@ export const showLogInError = (continueCallback) => {
     const leftText = 'Edit Number';
     const rightText = 'Sign Up';
     sendTwoButtonAlert(mainText, subText, leftText, () => {}, rightText, continueCallback)
+}
+
+export const showOTPError = (phone, leftCallback, rightCallback) => {
+    const formatedPhone = formatMobileNumber(phone.substring(2))
+    const mainText = 'INCORRECT CODE';	
+    const subText = 'The code was sent to +1' + formatedPhone + '. Try again?';	
+    const leftText = 'Edit Number';	
+    const rightText = 'Resend';	
+    sendTwoButtonAlert(mainText, subText, leftText, leftCallback, rightText, rightCallback)	
 }
 
 export const promptLogout = (logoutCallback) => {

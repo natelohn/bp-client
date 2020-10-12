@@ -4,18 +4,18 @@ import { navigate } from "../navigationRef";
 import { sendServerAlert, showOTPError } from '../components/Alerts'
 
 
-const authReducer = (state, action) => {
-  switch (action.type) {
+const authReducer = (state, {type, userId}) => {
+  switch (type) {
       case 'signin':
-          return {...state, token: action.payload };
+          return {...state, userId };
       case 'signout':
-          return {...state, token: null };
+          return {...state, userId: null };
       default:
           return state;
   }
 };
 
-const signup = dispatch => async ({ username, phone, otp }, signUpCallback) => {
+const signup = dispatch => async ({ username, phone, otp }, signUpCallback, subButtonPressed, reinitVerification) => {
     // Send sign up data to the server and get a token and id
     signUpCallback({ 
         variables: { username, phone, otp  },
@@ -26,19 +26,19 @@ const signup = dispatch => async ({ username, phone, otp }, signUpCallback) => {
             // Persist the token in local storage     
             await AsyncStorage.setItem('jwt', data.register.accessToken);
             // Update state & direct to home screen
-            dispatch({type: 'signin', payload: data.register.accessToken});
+            dispatch({ type: 'signin', userId: data.register.userId });
             navigate('Home');
         } 
         // Handle errors if sign up failed
         else {
-            showOTPError();
+            showOTPError(phone, subButtonPressed, reinitVerification);
         }
     })
     // if failure -> send server issue error
-    .catch(() => { sendServerAlert()});
+    .catch(() => { sendServerAlert() });
 };
 
-const login = dispatch => async ({ phone, otp }, loginCallback) => {
+const login = dispatch => async ({ phone, otp }, loginCallback, subButtonPressed, reinitVerification) => {
     // Verify inputs with server
     loginCallback({ 
         variables: { phone, otp },
@@ -49,16 +49,17 @@ const login = dispatch => async ({ phone, otp }, loginCallback) => {
             // Persist the token in local storage
             await AsyncStorage.setItem('jwt', data.login.accessToken);
             // Update state to direct to home screen
-            dispatch({type: 'signin', payload: data.login.accessToken});
+            dispatch({ type: 'signin', userId: data.login.userId });
             navigate('Home');
         } 
         // Handle errors if login failed
         else {
-            showOTPError();
+            showOTPError(phone, subButtonPressed, reinitVerification);
         }
     })
     // if failure -> send server issue error
     .catch(() => { sendServerAlert() });
+        
 }
 
 const signout = dispatch => async () => {
@@ -67,12 +68,9 @@ const signout = dispatch => async () => {
     navigate('authFlow');
 };
 
-const tryLocalSignIn = dispatch => async () => {
-    const token = await AsyncStorage.getItem('jwt');
-    // TODO: Verify token
-    // const { loading, error, data } = useQuery(USER_ID_QUERY);
-    if (token) {
-        dispatch({type: 'signin', payload: token});
+const tryLocalSignIn = dispatch => async (data, error) => {
+    if (!error) {
+        dispatch({type: 'signin', userId: data.userId });
         navigate('Home');
     } else {
         navigate('authFlow');
@@ -82,5 +80,5 @@ const tryLocalSignIn = dispatch => async () => {
 export const {Provider, Context} = createDataContext(
     authReducer,
     { login, signout, signup, tryLocalSignIn},
-    {token: null, errorMessage: ''}
+    { userId: null }
 );

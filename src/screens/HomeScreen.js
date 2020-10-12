@@ -5,7 +5,7 @@ import PlayView from "../components/PlayView";
 import { promptLogout } from '../components/Alerts'
 
 const HomeScreen = () => {
-    const { signout } = useContext(AuthContext);
+    const { state, signout } = useContext(AuthContext);
 
 
     const sendLogoutAlert = () => {
@@ -14,7 +14,7 @@ const HomeScreen = () => {
 
     return (
         <View style={styles.view}>
-            <Text style={styles.header}>Hard Mode</Text>
+            <Text style={styles.header}>Hard Mode (ID: {state.userId})</Text>
             <PlayView mode="hard"/>
             <TouchableOpacity onPress={sendLogoutAlert}>
                 <Text>LOGOUT</Text>
