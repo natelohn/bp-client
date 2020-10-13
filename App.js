@@ -12,6 +12,7 @@ import apoloClient from './src/apollo/index';
 import ResolveAuthScreen from "./src/screens/ResolveAuthScreen";
 import AuthScreen from "./src/screens/AuthScreen";
 import HomeScreen from './src/screens/HomeScreen';
+import PlayScreen from './src/screens/PlayScreen';
 
 
 
@@ -21,8 +22,10 @@ const switchNavigator = createSwitchNavigator({
         Auth: AuthScreen
     }),
     mainFlow: createStackNavigator({
-        Home: HomeScreen,
-    })
+        Play: PlayScreen,
+        Home: HomeScreen
+    },{ headerMode: 'none' }
+    )
 });
 
 const App = createAppContainer(switchNavigator);

@@ -25,7 +25,6 @@ const styles = StyleSheet.create({
 });
 
 const ButtonView = ({ text, onPressCallback, disabled}) => {
-    const enabledColors = { backgroundColor: '#CF0000', color: '#5C240F', borderColor: '#5C240F' };
     const opacity = disabled ? 0.4: 1;
     return (
         <View style={{ ...styles.view, opacity: opacity}}>

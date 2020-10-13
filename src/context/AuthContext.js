@@ -27,7 +27,7 @@ const signup = dispatch => async ({ username, phone, otp }, signUpCallback, subB
             await AsyncStorage.setItem('jwt', data.register.accessToken);
             // Update state & direct to home screen
             dispatch({ type: 'signin', userId: data.register.userId });
-            navigate('Home');
+            navigate('mainFlow');
         } 
         // Handle errors if sign up failed
         else {
@@ -50,7 +50,7 @@ const login = dispatch => async ({ phone, otp }, loginCallback, subButtonPressed
             await AsyncStorage.setItem('jwt', data.login.accessToken);
             // Update state to direct to home screen
             dispatch({ type: 'signin', userId: data.login.userId });
-            navigate('Home');
+            navigate('mainFlow');
         } 
         // Handle errors if login failed
         else {
@@ -71,7 +71,7 @@ const signout = dispatch => async () => {
 const tryLocalSignIn = dispatch => async (data, error) => {
     if (!error) {
         dispatch({type: 'signin', userId: data.userId });
-        navigate('Home');
+        navigate('mainFlow');
     } else {
         navigate('authFlow');
     }
