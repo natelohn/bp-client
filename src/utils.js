@@ -37,12 +37,15 @@ export const getRandomInt = (min, max) => {
 // Inspired by:
 // https://dev.to/abdulbasit313/how-to-develop-a-stopwatch-in-react-js-with-custom-hook-561b
 export const formatTime = (deciseconds) => {
+    if (deciseconds === 0) {
+        return '00:00:00.0'
+    }
     const seconds = Math.floor(deciseconds / 10);
-    const getSeconds = deciseconds > 0 ? `${seconds % 60}.${deciseconds % 10}s` : '';
-    const minutes = Math.floor(seconds / 60) % 60;
-    const getMinutes = minutes > 0 ? `${minutes}m` : '';
-    const hours =  Math.floor(seconds / 3600);
-    const getHours = hours > 0 ? `${hours}h` : '';
+    const getSeconds = `0${(seconds % 60)}.${deciseconds % 10}`.slice(-4)
+    const minutes = `${Math.floor(seconds / 60)}`
+    const getMinutes = `0${minutes % 60}`.slice(-2)
+    const getHours = `0${Math.floor(seconds / 3600)}`.slice(-2)
 
-    return `${getHours} ${getMinutes} ${getSeconds}`
+    return `${getHours}:${getMinutes}:${getSeconds}`
+    // return `${getHours}${getMinutes}${getSeconds}`
 }

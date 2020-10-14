@@ -1,5 +1,7 @@
 import { StyleSheet } from 'react-native';
 
+import { BUTTON_DIAMETER, PRIMARY_COLOR, ACCENT_COLOR, MAIN_FONT_STYLE } from './global'
+
 const styles = StyleSheet.create({
     view: {
         justifyContent: 'center',
@@ -10,16 +12,16 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        height: 200,
-        width: 200,
-        borderRadius: 100,
-        backgroundColor: '#CF0000',
-        borderColor: '#5C240F'
+        height: BUTTON_DIAMETER,
+        width: BUTTON_DIAMETER,
+        borderRadius: BUTTON_DIAMETER / 2,
+        backgroundColor: PRIMARY_COLOR,
+        borderColor: ACCENT_COLOR
     },
     text: {
         fontSize: 42,
-        fontFamily: 'TextMeOne_400Regular',
-        color: '#5C240F'
+        fontFamily: MAIN_FONT_STYLE,
+        color: ACCENT_COLOR
     },
 });
 
