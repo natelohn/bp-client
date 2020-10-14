@@ -1,34 +1,16 @@
-import React, { useReducer, useRef } from 'react';
-import { Animated, Dimensions, Text, TouchableOpacity, View } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { Animated, Dimensions, Text, View } from 'react-native';
 import ButtonView from '../components/ButtonView';
-import { getRandomInt } from '../utils';
+import { getRandomInt, formatTime } from '../utils';
 
-const reducer = (state, {type}) => {
-    switch (type) {
-        case 'begin_pushing':
-            return {
-                ...state,
-                pushing: true,
-                buttonText: '',
-                
-            };
-        case 'end_pushing':
-            return {
-                ...state,
-                pushing: false,
-                buttonText: 'Begin'
-            };
-        default:
-            return state;
-    }
-};
+const SECONDS_BETWEEN_PUSHES = 8;
 
 const PlayScreen = () => {
-    const [state, dispatch] = useReducer(reducer, {
-        pushing: false,
-        buttonText: 'Begin',
-    });
-    const { pushing, buttonText } = state;
+    const [pushing, setPushing] = useState(false)
+    const [decisecondsElapsed, setDecisecondsElapsed] = useState(0)
+    const [countdownSecondsLeft, setCountdownSecondsLeft] = useState(SECONDS_BETWEEN_PUSHES)
+    const decisecondsElapsedRef = useRef(null)
+    const countdownSecondsLeftRef = useRef(null)
 
     // Animation
     const screenWidth = Dimensions.get('window').width;
@@ -40,21 +22,13 @@ const PlayScreen = () => {
     const minWidthChange = -1 * maxWidthChange;
     const maxHeightChange = screenHeight - buttonDiameter;
     const minHeightChange = 0;
+    const midWidth = 0;
+    const midHeight = maxHeightChange / 2
 
-    const buttonX = useRef(new Animated.Value(0)).current;
-    const buttonY = useRef(new Animated.Value(0)).current;
+    const buttonX = useRef(new Animated.Value(midWidth)).current;
+    const buttonY = useRef(new Animated.Value(midHeight)).current;
 
-    const press = () => {
-        if (!pushing) {
-            dispatch({type: 'begin_pushing'});
-        }
-        const newX = getRandomInt(minWidthChange,  maxWidthChange);
-        const newY = getRandomInt(minHeightChange,  maxHeightChange);
-        moveButton(newX, newY)
-    }
-
-    const moveButton = (x, y) => {
-        const duration = 500;
+    const moveButton = (x, y, duration) => {
         Animated.timing(buttonX, {
             toValue: x,
             duration,
@@ -67,21 +41,65 @@ const PlayScreen = () => {
         }).start();
     }
 
-    const endPushing = () => {
-        moveButton(0, 0);
-        dispatch({type: 'end_pushing'});
+    // Helpers
+    const startPushingTimers = () => {
+        console.log('Here', decisecondsElapsed, countdownSecondsLeft)
+        decisecondsElapsedRef.current = setInterval(() => {
+            setDecisecondsElapsed((i) => i + 1)
+        }, 100)
+        countdownSecondsLeftRef.current = setInterval(() => {
+            setCountdownSecondsLeft((i) => i - 1)
+        }, 1000)
     }
+
+    const endPushingTimers = () => {
+        clearInterval(decisecondsElapsedRef.current)
+        clearInterval(countdownSecondsLeftRef.current)
+        // Send/store time pushed
+    }
+
+    // TODO: Ensure timer ends when app is quit/on component unmount
+
+    const startPushing = () => {
+        setPushing(true);
+        startPushingTimers();
+    }
+
+    const endPushing = () => {
+        moveButton(midWidth, midHeight, 250);
+        setPushing(false);
+        endPushingTimers();
+    }
+    
+    const buttonDisplay = () => {
+        if (pushing && countdownSecondsLeft <= 0) {
+            endPushing()
+        } else if (pushing)  {
+            return countdownSecondsLeft > 3 ? '' : countdownSecondsLeft;
+        }
+        return 'Begin'
+        
+    }
+
+    const press = () => {
+        if (!pushing) {
+            startPushing()
+        } else {
+            const newX = getRandomInt(minWidthChange,  maxWidthChange);
+            const newY = getRandomInt(minHeightChange,  maxHeightChange);
+            moveButton(newX, newY, 500)
+            setCountdownSecondsLeft(SECONDS_BETWEEN_PUSHES)
+        }
+    }
+
 
     return (
         <View>
         <Animated.View style={[{transform: [{translateX: buttonX}, {translateY: buttonY}]}]}>
-            <ButtonView onPressCallback={press} text={buttonText} />
+            <ButtonView onPressCallback={press} text={buttonDisplay()} />
         </Animated.View>
-        <TouchableOpacity onPress={endPushing}>
-            <Text>END</Text>
-        </TouchableOpacity>
+        <Text>{formatTime(decisecondsElapsed)}</Text>
         </View>
-
         
     );
 };

@@ -32,3 +32,17 @@ export const getRandomInt = (min, max) => {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+// This function takes in a number of seconds and returns a formatted string
+// Inspired by:
+// https://dev.to/abdulbasit313/how-to-develop-a-stopwatch-in-react-js-with-custom-hook-561b
+export const formatTime = (deciseconds) => {
+    const seconds = Math.floor(deciseconds / 10);
+    const getSeconds = deciseconds > 0 ? `${seconds % 60}.${deciseconds % 10}s` : '';
+    const minutes = Math.floor(seconds / 60) % 60;
+    const getMinutes = minutes > 0 ? `${minutes}m` : '';
+    const hours =  Math.floor(seconds / 3600);
+    const getHours = hours > 0 ? `${hours}h` : '';
+
+    return `${getHours} ${getMinutes} ${getSeconds}`
+}
