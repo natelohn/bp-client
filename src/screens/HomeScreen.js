@@ -1,12 +1,12 @@
-import React, { useRef, useState } from 'react';
-import { Animated, Dimensions, Text, View } from 'react-native';
+import React, { useRef, useState, useContext } from 'react';
+import { Animated, Dimensions, Text, View, Button } from 'react-native';
 
 import styles from '../styles/home'
 import { BUTTON_DIAMETER, PLAY_HEADER_HEIGHT, SECONDARY_COLOR, PRIMARY_COLOR } from '../styles/global'
 import { getRandomInt, formatTime } from '../utils';
 
 import ButtonView from '../components/ButtonView';
-
+import { Context as AuthContext } from "../context/AuthContext";
 
 
 const SECONDS_BETWEEN_PUSHES = 8;
@@ -17,6 +17,11 @@ const HomeScreen = () => {
     const [countdownSecondsLeft, setCountdownSecondsLeft] = useState(SECONDS_BETWEEN_PUSHES);
     const decisecondsElapsedRef = useRef(null);
     const countdownSecondsLeftRef = useRef(null);
+    const { state, signout } = useContext(AuthContext);
+    const { userId, challengerId } = state;
+
+    // API Hooks
+    // const { loading, error, data } = useQuery(USER_ID_QUERY);
 
     // Animation
     const screenWidth = Dimensions.get('window').width;
@@ -112,13 +117,14 @@ const HomeScreen = () => {
     return (
         <View style={{...styles.view, backgroundColor: getBackgroundColor()}} >
             { pushing ? <Text style={styles.timer}>{formatTime(decisecondsElapsed)}</Text> : null }
-            { pushing ? <Text style={styles.chalenger}>Challenging: Nate</Text> : null }
+            { pushing ? <Text style={styles.chalenger}>Challenging: </Text> : null }
             <Animated.View style={[{transform: [{translateX: buttonX}, {translateY: buttonY}]}]}>
                 <ButtonView onPressCallback={press} text={buttonDisplay()} />
             </Animated.View>
+            <Button onPress={signout} title="LOGOUT"/>
         </View>
         
     );
-};``
+};
 
 export default HomeScreen;

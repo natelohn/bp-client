@@ -1,8 +1,13 @@
 import { gql } from '@apollo/client';
 
-export const USER_ID_QUERY = gql`
+export const GET_USER_FROM_CONTEXT = gql`
   {
-    userId
+    getUserFromContext {
+      id
+      challenger {
+        id
+      }
+    }
   }
 `;
 
@@ -35,6 +40,30 @@ export const LOGIN_MUTATION = gql`
     login(phone: $phone, otp: $otp){
       accessToken
       userId
+    }
+  }
+`
+
+export const PUSHOFFS_QUERY = gql`
+  query GetPushOffs($challengerId: String!) {
+    getPushOffs(challengerId: $challengerId){
+      id,
+      created,
+      final,
+      instigator {
+        username,
+      },
+      pending {
+        challenger{
+          username
+        }
+      }
+      pushes {
+        duration,
+        challenger {
+          username
+        }
+      }
     }
   }
 `

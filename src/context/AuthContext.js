@@ -4,12 +4,12 @@ import { navigate } from "../navigationRef";
 import { sendServerAlert, showOTPError } from '../components/Alerts'
 
 
-const authReducer = (state, {type, userId}) => {
+const authReducer = (state, {type, userId, challengerId}) => {
   switch (type) {
       case 'signin':
-          return {...state, userId };
+          return {...state, userId, challengerId};
       case 'signout':
-          return {...state, userId: null };
+          return {...state, userId: null, challengerId: null};
       default:
           return state;
   }
@@ -70,7 +70,8 @@ const signout = dispatch => async () => {
 
 const tryLocalSignIn = dispatch => async (data, error) => {
     if (!error) {
-        dispatch({type: 'signin', userId: data.userId });
+        const authData = { userId: data.getUserFromContext.id, challengerId: data.getUserFromContext.challenger.id }
+        dispatch({...authData, type: 'signin' });
         navigate('mainFlow');
     } else {
         navigate('authFlow');
@@ -80,5 +81,5 @@ const tryLocalSignIn = dispatch => async (data, error) => {
 export const {Provider, Context} = createDataContext(
     authReducer,
     { login, signout, signup, tryLocalSignIn},
-    { userId: null }
+    { userId: null, challengerId: null }
 );

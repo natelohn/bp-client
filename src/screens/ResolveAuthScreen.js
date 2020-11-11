@@ -1,12 +1,12 @@
 import { useEffect, useContext } from 'react';
 import { useQuery } from '@apollo/client';
 import { Context as AuthContext } from "../context/AuthContext";
-import { USER_ID_QUERY } from '../apollo/gql'
+import { GET_USER_FROM_CONTEXT } from '../apollo/gql'
 
 
-const ResolveAuthScreen = () => {
+const ResolveAuthScreen = ({ navigation }) => {
     const { tryLocalSignIn } = useContext(AuthContext);
-    const { loading, error, data } = useQuery(USER_ID_QUERY);
+    const { loading, error, data } = useQuery(GET_USER_FROM_CONTEXT);
 
     useEffect(() => {
         if (!loading) {

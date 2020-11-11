@@ -60,7 +60,7 @@ const reducer = (state, {type, username, phone, otp}) => {
 };
 
 
-const AuthScreen = ({ navigation }) => {
+const AuthScreen = () => {
     const { signup, login } = useContext(AuthContext);
     // Apollo Client Hooks
     const [callInitiateVerification] = useMutation(INIT_VERIFICATION_MUTATION);
