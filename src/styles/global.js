@@ -1,5 +1,3 @@
-import { exp } from "react-native-reanimated";
-
 export const BUTTON_DIAMETER = 200;
 export const TIMER_HEIGHT = 50;
 export const CHALLENGER_HEIGHT = 30;

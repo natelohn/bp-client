@@ -21,7 +21,8 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 42,
         fontFamily: MAIN_FONT_STYLE,
-        color: ACCENT_COLOR
+        color: ACCENT_COLOR,
+        textAlign: 'center'
     },
 });
 

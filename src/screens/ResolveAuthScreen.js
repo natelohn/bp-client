@@ -4,7 +4,7 @@ import { Context as AuthContext } from "../context/AuthContext";
 import { GET_USER_FROM_CONTEXT } from '../apollo/gql'
 
 
-const ResolveAuthScreen = ({ navigation }) => {
+const ResolveAuthScreen = () => {
     const { tryLocalSignIn } = useContext(AuthContext);
     const { loading, error, data } = useQuery(GET_USER_FROM_CONTEXT);
 
