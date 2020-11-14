@@ -11,6 +11,7 @@ export const sendTwoButtonAlert = (title, message, leftText, leftCallback, right
     );
 
 export const sendServerAlert = () => 
+    // TODO: put in real email here
     Alert.alert( 'CONNECTION ISSUE', 'Please check your internet connection, if your connection is stable, please contact help@buttonpush.com',
         [ { text: 'OK' } ],
         { cancelable: false }

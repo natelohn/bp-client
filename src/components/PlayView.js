@@ -1,18 +1,20 @@
 import React, { useRef, useState } from 'react';
-import { Animated, Dimensions, Text, View, Button } from 'react-native';
+import { Animated, Dimensions, Text } from 'react-native';
 
 import styles from '../styles/play'
-import { BUTTON_DIAMETER, PLAY_HEADER_HEIGHT, SECONDARY_COLOR, PRIMARY_COLOR } from '../styles/global'
+import { BUTTON_DIAMETER, PLAY_HEADER_HEIGHT } from '../styles/global'
 import { getRandomInt, formatTime } from '../utils';
 
 import ButtonView from '../components/ButtonView';
 
-const SECONDS_BETWEEN_PUSHES = 8;
+const SECONDS_BETWEEN_PUSHES = 10;
+const SHRINK_MS = 5000;
 
 const PlayView = () => {
 
     // UI Logic
     const [pushing, setPushing] = useState(false);
+    const [shrinking, setSetShrinking] = useState(false);
     const [decisecondsElapsed, setDecisecondsElapsed] = useState(0);
     const [countdownSecondsLeft, setCountdownSecondsLeft] = useState(SECONDS_BETWEEN_PUSHES);
     const decisecondsElapsedRef = useRef(null);
@@ -22,6 +24,13 @@ const PlayView = () => {
     const screenWidth = Dimensions.get('window').width;
     const screenHeight = Dimensions.get('window').height;
     const buttonRadius = BUTTON_DIAMETER / 2;
+
+    // Button Scale - Animation
+    const buttonAnimation = useRef(new Animated.Value(0)).current;
+    const inputRange = [0, 1];
+    const outputRange = [1, 0.2];
+    const buttonScale = buttonAnimation.interpolate({inputRange, outputRange});
+
     // Will need to be recalculated once button is styled on screen
     const maxWidthChange = (screenWidth / 2) - buttonRadius;
     const minWidthChange = -1 * maxWidthChange;
@@ -66,6 +75,7 @@ const PlayView = () => {
 
     const endPushing = () => {
         moveButton(midWidth, midHeight, 500);
+        growButton();
         setPushing(false);
         // TODO: send results
         setDecisecondsElapsed(0);
@@ -73,22 +83,33 @@ const PlayView = () => {
         endPushingTimers();
     }
 
-    const getBackgroundColor = () => {
-        if (pushing && countdownSecondsLeft <=3) {
-            return (decisecondsElapsed % 8) === 0 ? PRIMARY_COLOR : SECONDARY_COLOR;
-        }
-        return SECONDARY_COLOR;
+    const shrinkButton = () => {
+        setSetShrinking(true);
+        Animated.timing(buttonAnimation, {
+            toValue: 1,
+            duration: SHRINK_MS,
+            useNativeDriver: true,
+          }).start();
     }
 
+    const growButton = () => {
+        setSetShrinking(false);
+        Animated.spring(buttonAnimation, {
+            toValue: 0,
+            useNativeDriver: true,
+          }).start();
+    }
     
     const buttonDisplay = () => {
-        if (pushing && countdownSecondsLeft <= 0) {
-            endPushing()
-        } else if (pushing)  {
-            return countdownSecondsLeft > 3 ? '' : countdownSecondsLeft
+        if (pushing) {
+            if (countdownSecondsLeft <= 0) {
+                endPushing();
+            } else if (countdownSecondsLeft * 1000 === SHRINK_MS & !shrinking) {
+                shrinkButton();
+            }
+            return countdownSecondsLeft * 1000 <= SHRINK_MS ? countdownSecondsLeft : ''
         }
         return 'Begin'
-        
     }
     
 
@@ -104,19 +125,22 @@ const PlayView = () => {
             startPushingTimers();
             moveButtonRandomly()
         } else {
-            moveButtonRandomly()
+            if (shrinking) {
+                growButton();
+            }
+            moveButtonRandomly();
             setCountdownSecondsLeft(SECONDS_BETWEEN_PUSHES)
         }
     }
 
     return (
-        <View style={{...styles.view, backgroundColor: getBackgroundColor()}} >
+        <>
             { pushing ? <Text style={styles.timer}>{formatTime(decisecondsElapsed)}</Text> : null }
             { pushing ? <Text style={styles.chalenger}>Challenging: </Text> : null }
-            <Animated.View style={[{transform: [{translateX: buttonX}, {translateY: buttonY}]}]}>
+            <Animated.View style={[{transform: [{scale: buttonScale}, {translateX: buttonX}, {translateY: buttonY}]}]}>
                 <ButtonView onPressCallback={press} text={buttonDisplay()} />
             </Animated.View>
-        </View>
+        </>
     );
 };
 

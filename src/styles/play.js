@@ -10,11 +10,6 @@ const headerText = {
     color: ACCENT_COLOR
 }
 const styles = StyleSheet.create({
-    view: {
-        justifyContent: 'center',
-        flex: 1,
-        alignItems: 'center',
-    },
     timer: {
         ...headerText,
         fontSize: 42,

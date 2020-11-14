@@ -1,13 +1,16 @@
 import React, { useContext, useEffect } from 'react';
+import { View } from 'react-native';
 
 import { useQuery } from '@apollo/client';
 import { PUSHOFFS_QUERY } from '../apollo/gql'
 
 import { Context as AuthContext } from "../context/AuthContext";
 import { Context as PushContext } from "../context/PushContext";
-import PlayView from '../components/PlayView';
-import PendingListView from '../components/PendingListView';
 
+import Carousel from '../components/Carousel';
+import PlayView from '../components/PlayView';
+
+import styles from '../styles/home';
 
 const MS_POLLING_FOR_NEW_PUSHOFFS = 600000; // 10 minutes
 
@@ -27,12 +30,14 @@ const HomeScreen = () => {
         }
     }, [loading]);
 
-    return (
-        <>
-            <PendingListView/>
-            <PlayView/>
-        </>
+    // SANDBOX
 
+
+    return (
+        <View style={ styles.view } >
+            { pushesPending ? <Carousel items={pushesPending} style={"pending"}/> : null }
+            <PlayView/>
+        </View>
     );
 };
 

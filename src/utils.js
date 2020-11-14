@@ -49,3 +49,10 @@ export const formatTime = (deciseconds) => {
     return `${getHours}:${getMinutes}:${getSeconds}`
     // return `${getHours}${getMinutes}${getSeconds}`
 }
+
+export const formatDate = (dateString) => {
+    let dateObject = new Date(dateString);
+    var options = { hour: "numeric", minute: "numeric", weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+    const formattedDate = dateObject.toLocaleDateString("en-US", options);
+    return formattedDate
+}
