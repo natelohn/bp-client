@@ -1,22 +1,38 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useContext } from 'react';
 import { Animated, Dimensions, Text } from 'react-native';
-
+import { navigate } from "../navigationRef";
 import styles from '../styles/play'
-import { BUTTON_DIAMETER, PLAY_HEADER_HEIGHT } from '../styles/global'
+import { BUTTON_DIAMETER, PLAYVIEW_HEADER_HEIGHT } from '../styles/global'
 import { getRandomInt, formatTime } from '../utils';
-
+import { Context as PushContext } from "../context/PushContext";
 import ButtonView from '../components/ButtonView';
 
+const SECONDS_BEFORE_START_BUFFER = 4;
 const SECONDS_BETWEEN_PUSHES = 10;
+const INITIAL_COUNTDOWN = SECONDS_BETWEEN_PUSHES + SECONDS_BEFORE_START_BUFFER;
 const SHRINK_MS = 5000;
 
-const PlayView = () => {
+const PlayView = ({ playViewParams }) => {
 
-    // UI Logic
-    const [pushing, setPushing] = useState(false);
-    const [shrinking, setSetShrinking] = useState(false);
+    const { state } = useContext(PushContext);
+    const { pushOff } = state;
+    
+    const { 
+        hasPendingPushes,
+        pendingPushList,
+        reviewingChallenges,
+        setReviewingChallenges,
+        pushing,
+        setPushing,
+        prePush,
+        setPrePush
+    } = playViewParams;
+
+    // UI Logic    
     const [decisecondsElapsed, setDecisecondsElapsed] = useState(0);
-    const [countdownSecondsLeft, setCountdownSecondsLeft] = useState(SECONDS_BETWEEN_PUSHES);
+    const [countdownSecondsLeft, setCountdownSecondsLeft] = useState(INITIAL_COUNTDOWN);
+    
+    const [shrinking, setSetShrinking] = useState(false);
     const decisecondsElapsedRef = useRef(null);
     const countdownSecondsLeftRef = useRef(null);
 
@@ -35,13 +51,14 @@ const PlayView = () => {
     const maxWidthChange = (screenWidth / 2) - buttonRadius;
     const minWidthChange = -1 * maxWidthChange;
     const maxHeightChange = (screenHeight / 2) - buttonRadius;
-    const minHeightChange = (-1 * maxHeightChange) + PLAY_HEADER_HEIGHT;
+    const minHeightChange = (-1 * maxHeightChange) + PLAYVIEW_HEADER_HEIGHT;
     const midWidth = 0;
     const midHeight = 0;
 
     const buttonX = useRef(new Animated.Value(midWidth)).current;
     const buttonY = useRef(new Animated.Value(midHeight)).current;
 
+    // Helpers
     const moveButton = (x, y, duration) => {
         Animated.timing(buttonX, {
             toValue: x,
@@ -54,12 +71,22 @@ const PlayView = () => {
             useNativeDriver: true
         }).start();
     }
+    
+    const getOthersText = () => {
+        let totalOthers = 0;
+        if (pushOff) {
+            totalOthers = pushOff.pending.length + pushOff.pushes.length - 2;
+        }
+        const otherText = totalOthers > 1 ? 'others' : 'other'
+        return  totalOthers > 0 ? `(and ${totalOthers} ${otherText})` : 'Who wants it more?'
+    }
 
-    // Helpers
-    const startPushingTimers = () => {
+    const startPlayTimer = () => {
         decisecondsElapsedRef.current = setInterval(() => {
             setDecisecondsElapsed((i) => i + 1)
         }, 100)
+    }
+    const startCountdown = () => {
         countdownSecondsLeftRef.current = setInterval(() => {
             setCountdownSecondsLeft((i) => i - 1)
         }, 1000)
@@ -73,13 +100,13 @@ const PlayView = () => {
 
     // TODO: Ensure timer ends when app is quit/on component unmount
 
-    const endPushing = () => {
+    const endPlay = () => {
         moveButton(midWidth, midHeight, 500);
         growButton();
         setPushing(false);
         // TODO: send results
         setDecisecondsElapsed(0);
-        setCountdownSecondsLeft(SECONDS_BETWEEN_PUSHES)
+        setCountdownSecondsLeft(INITIAL_COUNTDOWN)
         endPushingTimers();
     }
 
@@ -100,18 +127,6 @@ const PlayView = () => {
           }).start();
     }
     
-    const buttonDisplay = () => {
-        if (pushing) {
-            if (countdownSecondsLeft <= 0) {
-                endPushing();
-            } else if (countdownSecondsLeft * 1000 === SHRINK_MS & !shrinking) {
-                shrinkButton();
-            }
-            return countdownSecondsLeft * 1000 <= SHRINK_MS ? countdownSecondsLeft : ''
-        }
-        return 'Begin'
-    }
-    
 
     const moveButtonRandomly = () => {
         const newX = getRandomInt(minWidthChange,  maxWidthChange);
@@ -119,26 +134,70 @@ const PlayView = () => {
         moveButton(newX, newY, 500);
     }
 
+
+    const startPlay = () => {
+        setPrePush(false);
+        setPushing(true);
+        startPlayTimer();
+    }
+
     const press = () => {
-        if (!pushing) {
-            setPushing(true);
-            startPushingTimers();
-            moveButtonRandomly()
-        } else {
+        if (pushing) {
             if (shrinking) {
                 growButton();
             }
             moveButtonRandomly();
-            setCountdownSecondsLeft(SECONDS_BETWEEN_PUSHES)
+            setCountdownSecondsLeft(SECONDS_BETWEEN_PUSHES);
+        } else if (!hasPendingPushes && !pushing) {
+             navigate("Create");
+        } else if (hasPendingPushes && !reviewingChallenges) {
+            // TODO: Make it a smoother transition
+            setReviewingChallenges(true);
+        } else if (!pushing) {
+            setPrePush(true);
+            startCountdown();
         }
     }
 
+    const buttonDisplay = () => {
+        if (pushing) {
+            // TODO: Find a better place for this logic
+            if (countdownSecondsLeft <= 0) {
+                endPlay();
+            } else if (countdownSecondsLeft * 1000 === SHRINK_MS & !shrinking) {
+                shrinkButton();
+            }
+            return countdownSecondsLeft * 1000 <= SHRINK_MS ? countdownSecondsLeft : '';
+        } else if (prePush) {
+            const countingDown = SECONDS_BETWEEN_PUSHES <= countdownSecondsLeft && countdownSecondsLeft <= INITIAL_COUNTDOWN
+            if (!countingDown) {
+                // TODO: Find a better place for this logic
+                startPlay();
+            }
+            const countdownSeconds = countdownSecondsLeft - SECONDS_BETWEEN_PUSHES;
+            if (countdownSeconds > 3) {
+                return 'GET READY...'
+            } else if (countdownSeconds >= 1 && countdownSeconds <= 3) {
+                return countdownSeconds
+            }
+            return 'PUSH!'
+        } else if (!hasPendingPushes && !pushing) {
+            return 'Test Your Will';
+        } else if (hasPendingPushes && !reviewingChallenges) {
+            return `${pendingPushList.length} New Push-Offs!`;
+        } else if (reviewingChallenges) {
+            return 'Begin'
+        }
+    }
+    
+
     return (
         <>
+            { pushing || prePush ? <Text style={styles.chalenger}>Push-Off with {pushOff.instigator.username} </Text> : null }
+            { pushing || prePush ? <Text style={styles.others}>{getOthersText()}</Text> : null }
             { pushing ? <Text style={styles.timer}>{formatTime(decisecondsElapsed)}</Text> : null }
-            { pushing ? <Text style={styles.chalenger}>Challenging: </Text> : null }
             <Animated.View style={[{transform: [{scale: buttonScale}, {translateX: buttonX}, {translateY: buttonY}]}]}>
-                <ButtonView onPressCallback={press} text={buttonDisplay()} />
+                <ButtonView onPressCallback={press} displayText={buttonDisplay()} />
             </Animated.View>
         </>
     );

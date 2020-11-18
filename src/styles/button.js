@@ -2,6 +2,11 @@ import { StyleSheet } from 'react-native';
 
 import { BUTTON_DIAMETER, PRIMARY_COLOR, ACCENT_COLOR, MAIN_FONT_STYLE } from './global'
 
+const text = {
+    fontFamily: MAIN_FONT_STYLE,
+    color: ACCENT_COLOR,
+    textAlign: 'center'
+}
 const styles = StyleSheet.create({
     view: {
         justifyContent: 'center',
@@ -19,11 +24,9 @@ const styles = StyleSheet.create({
         borderColor: ACCENT_COLOR
     },
     text: {
-        fontSize: 42,
-        fontFamily: MAIN_FONT_STYLE,
-        color: ACCENT_COLOR,
-        textAlign: 'center'
-    },
+        ...text,
+        fontSize: 38,
+    }
 });
 
 export default styles;

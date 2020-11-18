@@ -13,8 +13,9 @@ import apoloClient from './src/apollo/index';
 import ResolveAuthScreen from "./src/screens/ResolveAuthScreen";
 import AuthScreen from "./src/screens/AuthScreen";
 import HomeScreen from './src/screens/HomeScreen';
+import CreateScreen from './src/screens/CreateScreen';
 
-
+// TODO: Enforce styling
 
 const switchNavigator = createSwitchNavigator({
     ResolveAuth: ResolveAuthScreen,
@@ -22,7 +23,8 @@ const switchNavigator = createSwitchNavigator({
         Auth: AuthScreen
     }),
     mainFlow: createStackNavigator({
-        Home: HomeScreen
+        Home: HomeScreen,
+        Create: CreateScreen,
     }, { headerMode: 'none' }
     )
 });

@@ -1,8 +1,14 @@
 import { StyleSheet } from 'react-native';
 
-import { PLAY_HEADER_TOP_PADDING, TIMER_HEIGHT, CHALLENGER_HEIGHT, MAIN_FONT_STYLE, ACCENT_COLOR} from './global'
-
-
+import { 
+    PLAYVIEW_HEADER_TOP_PADDING,
+    PLAYVIEW_TIMER_HEIGHT,
+    PLAYVIEW_CHALLENGER_HEIGHT,
+    PLAYVIEW_OTHERS_HEIGHT,
+    MAIN_FONT_STYLE,
+    ACCENT_COLOR } from './global'
+    
+    
 const headerText = {
     textAlign: 'center',
     position: 'absolute',
@@ -10,17 +16,23 @@ const headerText = {
     color: ACCENT_COLOR
 }
 const styles = StyleSheet.create({
-    timer: {
-        ...headerText,
-        fontSize: 42,
-        top: PLAY_HEADER_TOP_PADDING,
-        height: TIMER_HEIGHT,
-    },
     chalenger: {
         ...headerText,
         fontSize: 24,
-        top: PLAY_HEADER_TOP_PADDING + TIMER_HEIGHT,
-        height: CHALLENGER_HEIGHT,
+        top: PLAYVIEW_HEADER_TOP_PADDING,
+        height: PLAYVIEW_CHALLENGER_HEIGHT,
+    },
+    others: {
+        ...headerText,
+        fontSize: 18,
+        top: PLAYVIEW_HEADER_TOP_PADDING + PLAYVIEW_CHALLENGER_HEIGHT,
+        height: PLAYVIEW_OTHERS_HEIGHT,
+    },
+    timer: {
+        ...headerText,
+        fontSize: 42,
+        top: PLAYVIEW_HEADER_TOP_PADDING + PLAYVIEW_CHALLENGER_HEIGHT + PLAYVIEW_OTHERS_HEIGHT,
+        height: PLAYVIEW_TIMER_HEIGHT
     }
 });
 

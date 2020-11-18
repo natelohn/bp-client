@@ -14,23 +14,47 @@ const openLeaderboard = () => {
     console.log('Open Leaderboard');
 }
 
-const HomeIcons = () => {
+
+
+const HomeIcons = ({ reviewingChallenges, setReviewingChallenges }) => {
+
+    const endReview = () => {
+        // TODO: Make it a smoother transition
+        setReviewingChallenges(false);
+    }
+
     return (
         <>
+            { reviewingChallenges ?
+            <Icon 
+                name='window-close'
+                type='font-awesome-5'
+                size={32}
+                color={ ACCENT_COLOR }
+                containerStyle={styles.menuIcon}
+                onPress={ endReview }
+            />
+            : null }
+            { !reviewingChallenges ?
             <Icon 
                 name='bars'
                 type='font-awesome-5'
-                size='32'
+                size={32}
                 color={ ACCENT_COLOR }
                 containerStyle={styles.menuIcon}
-                onPress={ openMenu } />
+                onPress={ openMenu }
+            />
+            : null }
+            { !reviewingChallenges ?
             <Icon 
                 name='clipboard-list'
                 type='font-awesome-5'
-                size='32'
+                size={32}
                 color={ ACCENT_COLOR }
                 containerStyle={styles.leaderboardIcon}
-                onPress={ openLeaderboard } />
+                onPress={ openLeaderboard }
+            />
+            : null }
         </>
     );
 }

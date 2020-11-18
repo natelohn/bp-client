@@ -49,3 +49,12 @@ export const promptLogout = (logoutCallback) => {
     const rightText = 'Logout';
     sendTwoButtonAlert(mainText, subText, leftText, () => {}, rightText, logoutCallback)
 }
+
+export const showForfeitPrompt = (forfeitCallback, instigatorName, totalLosses) => {
+    const mainText = 'Are you sure?';
+    const lossText = totalLosses > 1 ? 'losses' : 'loss';
+    const subText = `Forfeiting to ${instigatorName} will result in a score of 0 seconds for this push off and ${totalLosses} ${lossText} added to your record.`;	
+    const leftText = 'Cancel';	
+    const rightText = 'Forfeit';	
+    sendTwoButtonAlert(mainText, subText, leftText, () => {}, rightText, forfeitCallback)	
+}

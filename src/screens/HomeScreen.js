@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState} from 'react';
 import { TouchableOpacity, Text, View } from 'react-native';
-import { Icon } from 'react-native-elements'
 
 import { useQuery } from '@apollo/client';
 import { PUSHOFFS_QUERY } from '../apollo/gql'
@@ -13,6 +12,8 @@ import PlayView from '../components/PlayView';
 import HomeIcons from '../components/HomeIcons'
 
 import styles from '../styles/home';
+import { navigate } from '../navigationRef';
+import { showForfeitPrompt } from '../components/Alerts'
 
 
 const MS_POLLING_FOR_NEW_PUSHOFFS = 600000; // 10 minutes
@@ -22,15 +23,20 @@ const HomeScreen = () => {
     const authContext = useContext(AuthContext);
     const { challengerId } = authContext.state;
 
-    // State Mgmt
-    const [reviewChallenges, setReviewChallenges] = useState(false);
-
     // User's Push Data 
     const { loading, error, data } = useQuery(PUSHOFFS_QUERY, { variables: { challengerId }, pollInterval: MS_POLLING_FOR_NEW_PUSHOFFS });
-    const { state, setPushData } = useContext(PushContext);
-    const { pushesPending } = state;
-    const userHasPendingPushes = pushesPending ? pushesPending.length > 0 : false;
-    const amountPending = userHasPendingPushes ? pushesPending.length : 0;
+    const { state, setPushData, setPushOff} = useContext(PushContext);
+    const { pendingPushList, hasPendingPushes, pushOff } = state;
+
+    const [ reviewingChallenges, setReviewingChallenges ] = useState(false);
+    const [ pushing, setPushing ] = useState(false);
+    const [ prePush, setPrePush] = useState(false);
+    const [ interval, setInterval ] = useState(1);
+
+
+    useEffect(() => {
+        setPushOff(pendingPushList[interval - 1]);
+    }, [reviewingChallenges, interval]);
 
     useEffect(() => {
         if (!loading) {
@@ -38,15 +44,56 @@ const HomeScreen = () => {
         }
     }, [loading]);
 
+    const navToCreate = () => {
+        console.log("Nav to create")
+        navigate("Create");
+    }
 
+    const forfeitCallback = () => {
+        console.log("Forfeit")
+        // TODO: Write 
+    }
+
+    const forfeitPushOff = () => {
+        const instigatorName = pushOff.instigator.username;
+        const totalLosses = pushOff.pending.length + pushOff.pushes.length - 1;
+        showForfeitPrompt(forfeitCallback, instigatorName, totalLosses)
+    }
+    
+    const playViewParams = {
+        hasPendingPushes,
+        pendingPushList,
+        reviewingChallenges,
+        setReviewingChallenges,
+        pushing,
+        setPushing,
+        prePush,
+        setPrePush
+    };
 
     // SANDBOX
 
     return (
         <View style={ styles.view } >
-            <HomeIcons/>
-            { reviewChallenges ? <Carousel items={pushesPending} style={"pending"}/> : null }
-            <PlayView showPendingAlert={reviewChallenges} pendingAmount={amountPending}/>
+            { !pushing && !prePush ? <HomeIcons reviewingChallenges={reviewingChallenges} setReviewingChallenges={setReviewingChallenges} /> : null }
+            <Carousel
+                hidden={!reviewingChallenges || pushing || prePush}
+                items={pendingPushList}
+                style={"pending"}
+                interval={interval}
+                setInterval={setInterval}
+            />
+            <PlayView playViewParams={playViewParams} />
+            { hasPendingPushes && !reviewingChallenges ?
+                <TouchableOpacity onPress={navToCreate}>
+                    <Text style={styles.create}>Create Push-Off</Text>
+                </TouchableOpacity>
+            : null }
+            { reviewingChallenges && !pushing && !prePush?
+                <TouchableOpacity onPress={forfeitPushOff}>
+                    <Text style={styles.create}>Forfeit</Text>
+                </TouchableOpacity>
+            : null }
         </View>
     );
 };
