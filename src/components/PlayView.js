@@ -126,11 +126,24 @@ const PlayView = ({ playViewParams }) => {
             useNativeDriver: true,
           }).start();
     }
-    
 
     const moveButtonRandomly = () => {
         const newX = getRandomInt(minWidthChange,  maxWidthChange);
         const newY = getRandomInt(minHeightChange,  maxHeightChange);
+        moveButton(newX, newY, 500);
+    }
+
+    const moveButtonDrastically = () => {
+        const directions = [
+            [minWidthChange, minHeightChange],
+            [minWidthChange, maxHeightChange],
+            [maxWidthChange, minHeightChange],
+            [maxWidthChange, maxHeightChange]
+        ]
+        const direction = directions[getRandomInt(0, directions.length - 1)];
+        const offset = getRandomInt(0, 20);
+        const newX = direction[0] > 0 ? direction[0] - offset: direction[0] + offset;
+        const newY = direction[1] > 0 ? direction[1] - offset: direction[1] + offset;
         moveButton(newX, newY, 500);
     }
 
@@ -139,23 +152,26 @@ const PlayView = ({ playViewParams }) => {
         setPrePush(false);
         setPushing(true);
         startPlayTimer();
+        moveButtonDrastically();
     }
 
     const press = () => {
-        if (pushing) {
-            if (shrinking) {
-                growButton();
+        if (!prePush) {
+            if (pushing) {
+                if (shrinking) {
+                    growButton();
+                }
+                moveButtonRandomly();
+                setCountdownSecondsLeft(SECONDS_BETWEEN_PUSHES);
+            } else if (!hasPendingPushes && !pushing) {
+                 navigate("Create");
+            } else if (hasPendingPushes && !reviewingChallenges) {
+                // TODO: Make it a smoother transition
+                setReviewingChallenges(true);
+            } else if (!pushing) {
+                setPrePush(true);
+                startCountdown();
             }
-            moveButtonRandomly();
-            setCountdownSecondsLeft(SECONDS_BETWEEN_PUSHES);
-        } else if (!hasPendingPushes && !pushing) {
-             navigate("Create");
-        } else if (hasPendingPushes && !reviewingChallenges) {
-            // TODO: Make it a smoother transition
-            setReviewingChallenges(true);
-        } else if (!pushing) {
-            setPrePush(true);
-            startCountdown();
         }
     }
 

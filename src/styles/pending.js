@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { MAIN_FONT_STYLE, ACCENT_COLOR} from './global'
+import { MAIN_FONT_STYLE, ACCENT_COLOR } from './global'
 
 
 const text = {

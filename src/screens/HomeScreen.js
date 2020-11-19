@@ -76,13 +76,13 @@ const HomeScreen = () => {
     return (
         <View style={ styles.view } >
             { !pushing && !prePush ? <HomeIcons reviewingChallenges={reviewingChallenges} setReviewingChallenges={setReviewingChallenges} /> : null }
-            <Carousel
+            { !pushing ? <Carousel
                 hidden={!reviewingChallenges || pushing || prePush}
                 items={pendingPushList}
                 style={"pending"}
                 interval={interval}
                 setInterval={setInterval}
-            />
+            /> : null }
             <PlayView playViewParams={playViewParams} />
             { hasPendingPushes && !reviewingChallenges ?
                 <TouchableOpacity onPress={navToCreate}>
