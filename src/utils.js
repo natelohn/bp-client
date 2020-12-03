@@ -50,6 +50,7 @@ export const formatTime = (deciseconds) => {
     // return `${getHours}${getMinutes}${getSeconds}`
 }
 
+// TODO: Ensure time is proper across timezones
 export const formatDate = (dateString) => {
     let dateObject = new Date(dateString);
     var options = { hour: "numeric", minute: "numeric", weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };

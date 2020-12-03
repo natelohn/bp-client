@@ -70,3 +70,31 @@ export const PUSHOFFS_QUERY = gql`
     }
   }
 `
+
+export const RESPOND_TO_PUSHOFF = gql`
+  mutation RespondToPushOff($input: RespondToPushOffInput!){
+    respondToPushOff(input: $input) {
+      id,
+      created,
+      final,
+      instigator {
+        id
+      },
+      pushes {
+        completed,
+        duration,
+        challenger {
+          id,
+          username
+        }
+      },
+      pushes {
+        challenger {
+          id,
+          username
+        }
+      }
+      
+    }
+  }
+`

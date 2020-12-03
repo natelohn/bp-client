@@ -14,9 +14,9 @@ import ResolveAuthScreen from "./src/screens/ResolveAuthScreen";
 import AuthScreen from "./src/screens/AuthScreen";
 import HomeScreen from './src/screens/HomeScreen';
 import CreateScreen from './src/screens/CreateScreen';
+import ResultsScreen from './src/screens/ResultsScreen';
 
 // TODO: Enforce styling
-
 const switchNavigator = createSwitchNavigator({
     ResolveAuth: ResolveAuthScreen,
     authFlow: createStackNavigator({
@@ -25,6 +25,7 @@ const switchNavigator = createSwitchNavigator({
     mainFlow: createStackNavigator({
         Home: HomeScreen,
         Create: CreateScreen,
+        Results: ResultsScreen,
     }, { headerMode: 'none' }
     )
 });

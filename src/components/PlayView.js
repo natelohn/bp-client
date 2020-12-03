@@ -1,9 +1,12 @@
 import React, { useRef, useState, useContext } from 'react';
 import { Animated, Dimensions, Text } from 'react-native';
+import { useMutation } from '@apollo/client';
+import {  RESPOND_TO_PUSHOFF } from '../apollo/gql'
 import { navigate } from "../navigationRef";
 import styles from '../styles/play'
 import { BUTTON_DIAMETER, PLAYVIEW_HEADER_HEIGHT } from '../styles/global'
 import { getRandomInt, formatTime } from '../utils';
+import { Context as AuthContext } from "../context/AuthContext";
 import { Context as PushContext } from "../context/PushContext";
 import ButtonView from '../components/ButtonView';
 
@@ -13,20 +16,25 @@ const INITIAL_COUNTDOWN = SECONDS_BETWEEN_PUSHES + SECONDS_BEFORE_START_BUFFER;
 const SHRINK_MS = 5000;
 
 const PlayView = ({ playViewParams }) => {
-
-    const { state } = useContext(PushContext);
+    const authContext = useContext(AuthContext);
+    const { challengerId } = authContext.state;
+    const { state, respondToPushOff } = useContext(PushContext);
     const { pushOff } = state;
     
     const { 
         hasPendingPushes,
-        pendingPushList,
+        pendingPushOffList,
         reviewingChallenges,
         setReviewingChallenges,
         pushing,
         setPushing,
         prePush,
-        setPrePush
+        setPrePush,
+        setPushOffInterval
     } = playViewParams;
+
+    // API Calls
+    const [ callRespondToPushOff ] = useMutation(RESPOND_TO_PUSHOFF);
 
     // UI Logic    
     const [decisecondsElapsed, setDecisecondsElapsed] = useState(0);
@@ -100,14 +108,26 @@ const PlayView = ({ playViewParams }) => {
 
     // TODO: Ensure timer ends when app is quit/on component unmount
 
+    const transitionToResults = ( score ) => {
+        respondToPushOff(challengerId, pushOff.id, score, callRespondToPushOff);
+    }
+
+    const resetState = () => {
+        setReviewingChallenges(false);
+        setPushing(false);
+        setPrePush(false);
+        setPushOffInterval(1);
+    }
+
     const endPlay = () => {
+        const finalDecisecondsElapsed = decisecondsElapsed;
         moveButton(midWidth, midHeight, 500);
         growButton();
-        setPushing(false);
-        // TODO: send results
+        resetState();
         setDecisecondsElapsed(0);
         setCountdownSecondsLeft(INITIAL_COUNTDOWN)
         endPushingTimers();
+        transitionToResults(finalDecisecondsElapsed);
     }
 
     const shrinkButton = () => {
@@ -176,6 +196,7 @@ const PlayView = ({ playViewParams }) => {
     }
 
     const buttonDisplay = () => {
+        // TODO: Fix issue with Auth Flow Button Display Text
         if (pushing) {
             // TODO: Find a better place for this logic
             if (countdownSecondsLeft <= 0) {
@@ -200,7 +221,7 @@ const PlayView = ({ playViewParams }) => {
         } else if (!hasPendingPushes && !pushing) {
             return 'Test Your Will';
         } else if (hasPendingPushes && !reviewingChallenges) {
-            return `${pendingPushList.length} New Push-Offs!`;
+            return `${pendingPushOffList.length} New Push-Offs!`;
         } else if (reviewingChallenges) {
             return 'Begin'
         }

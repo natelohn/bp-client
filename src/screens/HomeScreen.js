@@ -16,7 +16,7 @@ import { navigate } from '../navigationRef';
 import { showForfeitPrompt } from '../components/Alerts'
 
 
-const MS_POLLING_FOR_NEW_PUSHOFFS = 600000; // 10 minutes
+const MS_POLLING_FOR_NEW_PUSHOFFS = 300000; // 5 minutes
 
 const HomeScreen = () => {
     // Auth Logic
@@ -26,17 +26,12 @@ const HomeScreen = () => {
     // User's Push Data 
     const { loading, error, data } = useQuery(PUSHOFFS_QUERY, { variables: { challengerId }, pollInterval: MS_POLLING_FOR_NEW_PUSHOFFS });
     const { state, setPushData, setPushOff} = useContext(PushContext);
-    const { pendingPushList, hasPendingPushes, pushOff } = state;
+    const { pendingPushOffList, hasPendingPushes, pushOff } = state;
 
     const [ reviewingChallenges, setReviewingChallenges ] = useState(false);
     const [ pushing, setPushing ] = useState(false);
     const [ prePush, setPrePush] = useState(false);
     const [ interval, setInterval ] = useState(1);
-
-
-    useEffect(() => {
-        setPushOff(pendingPushList[interval - 1]);
-    }, [reviewingChallenges, interval]);
 
     useEffect(() => {
         if (!loading) {
@@ -44,8 +39,11 @@ const HomeScreen = () => {
         }
     }, [loading]);
 
+    useEffect(() => {
+        setPushOff(pendingPushOffList[interval - 1]);
+    }, [reviewingChallenges, interval]);
+
     const navToCreate = () => {
-        console.log("Nav to create")
         navigate("Create");
     }
 
@@ -62,13 +60,14 @@ const HomeScreen = () => {
     
     const playViewParams = {
         hasPendingPushes,
-        pendingPushList,
+        pendingPushOffList,
         reviewingChallenges,
         setReviewingChallenges,
         pushing,
         setPushing,
         prePush,
-        setPrePush
+        setPrePush,
+        setPushOffInterval: setInterval
     };
 
     // SANDBOX
@@ -78,7 +77,7 @@ const HomeScreen = () => {
             { !pushing && !prePush ? <HomeIcons reviewingChallenges={reviewingChallenges} setReviewingChallenges={setReviewingChallenges} /> : null }
             { !pushing ? <Carousel
                 hidden={!reviewingChallenges || pushing || prePush}
-                items={pendingPushList}
+                items={pendingPushOffList}
                 style={"pending"}
                 interval={interval}
                 setInterval={setInterval}
