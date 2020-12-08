@@ -2,10 +2,10 @@ import createDataContext from "./createDataContext";
 import { sendServerAlert } from '../components/Alerts'
 import { navigate } from "../navigationRef";
 
-const pushReducer = (state, { type, pendingPushOffList, pushOff }) => {
+const pushReducer = (state, { type, allPushOffs, pendingPushOffList, pushOff }) => {
     switch (type) {
-        case 'pendingPushOffData':
-            return {...state, pendingPushOffList, hasPendingPushes: pendingPushOffList.length > 0}
+        case 'setPushOffData':
+            return {...state, allPushOffs, pendingPushOffList, hasPendingPushes: pendingPushOffList.length > 0}
         case 'setPushOff':
             return {...state, pushOff}
         case 'respondToPushOff':
@@ -16,10 +16,12 @@ const pushReducer = (state, { type, pendingPushOffList, pushOff }) => {
   }
 };
 
-const setPushData = dispatch => (data, error, challengerId) => {
+const setPushOffData = dispatch => (data, error, challengerId) => {
     if (!error) {
+        let allPushOffs = {};
         let pendingPushOffList = [];
         for (let pushOff of data.getPushOffs) {
+            allPushOffs[pushOff.id] = pushOff;
             if (!pushOff.final) {
                 for (let pending of pushOff.pending) {
                     if (pending.challenger.id === challengerId) {
@@ -30,7 +32,7 @@ const setPushData = dispatch => (data, error, challengerId) => {
         }
         // Sorted descending by date
         pendingPushOffList.sort(function(a,b){ return new Date(b.created) - new Date(a.created) });
-        dispatch({ type: 'pendingPushOffData', pendingPushOffList });
+        dispatch({ type: 'setPushOffData', allPushOffs, pendingPushOffList });
     } else {
         console.log(error);
         sendServerAlert();
@@ -49,7 +51,7 @@ const respondToPushOff = dispatch => ( challengerId, pushOffId, duration, respon
         // if success -> go results screen
         const pushOff = data.respondToPushOff;
         dispatch({ type: 'respondToPushOff', pushOff });    
-        navigate("Results");
+        navigate("Results", { id: pushOff.id });
     })
     // if failure -> send server issue error
     .catch(( error ) => { 
@@ -61,6 +63,6 @@ const respondToPushOff = dispatch => ( challengerId, pushOffId, duration, respon
 
 export const {Provider, Context} = createDataContext(
     pushReducer,
-    { setPushData, setPushOff, respondToPushOff},
-    { pendingPushOffList: [], hasPendingPushes: false, pushOff: null }
+    { setPushOffData, setPushOff, respondToPushOff},
+    { allPushOffs: [], pendingPushOffList: [], hasPendingPushes: false, pushOff: null }
 );

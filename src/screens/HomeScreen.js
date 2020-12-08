@@ -25,7 +25,7 @@ const HomeScreen = () => {
 
     // User's Push Data 
     const { loading, error, data } = useQuery(PUSHOFFS_QUERY, { variables: { challengerId }, pollInterval: MS_POLLING_FOR_NEW_PUSHOFFS });
-    const { state, setPushData, setPushOff} = useContext(PushContext);
+    const { state, setPushOffData, setPushOff} = useContext(PushContext);
     const { pendingPushOffList, hasPendingPushes, pushOff } = state;
 
     const [ reviewingChallenges, setReviewingChallenges ] = useState(false);
@@ -35,7 +35,8 @@ const HomeScreen = () => {
 
     useEffect(() => {
         if (!loading) {
-            setPushData(data, error, challengerId);
+            setPushOffData(data, error, challengerId);
+            navigate("Results");
         }
     }, [loading]);
 
@@ -88,7 +89,7 @@ const HomeScreen = () => {
                     <Text style={styles.create}>Create Push-Off</Text>
                 </TouchableOpacity>
             : null }
-            { reviewingChallenges && !pushing && !prePush?
+            { reviewingChallenges && !pushing && !prePush ?
                 <TouchableOpacity onPress={forfeitPushOff}>
                     <Text style={styles.create}>Forfeit</Text>
                 </TouchableOpacity>

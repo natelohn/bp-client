@@ -57,3 +57,19 @@ export const formatDate = (dateString) => {
     const formattedDate = dateObject.toLocaleDateString("en-US", options);
     return formattedDate
 }
+
+export const calculateRecord = (pushOff, challengerId) => {
+    const myPush = pushOff.pushes.find(p => p.challenger.id === challengerId)
+    let wins = 0;
+    let losses = 0;
+    for (let push of pushOff.pushes) {
+        if (myPush.id != push.id) {
+            if (myPush.duration > push.duration) {
+                wins = wins + 1;
+            } else if (myPush.duration < push.duration) {
+                losses = losses + 1;
+            }
+        }
+    }
+    return { wins, losses }
+}

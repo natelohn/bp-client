@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import styles from '../styles/pending'
 import { formatDate } from '../utils';
-import {showForfeitPrompt} from '../components/Alerts'
 
 const PendingPushInfo = ({ pendingPush }) => {
     const instigatorName = pendingPush.instigator.username;

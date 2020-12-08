@@ -55,12 +55,14 @@ export const PUSHOFFS_QUERY = gql`
         username
       },
       pending {
+        id,
         challenger {
           id,
           username
         }
       }
       pushes {
+        id,
         duration,
         challenger {
           id,
