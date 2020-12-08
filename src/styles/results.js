@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 import { SECONDARY_COLOR } from './global'
 
 // TODO: Figure out a way to programatically find these values
-const TOP_OFFSET = 40;
+export const TOP_OFFSET = 40;
 const SIDE_OFFSET = 20;
 
 const styles = StyleSheet.create({
@@ -18,11 +18,16 @@ const styles = StyleSheet.create({
         left: SIDE_OFFSET
     },
     record: {
-        flexDirection: 'row',
-        borderWidth: 1,
-        borderColor: 'green',
-        position: 'absolute',
-        top: TOP_OFFSET
+        backgroundColor: 'blue',
+        flex: 1
+    },
+    durations: {
+        backgroundColor: 'green',
+        flex: 2
+    },
+    buttonArea: {
+        backgroundColor: 'yellow',
+        flex: 1
     }
 });
 
