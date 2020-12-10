@@ -47,8 +47,25 @@ export const formatTime = (deciseconds) => {
     const getHours = `0${Math.floor(seconds / 3600)}`.slice(-2)
 
     return `${getHours}:${getMinutes}:${getSeconds}`
-    // return `${getHours}${getMinutes}${getSeconds}`
 }
+
+// TODO: finish formatting this
+export const formatResultTime = (deciseconds) => {
+    if (deciseconds === 0) {
+        return 'Forfeit'
+    }
+    const modDeciseconds = deciseconds % 10;
+    const seconds = Math.floor(deciseconds / 10)
+    const modSeconds = seconds % 60;
+    const modMinutes = Math.floor(seconds / 60) % 60;
+    const modHours = Math.floor(seconds / 3600);
+    const getDeciseconds = modDeciseconds > 0 ? `.${modDeciseconds}` : '';
+    const getSeconds = `0${modSeconds}`.slice(-2)
+    const getMinutes = modHours > 0 ? `0${modMinutes}:`.slice(-3) : `${modMinutes}:`;
+    const getHours = modHours > 0 ? `${modHours}:` : '';
+    return `${getHours}${getMinutes}${getSeconds}${getDeciseconds}`
+}
+
 
 // TODO: Ensure time is proper across timezones
 export const formatDate = (dateString) => {
@@ -72,4 +89,13 @@ export const calculateRecord = (pushOff, challengerId) => {
         }
     }
     return { wins, losses }
+}
+
+export const isRoboId = ( id ) => {
+    const roboIds = [
+        '07c25243-23da-4963-a953-39512d113d50',
+        '6622d741-a4f6-4435-b518-7c3ec627caca',
+        '349e5b16-f0cc-44eb-aaa7-e1c96dbbf6c8'
+    ];
+    return roboIds.some(roboId => roboId === id);
 }

@@ -1,12 +1,14 @@
 import React, { useContext } from 'react';
-import { Dimensions, Text, View } from 'react-native';
+import { Dimensions, FlatList, Text, View } from 'react-native';
 import { Icon } from 'react-native-elements'
 import { navigate } from "../navigationRef";
 import { Context as AuthContext } from "../context/AuthContext";
 import { Context as PushContext } from "../context/PushContext";
-import styles, { TOP_OFFSET } from '../styles/results';
-import { ACCENT_COLOR } from '../styles/global'
-import { calculateRecord } from '../utils';
+import styles from '../styles/results';
+import { ACCENT_COLOR, RESULT_TIME_WIDTH } from '../styles/global'
+import { calculateRecord, isRoboId } from '../utils';
+import Duration from '../components/Duration';
+import ButtonView from '../components/ButtonView';
 
 const ResultsScreen = ({ navigation }) => {
     
@@ -25,8 +27,37 @@ const ResultsScreen = ({ navigation }) => {
     const mainViewHeight = screenSize.height * 0.9;
 
     const navHome = () => {
+        console.log(pushOff)
         navigate("Home");
     }
+
+    
+    const orderedPushes = [...pushOff.pushes];
+    orderedPushes.sort((a,b) => b.duration - a.duration)
+    const longestPush = orderedPushes[0].duration;
+    let rank = 1;
+    let pushData = [];
+    let foundUser = false;
+    for (let push of orderedPushes) {
+        const isUser = push.challenger.id === challengerId;
+        const width = (push.duration / longestPush) * (mainViewWidth - RESULT_TIME_WIDTH);
+        const data = {
+            id: push.id,
+            isPending: false,
+            duration: push.duration,
+            name: push.challenger.username,
+            result: isUser ? '' : foundUser ? '- W' : '- L',
+            isRobo: isRoboId(push.challenger.id),
+            isUser,
+            rank,
+            width
+        }
+        foundUser = isUser ? true : foundUser;
+        rank = rank + 1;
+        pushData.push(data)
+    }
+
+    // TODO: Add Pending Info
 
     return (
         <View style={styles.view}>
@@ -38,16 +69,31 @@ const ResultsScreen = ({ navigation }) => {
                 containerStyle={styles.backIcon}
                 onPress={ navHome }
             />
-            <View style={{height: mainViewHeight, width: mainViewWidth, top: TOP_OFFSET}}>
-                <View style={styles.record}>
-                    <Text>Won: {wins}</Text>
-                    <Text>Lost: {losses}</Text>
+            <View style={{height: mainViewHeight, width: mainViewWidth}}>
+                <View style={styles.recordView}>
+                    <View style={styles.record}>
+                        <Text style={styles.recordText}>Won</Text>
+                        <Text style={styles.recordText}>{wins}</Text>
+                    </View>
+                    <View style={styles.record}>
+                        <Text style={styles.recordText}>Lost</Text>
+                        <Text style={styles.recordText}>{losses}</Text>
+                    </View>
                 </View>
                 <View style={styles.durations}>
-                    <Text>Durations Area</Text>
+                    <FlatList
+                        data={pushData}
+                        keyExtractor={push => push.id}
+                        scrollEnabled={false}
+                        renderItem={({item}) => {
+                            return (
+                                <Duration durationInfo={item} width={item.width}/>
+                            );
+                        }}
+                    />
                 </View>
                 <View style={styles.buttonArea}>
-                    <Text>Button Area</Text>
+                    <ButtonView displayText="Rematch" small={true}/>
                 </View>
             </View>
 

@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { SECONDARY_COLOR } from './global'
+import { SECONDARY_COLOR, MAIN_FONT_STYLE, ACCENT_COLOR } from './global'
 
 // TODO: Figure out a way to programatically find these values
 export const TOP_OFFSET = 40;
@@ -15,19 +15,32 @@ const styles = StyleSheet.create({
     backIcon: {
         position: 'absolute',
         top: TOP_OFFSET,
-        left: SIDE_OFFSET
+        left: SIDE_OFFSET,
+        zIndex: 1
+    },
+    recordView: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     record: {
-        backgroundColor: 'blue',
-        flex: 1
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginHorizontal: 22
+    },
+    recordText: {
+        fontFamily: MAIN_FONT_STYLE,
+        fontSize: 58,
+        color: ACCENT_COLOR
     },
     durations: {
-        backgroundColor: 'green',
-        flex: 2
+        flex: 3,
+        borderColor: ACCENT_COLOR
     },
     buttonArea: {
-        backgroundColor: 'yellow',
-        flex: 1
+        flex: 1,
+        marginTop: 10
     }
 });
 

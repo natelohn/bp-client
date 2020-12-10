@@ -45,8 +45,9 @@ const PlayView = ({ playViewParams }) => {
     const countdownSecondsLeftRef = useRef(null);
 
     // Animation
-    const screenWidth = Dimensions.get('window').width;
-    const screenHeight = Dimensions.get('window').height;
+    const screenSize = Dimensions.get('window');
+    const screenWidth = screenSize.width;
+    const screenHeight = screenSize.height;
     const buttonRadius = BUTTON_DIAMETER / 2;
 
     // Button Scale - Animation
