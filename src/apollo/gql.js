@@ -83,6 +83,7 @@ export const RESPOND_TO_PUSHOFF = gql`
         id
       },
       pushes {
+        id
         completed,
         duration,
         challenger {
@@ -91,6 +92,7 @@ export const RESPOND_TO_PUSHOFF = gql`
         }
       },
       pushes {
+        id
         challenger {
           id,
           username

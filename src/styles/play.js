@@ -6,7 +6,10 @@ import {
     PLAYVIEW_CHALLENGER_HEIGHT,
     PLAYVIEW_OTHERS_HEIGHT,
     MAIN_FONT_STYLE,
-    ACCENT_COLOR } from './global'
+    ACCENT_COLOR,
+    PLAY_BUTTON_TOP_MARGIN
+
+} from './global'
     
     
 const headerText = {
@@ -33,6 +36,9 @@ const styles = StyleSheet.create({
         fontSize: 42,
         top: PLAYVIEW_HEADER_TOP_PADDING + PLAYVIEW_CHALLENGER_HEIGHT + PLAYVIEW_OTHERS_HEIGHT,
         height: PLAYVIEW_TIMER_HEIGHT
+    },
+    buttonView: {
+        marginTop: PLAY_BUTTON_TOP_MARGIN
     }
 });
 

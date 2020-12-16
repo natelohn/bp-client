@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { MAIN_FONT_STYLE, PRIMARY_COLOR, ACCENT_COLOR, RESULT_TIME_WIDTH } from './global'
+import { MAIN_FONT_STYLE, PRIMARY_COLOR, ACCENT_COLOR, SECONDARY_COLOR, RESULT_TIME_WIDTH } from './global'
 
 const textConstants = {
     fontFamily: MAIN_FONT_STYLE,
@@ -35,9 +35,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     bar: {
+        position: 'absolute',
         height: 20,
-        width: 30,
+        width: '100%',
         backgroundColor: PRIMARY_COLOR
+    },
+    durationTextView: {
+        width: '100%',
+        backgroundColor: SECONDARY_COLOR,
+        zIndex: 1,
     },
     durationText: {
         ...textConstants,

@@ -1,46 +1,21 @@
-import React, { useRef, useEffect } from 'react'
-import { View, ScrollView, Text, Dimensions, Animated} from 'react-native'
-
+import React, { useContext, useEffect, useState } from 'react'
+import { View, ScrollView, Text, Animated} from 'react-native'
+import { Context as PushContext } from "../context/PushContext";
 import PendingPushInfo from './PendingPushInfo';
 import styles from '../styles/carousel'
 
 const Carousel = ( props ) => {
+  // State 
+  const [ interval, setInterval ] = useState(1);
 
-  const { hidden, items, style, interval, setInterval } = props;
+  const { items, style, carouselX } = props;
   const itemsPerInterval = props.itemsPerInterval === undefined
     ? 1
     : props.itemsPerInterval;
 
-  // Animation
-  const offScreenRight = Dimensions.get('window').width;
-  const onScreen = 0;
-  const carouselX = useRef(new Animated.Value(offScreenRight)).current;
-
-  const showCarosel = () => {
-    Animated.timing(carouselX, {
-      toValue: onScreen,
-      duration: 250,
-      useNativeDriver: true
-    }).start();
-  }
-
-  const hideCarosel = () => {
-    Animated.timing(carouselX, {
-      toValue: offScreenRight,
-      duration: 250,
-      useNativeDriver: true
-    }).start();
-  }
-  
-  useEffect(() => {
-    // Use effect is using the pre-updated version of hidden
-    const show = !hidden;
-    if (show) {
-      showCarosel();
-    } else {
-      hideCarosel();
-    }
-}, [hidden]);
+  // Context
+  const { setPushOff, state } = useContext(PushContext);
+  const { pendingPushOffList } = state;
 
   // Carosel Logic
   const [intervals, setIntervals] = React.useState(1);
@@ -89,8 +64,12 @@ const Carousel = ( props ) => {
           showsHorizontalScrollIndicator={false}
           onContentSizeChange={(w) => init(w)}
           onScroll={data => {
+            const i = getInterval(data.nativeEvent.contentOffset.x)
             setWidth(data.nativeEvent.contentSize.width);
-            setInterval(getInterval(data.nativeEvent.contentOffset.x));
+            setInterval(i);
+            if (style === 'pending') {
+              setPushOff(pendingPushOffList[i - 1])
+            }
           }}
           scrollEventThrottle={200}
           pagingEnabled

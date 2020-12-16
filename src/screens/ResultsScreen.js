@@ -16,8 +16,7 @@ const ResultsScreen = ({ navigation }) => {
     const authContext = useContext(AuthContext);
     const { challengerId } = authContext.state;
     const { state } = useContext(PushContext);
-    // const id = navigation.getParam('id');
-    const id = 'abfc0666-c8f1-43de-b2d0-5761637ede24';
+    const id = navigation.getParam('id');
     const pushOff = state.allPushOffs[id];
     const { wins, losses } = calculateRecord(pushOff, challengerId);
 
@@ -27,20 +26,18 @@ const ResultsScreen = ({ navigation }) => {
     const mainViewHeight = screenSize.height * 0.9;
 
     const navHome = () => {
-        console.log(pushOff)
         navigate("Home");
     }
 
-    
     const orderedPushes = [...pushOff.pushes];
     orderedPushes.sort((a,b) => b.duration - a.duration)
-    const longestPush = orderedPushes[0].duration;
+    const longestDuration = orderedPushes[0].duration;
     let rank = 1;
     let pushData = [];
     let foundUser = false;
     for (let push of orderedPushes) {
         const isUser = push.challenger.id === challengerId;
-        const width = (push.duration / longestPush) * (mainViewWidth - RESULT_TIME_WIDTH);
+        const width = (push.duration / longestDuration) * (mainViewWidth - RESULT_TIME_WIDTH);
         const data = {
             id: push.id,
             isPending: false,
@@ -50,11 +47,12 @@ const ResultsScreen = ({ navigation }) => {
             isRobo: isRoboId(push.challenger.id),
             isUser,
             rank,
-            width
+            width,
+            longestDuration
         }
         foundUser = isUser ? true : foundUser;
         rank = rank + 1;
-        pushData.push(data)
+        pushData.push(data);
     }
 
     // TODO: Add Pending Info
@@ -83,11 +81,11 @@ const ResultsScreen = ({ navigation }) => {
                 <View style={styles.durations}>
                     <FlatList
                         data={pushData}
-                        keyExtractor={push => push.id}
+                        keyExtractor={item => item.id}
                         scrollEnabled={false}
                         renderItem={({item}) => {
                             return (
-                                <Duration durationInfo={item} width={item.width}/>
+                                <Duration durationInfo={item}/>
                             );
                         }}
                     />

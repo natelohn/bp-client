@@ -5,12 +5,14 @@ import { navigate } from "../navigationRef";
 const pushReducer = (state, { type, allPushOffs, pendingPushOffList, pushOff }) => {
     switch (type) {
         case 'setPushOffData':
-            return {...state, allPushOffs, pendingPushOffList, hasPendingPushes: pendingPushOffList.length > 0}
+            return {...state, allPushOffs, pendingPushOffList }
         case 'setPushOff':
             return {...state, pushOff}
         case 'respondToPushOff':
-            newList = state.pendingPushOffList.filter(pendingPushOff => pendingPushOff.id != pushOff.id);
-            return {...state, pendingPushOffList: newList, hasPendingPushes: newList.length > 0}
+            const updatedPendingPushOffs = state.pendingPushOffList.filter(pendingPushOff => pendingPushOff.id != pushOff.id);
+            let updatedAllPushOffs = state.allPushOffs;
+            updatedAllPushOffs[pushOff.id] = pushOff;
+            return {...state, allPushOffs: updatedAllPushOffs, pendingPushOffList: updatedPendingPushOffs }
         default:
             return state;
   }
@@ -34,7 +36,6 @@ const setPushOffData = dispatch => (data, error, challengerId) => {
         pendingPushOffList.sort(function(a,b){ return new Date(b.created) - new Date(a.created) });
         dispatch({ type: 'setPushOffData', allPushOffs, pendingPushOffList });
     } else {
-        console.log(error);
         sendServerAlert();
     }
 }
@@ -50,12 +51,11 @@ const respondToPushOff = dispatch => ( challengerId, pushOffId, duration, respon
     .then(async ({ data }) => {
         // if success -> go results screen
         const pushOff = data.respondToPushOff;
-        dispatch({ type: 'respondToPushOff', pushOff });    
+        dispatch({ type: 'respondToPushOff', pushOff });
         navigate("Results", { id: pushOff.id });
     })
     // if failure -> send server issue error
     .catch(( error ) => { 
-        console.log(error);
         sendServerAlert();
         // TODO: Come up with a way to not loose push time, Async Storage?
     });
@@ -64,5 +64,5 @@ const respondToPushOff = dispatch => ( challengerId, pushOffId, duration, respon
 export const {Provider, Context} = createDataContext(
     pushReducer,
     { setPushOffData, setPushOff, respondToPushOff},
-    { allPushOffs: [], pendingPushOffList: [], hasPendingPushes: false, pushOff: null }
+    { allPushOffs: {}, pendingPushOffList: [], pushOff: null }
 );

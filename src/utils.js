@@ -91,6 +91,7 @@ export const calculateRecord = (pushOff, challengerId) => {
     return { wins, losses }
 }
 
+// TODO: Find data driven solution
 export const isRoboId = ( id ) => {
     const roboIds = [
         '07c25243-23da-4963-a953-39512d113d50',
