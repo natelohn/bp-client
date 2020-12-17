@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Dimensions, FlatList, Text, View } from 'react-native';
+import { Dimensions, FlatList, LayoutAnimation, Text, UIManager, View } from 'react-native';
 import { Icon } from 'react-native-elements'
 import { navigate } from "../navigationRef";
 import { Context as AuthContext } from "../context/AuthContext";
@@ -8,6 +8,10 @@ import styles from '../styles/results';
 import { ACCENT_COLOR, RESULT_TIME_WIDTH } from '../styles/global'
 import Duration from '../components/Duration';
 import ButtonView from '../components/ButtonView';
+
+if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 
 const ResultsScreen = ({ navigation }) => {
     // Context
@@ -41,6 +45,12 @@ const ResultsScreen = ({ navigation }) => {
                 const nextLowestPush = sortedPushList[pushIndex];
                 let updatedDisplayList = displayPushList.filter(push => push.id != nextLowestPush.id);
                 updatedDisplayList.splice(pushIndex, 0, nextLowestPush);
+                LayoutAnimation.configureNext({
+                    duration: 2000,
+                    create: { type: 'linear', property: 'opacity' },
+                    update: { type: 'spring', springDamping: 0.4 },
+                    delete: { type: 'linear', property: 'opacity' } }
+                );
                 setDisplayPushList(updatedDisplayList);
                 setCurrentIter(currentIter + 1);
 
