@@ -157,7 +157,8 @@ const PlayView = () => {
     // TODO: Ensure timer ends when app is quit/on component unmount
 
     const updateButtonDisplay = () => {
-        const initialButtonMessages = ['Push Me', 'Again!', 'AGAIN!!', 'That\'s It!', 'Just', 'Keep', 'Pushing!']
+        // TODO: Add user's name to the initial messages list
+        const initialButtonMessages = ['That\'s It!', 'Push Me!', 'Again!', 'AGAIN!!', 'Oh Yeah!', 'Just...', 'Keep...', 'Pushing!!'];
         // TODO: Only show this for newer users
         if (pushCount <= initialButtonMessages.length) {
             setButtonDisplay(initialButtonMessages[pushCount]);
@@ -171,9 +172,11 @@ const PlayView = () => {
     const press = () => {
         if (pushTimeElapsed === 0) {
             // skip countdown
-            setDecisecondsElapsed(decisecondsElapsed + DECISECONDS_BEFORE_START_BUFFER)
+            setDecisecondsElapsed(decisecondsElapsed + DECISECONDS_BEFORE_START_BUFFER);
+            setButtonDisplay('');
+        } else {
+            updateButtonDisplay();
         }
-        updateButtonDisplay();
         setDecisecondPushedLast(pushTimeElapsed);
         growButton();
         moveButtonRandomly();

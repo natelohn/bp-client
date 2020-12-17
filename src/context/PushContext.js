@@ -55,7 +55,7 @@ const respondToPushOff = dispatch => ( challengerId, pushOffId, duration, respon
         navigate("Results", { id: pushOff.id });
     })
     // if failure -> send server issue error
-    .catch(( error ) => { 
+    .catch(( error ) => {
         sendServerAlert();
         // TODO: Come up with a way to not loose push time, Async Storage?
     });

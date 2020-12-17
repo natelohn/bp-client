@@ -197,6 +197,7 @@ const AuthScreen = () => {
         } else {
             // send the init verification query
             if (signingUp) {
+                // TODO: Check username for profanity/hate speach
                 signup({ username, phone: usPhoneNumber(phone), otp }, callSignUp, subButtonPressed, initiateVerification);
             } else {
                 login({ phone: usPhoneNumber(phone), otp }, callLogin, subButtonPressed, initiateVerification);

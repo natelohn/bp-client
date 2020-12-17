@@ -3,19 +3,21 @@ import { Animated, Text, View } from 'react-native';
 import { Icon } from 'react-native-elements'
 import { ACCENT_COLOR } from '../styles/global'
 import styles from '../styles/duration';
-import { formatResultTime } from '../utils';
+import { formatResultTime, isRoboId } from '../utils';
 
-
-const Duration = ({ durationInfo }) => {
-    const { rank, name, isRobo, result, width, duration, longestDuration } = durationInfo;
-    const [durationDisplay, setDurationDisplay] = useState('0:000');
+const Duration = ({ push, rank, windthMultiplier, longestDuration, challengerCount }) => {
+    const { challenger, duration } = push;
+    const width = (push.duration / longestDuration) * windthMultiplier;
+    const isRobo = isRoboId(challenger.id);
+    const [durationDisplay, setDurationDisplay] = useState('0:00');
     const [timeIndicatorElapsed, setTimeIndicatorElapsed] = useState(1);
 
     //Animation
-    const longestAnimationTime = 3000;
+    const longestAnimationTime = 1000 * challengerCount;
     const barAnimationDuration = (duration / longestDuration) * longestAnimationTime;
     const currentWidth = useRef(new Animated.Value(0)).current;
     const [animationInitiated, setAnimationInitiated] = useState(false);
+
     const animateBar = () => {
         Animated.timing(currentWidth, {
             toValue: width,
@@ -23,6 +25,7 @@ const Duration = ({ durationInfo }) => {
             useNativeDriver: true
         }).start();
     }
+
     useEffect(()=>{
         if (!animationInitiated) {
             animateBar();
@@ -47,7 +50,7 @@ const Duration = ({ durationInfo }) => {
         <>
         <View style={styles.header}>
             <Text style={styles.rank}>#{rank}</Text>
-            <Text style={styles.name}>{name}</Text>
+            <Text style={styles.name}>{challenger.username}</Text>
             { isRobo ?
             <Icon 
                 name='robot'
@@ -56,8 +59,6 @@ const Duration = ({ durationInfo }) => {
                 color={ ACCENT_COLOR }
                 containerStyle={styles.robo}
             /> : null }
-            
-            <Text style={styles.result}>{result}</Text>
         </View>
         <View style={styles.duration}>
             <Animated.View style={[styles.durationTextView, {transform: [{translateX: currentWidth}]}]}>

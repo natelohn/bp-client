@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { Animated, Dimensions, Text, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-elements'
 import ButtonView from './ButtonView'
@@ -15,9 +15,6 @@ const ReviewPendingView = ({ endReview, beginPlay }) => {
 
     useEffect(() => {
         showCarosel();
-        if (!pushOff) {
-            setPushOff(pendingPushOffList[0]);
-        }
     });
 
     // Animation

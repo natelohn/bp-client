@@ -8,6 +8,7 @@ const Carousel = ( props ) => {
   // State 
   const [ interval, setInterval ] = useState(1);
 
+
   const { items, style, carouselX } = props;
   const itemsPerInterval = props.itemsPerInterval === undefined
     ? 1
@@ -16,6 +17,10 @@ const Carousel = ( props ) => {
   // Context
   const { setPushOff, state } = useContext(PushContext);
   const { pendingPushOffList } = state;
+
+  useEffect(() => {
+    setPushOff(pendingPushOffList[interval - 1])
+  }, [interval])
 
   // Carosel Logic
   const [intervals, setIntervals] = React.useState(1);
@@ -67,9 +72,6 @@ const Carousel = ( props ) => {
             const i = getInterval(data.nativeEvent.contentOffset.x)
             setWidth(data.nativeEvent.contentSize.width);
             setInterval(i);
-            if (style === 'pending') {
-              setPushOff(pendingPushOffList[i - 1])
-            }
           }}
           scrollEventThrottle={200}
           pagingEnabled
