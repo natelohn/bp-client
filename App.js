@@ -21,7 +21,7 @@ const switchNavigator = createSwitchNavigator({
     ResolveAuth: ResolveAuthScreen,
     authFlow: createStackNavigator({
         Auth: AuthScreen
-    }),
+    }, { headerMode: 'none' }),
     mainFlow: createStackNavigator({
         Home: HomeScreen,
         Create: CreateScreen,

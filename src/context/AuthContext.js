@@ -4,12 +4,12 @@ import { navigate } from "../navigationRef";
 import { sendServerAlert, showOTPError } from '../components/Alerts'
 
 
-const authReducer = (state, {type, userId, challengerId}) => {
+const authReducer = (state, {type, userId, challengerId, username}) => {
   switch (type) {
       case 'signin':
-          return {...state, userId, challengerId};
+          return {...state, userId, challengerId, username};
       case 'signout':
-          return {...state, userId: null, challengerId: null};
+          return {...state, userId: null, challengerId: null, username: null};
       default:
           return state;
   }
@@ -23,10 +23,16 @@ const signup = dispatch => async ({ username, phone, otp }, signUpCallback, subB
     .then( async ({data}) => {
         // if success -> go to home screen
         if (data.register.accessToken) {
-            // Persist the token in local storage     
+            // Persist the token in local storage
+            // TODO: Update to seperate local storage method
             await AsyncStorage.setItem('jwt', data.register.accessToken);
             // Update state & direct to home screen
-            dispatch({ type: 'signin', userId: data.register.userId });
+            dispatch({
+                type: 'signin',
+                userId: data.register.userId,
+                challengerId: data.register.challengerId,
+                username: data.register.username
+             });
             navigate('mainFlow');
         } 
         // Handle errors if sign up failed
@@ -49,7 +55,12 @@ const login = dispatch => async ({ phone, otp }, loginCallback, subButtonPressed
             // Persist the token in local storage
             await AsyncStorage.setItem('jwt', data.login.accessToken);
             // Update state to direct to home screen
-            dispatch({ type: 'signin', userId: data.login.userId });
+            dispatch({
+                type: 'signin',
+                userId: data.login.userId,
+                challengerId: data.login.challengerId,
+                username: data.login.username
+             });
             navigate('mainFlow');
         } 
         // Handle errors if login failed
@@ -70,7 +81,11 @@ const signout = dispatch => async () => {
 
 const tryLocalSignIn = dispatch => async (data, error) => {
     if (!error) {
-        const authData = { userId: data.getUserFromContext.id, challengerId: data.getUserFromContext.challenger.id }
+        const authData = {
+            userId: data.getUserFromContext.id,
+            challengerId: data.getUserFromContext.challenger.id,
+            username: data.getUserFromContext.challenger.username
+        }
         dispatch({...authData, type: 'signin' });
         navigate('mainFlow');
     } else {
@@ -81,5 +96,5 @@ const tryLocalSignIn = dispatch => async (data, error) => {
 export const {Provider, Context} = createDataContext(
     authReducer,
     { login, signout, signup, tryLocalSignIn},
-    { userId: null, challengerId: null }
+    { userId: null, challengerId: null, username: null }
 );

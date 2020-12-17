@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { MAIN_FONT_STYLE, ACCENT_COLOR } from './global'
+import { MAIN_FONT_STYLE, ACCENT_COLOR, SECONDARY_COLOR } from './global'
 
 const textInput = {
     height: 40,
@@ -13,7 +13,8 @@ const textInput = {
 const styles = StyleSheet.create({
     view: {
         justifyContent: 'center',
-        flex: 1
+        flex: 1,
+        backgroundColor: SECONDARY_COLOR
     },
     subButton: {
         alignSelf: 'center'

@@ -5,6 +5,7 @@ export const GET_USER_FROM_CONTEXT = gql`
     getUserFromContext {
       id
       challenger {
+        username
         id
       }
     }
@@ -15,7 +16,9 @@ export const USERS_QUERY = gql`
   {
     users {
       id
-      name
+      challenger {
+        username
+      }
     }
   }
 `
@@ -31,6 +34,8 @@ export const REGISTER_MUTATION = gql`
     register(username: $username, phone: $phone, otp: $otp){
       accessToken
       userId
+      challengerId
+      username
     }
   }
 `
@@ -40,6 +45,8 @@ export const LOGIN_MUTATION = gql`
     login(phone: $phone, otp: $otp){
       accessToken
       userId
+      challengerId
+      username
     }
   }
 `

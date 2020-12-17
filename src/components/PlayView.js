@@ -17,7 +17,7 @@ const PRE_PUSH_TEXT = 'Ready?'
 
 const PlayView = () => {
     const authContext = useContext(AuthContext);
-    const { challengerId } = authContext.state;
+    const { challengerId, username } = authContext.state;
     const [ callRespondToPushOff ] = useMutation(RESPOND_TO_PUSHOFF);
     const { state, respondToPushOff } = useContext(PushContext);
     const { pushOff } = state;
@@ -158,7 +158,9 @@ const PlayView = () => {
 
     const updateButtonDisplay = () => {
         // TODO: Add user's name to the initial messages list
-        const initialButtonMessages = ['That\'s It!', 'Push Me!', 'Again!', 'AGAIN!!', 'Oh Yeah!', 'Just...', 'Keep...', 'Pushing!!'];
+        const usernameLimit = 15;
+        const usernameDisplay = username.length <= usernameLimit ? username : `${username.substring(0, usernameLimit)}...`;
+        const initialButtonMessages = ['That\'s It!', 'Push Me!', 'Again!', 'AGAIN!!', `Go ${usernameDisplay}!`, 'Just...', 'Keep...', 'Pushing!!'];
         // TODO: Only show this for newer users
         if (pushCount <= initialButtonMessages.length) {
             setButtonDisplay(initialButtonMessages[pushCount]);

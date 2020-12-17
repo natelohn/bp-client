@@ -58,7 +58,7 @@ const LaunchView = ({ beginReview }) => {
             </TouchableOpacity>
             </>
             : 
-            <ButtonView displayText={'Test Your Will!'} onPressCallback={() => navigate("Create")}/>
+            <ButtonView displayText={'Test Your Will!'} onPressCallback={() => navigate('Create')}/>
             }
         </View>
         </>
