@@ -91,6 +91,23 @@ export const calculateRecord = (pushOff, challengerId) => {
     return { wins, losses }
 }
 
+export const getTotalAndVSRecords = (records, opponentId) => {
+    let won = 0;
+    let lost = 0;
+    let draw = 0;
+    let opponentRecord = {won, lost, draw}
+    for( let record of records) {
+        won = won + record.won;
+        lost = lost + record.lost
+        draw = draw + record.draw
+        if (record.opponent.id === opponentId){
+            opponentRecord = record;
+        }
+    }
+    const total = {won, lost, draw};
+    return {total, opponentRecord}
+}
+
 // TODO: Find data driven solution
 export const isRoboId = ( id ) => {
     const roboIds = [

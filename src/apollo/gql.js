@@ -51,7 +51,7 @@ export const LOGIN_MUTATION = gql`
   }
 `
 
-export const PUSHOFFS_QUERY = gql`
+export const PUSHOFF_QUERY = gql`
   query GetPushOffs($challengerId: String!) {
     getPushOffs(challengerId: $challengerId){
       id,
@@ -106,6 +106,38 @@ export const RESPOND_TO_PUSHOFF = gql`
         }
       }
       
+    }
+  }
+`
+
+export const CHALLENGER_DATA = gql`
+  query ChallengerData($challengerId: String!) {
+    challengerData(challengerId: $challengerId) {
+      challengerId
+      allChallengers {
+        id,
+        username,
+        records {
+          opponent {
+            id
+          }
+          won,
+          lost,
+          draw
+        },
+        pushes {
+          duration
+        }
+      }
+      unavailableChallengerIds
+      robos {
+        difficulty
+        challenger {
+          id
+          username
+        }
+      }
+
     }
   }
 `

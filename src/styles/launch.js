@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { ACCENT_COLOR, MAIN_FONT_STYLE, TOP_ICON_OFFSET, SIDE_ICON_OOFFSET, BUTTON_TOP_MARGIN } from './global'
+import { ACCENT_COLOR, MAIN_FONT_STYLE, TOP_ICON_OFFSET, SIDE_ICON_OFFSET, BUTTON_TOP_MARGIN } from './global'
 
 const styles = StyleSheet.create({
     create: {
@@ -12,12 +12,12 @@ const styles = StyleSheet.create({
     menuIcon: {
         position: 'absolute',
         top: TOP_ICON_OFFSET,
-        left: SIDE_ICON_OOFFSET
+        left: SIDE_ICON_OFFSET
     },
     leaderboardIcon: {
         position: 'absolute',
         top: TOP_ICON_OFFSET,
-        right: SIDE_ICON_OOFFSET
+        right: SIDE_ICON_OFFSET
     },
     buttonArea: {
         marginTop: 150

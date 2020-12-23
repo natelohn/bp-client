@@ -29,7 +29,6 @@ const LaunchView = ({ beginReview }) => {
         // TODO: Create an interactive leaderboard screen...
         console.log('Open Leaderboard');
     }
-    
 
     return (
         <>
@@ -53,7 +52,7 @@ const LaunchView = ({ beginReview }) => {
             { hasPendingPushes ?
             <>
             <ButtonView displayText={`${pendingPushOffList.length} ${newPushOffText}`} onPressCallback={beginReview}/>
-            <TouchableOpacity onPress={() => navigate("Create")}>
+            <TouchableOpacity onPress={() => navigate('Create')}>
                 <Text style={styles.create}>Create Push-Off</Text>
             </TouchableOpacity>
             </>

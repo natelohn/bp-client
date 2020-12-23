@@ -1,11 +1,11 @@
 import { StyleSheet } from 'react-native';
-import { ACCENT_COLOR, MAIN_FONT_STYLE, TOP_ICON_OFFSET, SIDE_ICON_OOFFSET } from './global';
+import { ACCENT_COLOR, MAIN_FONT_STYLE, TOP_ICON_OFFSET, SIDE_ICON_OFFSET } from './global';
 
 const styles = StyleSheet.create({
     exit: {
         position: 'absolute',
         top: TOP_ICON_OFFSET,
-        left: SIDE_ICON_OOFFSET
+        left: SIDE_ICON_OFFSET
     },
     create: {
         color: ACCENT_COLOR,

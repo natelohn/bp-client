@@ -1,6 +1,14 @@
 import { Alert } from "react-native";
 import { formatMobileNumber } from '../utils';
 
+export const sendOneButtonAlert = (title, message, buttonText, callback) =>
+    Alert.alert( title, message,
+        [
+            { text: buttonText, onPress: callback },
+        ],
+        { cancelable: false }
+    );
+
 export const sendTwoButtonAlert = (title, message, leftText, leftCallback, rightText, rightCallback) =>
     Alert.alert( title, message,
         [
@@ -57,4 +65,12 @@ export const showForfeitPrompt = (forfeitCallback, instigatorName, totalLosses) 
     const leftText = 'Cancel';	
     const rightText = 'Forfeit';	
     sendTwoButtonAlert(mainText, subText, leftText, () => {}, rightText, forfeitCallback)	
+}
+
+
+export const showPendingChallengerUnavailableMessage = (challengerUsername) => {
+    const mainText = `${challengerUsername} Unavailable`;
+    const subText = `${challengerUsername} must complete the last challenge you sent them before you may send another.`;	
+    const buttonText = 'Ok';
+    sendOneButtonAlert(mainText, subText, buttonText)	
 }

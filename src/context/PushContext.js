@@ -2,7 +2,8 @@ import createDataContext from "./createDataContext";
 import { sendServerAlert } from '../components/Alerts'
 import { navigate } from "../navigationRef";
 
-const pushReducer = (state, { type, allPushOffs, pendingPushOffList, pushOff }) => {
+
+const pushReducer = (state, { type, allPushOffs, pendingPushOffList, pushOff, challengerData }) => {
     switch (type) {
         case 'setPushOffData':
             return {...state, allPushOffs, pendingPushOffList }
@@ -13,6 +14,8 @@ const pushReducer = (state, { type, allPushOffs, pendingPushOffList, pushOff }) 
             let updatedAllPushOffs = state.allPushOffs;
             updatedAllPushOffs[pushOff.id] = pushOff;
             return {...state, allPushOffs: updatedAllPushOffs, pendingPushOffList: updatedPendingPushOffs }
+        case 'setChallengerData':
+            return {...state, challengerData }
         default:
             return state;
   }
@@ -61,8 +64,47 @@ const respondToPushOff = dispatch => ( challengerId, pushOffId, duration, respon
     });
 }
 
+const setChallengerData = dispatch => (data, error) => {
+    if (!error) {
+        const { challengerId, allChallengers, robos, unavailableChallengerIds } = data.challengerData;
+        let roboChallengerIds = []
+        for( let robo of robos){
+           roboChallengerIds.push(robo.challenger.id); 
+        };
+        let roboChallengers = [];
+        let allChallengersByID = {};
+        for (let challenger of allChallengers){
+            allChallengersByID[challenger.id] = challenger;
+            if (roboChallengerIds.includes(challenger.id)) {
+                roboChallengers.push(challenger);
+                // TODO: Order the challengers
+            }
+        }
+        let formerChallengers = [];
+        const myChallenger = allChallengersByID[challengerId];
+        for(let record of myChallenger.records) {
+            const hasRecord = record.won > 0 || record.lost > 0 || record.draw > 0;
+            const notMe = record.opponent.id != challengerId; // TODO: Fix this error in the data model, no challenger should have a record vs. themselves
+            if (hasRecord && notMe) {
+                formerChallengers.push(allChallengersByID[record.opponent.id]);
+            }
+        }
+        const challengerData = {
+            challengerId, 
+            allChallengers,
+            unavailableChallengerIds,
+            robos,
+            roboChallengers,
+            formerChallengers
+        }
+        dispatch({ type: 'setChallengerData', challengerData });
+    } else {
+        sendServerAlert();
+    }
+}
+
 export const {Provider, Context} = createDataContext(
     pushReducer,
-    { setPushOffData, setPushOff, respondToPushOff},
-    { allPushOffs: {}, pendingPushOffList: [], pushOff: null }
+    { setPushOffData, setPushOff, respondToPushOff, setChallengerData},
+    { allPushOffs: {}, pendingPushOffList: [], pushOff: null, challengerData: {}}
 );

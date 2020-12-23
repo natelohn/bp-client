@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useReducer, useState} from 'react';
 import { View } from 'react-native';
 
 import { useQuery } from '@apollo/client';
-import { PUSHOFFS_QUERY } from '../apollo/gql'
+import { CHALLENGER_DATA, PUSHOFF_QUERY } from '../apollo/gql'
 
 import { Context as AuthContext } from "../context/AuthContext";
 import { Context as PushContext } from "../context/PushContext";
@@ -29,7 +29,7 @@ const reducer = (state, { type }) => {
 };
 
 
-const MS_POLLING_FOR_NEW_PUSHOFFS = 120000; // 2 minutes
+const MS_POLLING = 120000; // 2 minutes
 
 const HomeScreen = ({ navigation }) => {
     // Auth Logic
@@ -44,16 +44,22 @@ const HomeScreen = ({ navigation }) => {
     });
     const { launch, reviewing, playing } = state;
         
-
     // User's Push Data 
-    const { loading, error, data } = useQuery(PUSHOFFS_QUERY, { variables: { challengerId }, pollInterval: MS_POLLING_FOR_NEW_PUSHOFFS });
-    const { setPushOffData } = useContext(PushContext);
+    const pushOffQuery = useQuery(PUSHOFF_QUERY, { variables: { challengerId }, pollInterval: MS_POLLING });
+
+    // Other Challenger Data
+    const challengerQuery = useQuery(CHALLENGER_DATA, { variables: { challengerId }, pollInterval: MS_POLLING });
+
+    const { setPushOffData, setChallengerData } = useContext(PushContext);
 
     useEffect(() => {
-        if (!loading) {
-            setPushOffData(data, error, challengerId);
+        if (!pushOffQuery.loading) {
+            setPushOffData(pushOffQuery.data, pushOffQuery.error, challengerId);
         }
-    }, [loading]);
+        if (!challengerQuery.loading) {
+            setChallengerData(challengerQuery.data, challengerQuery.error, challengerId);
+        }
+    }, [ pushOffQuery.loading, challengerQuery.loading ]);
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('didFocus', () => {
