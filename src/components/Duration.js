@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Animated, Text, View } from 'react-native';
 import { Icon } from 'react-native-elements'
-import { ACCENT_COLOR } from '../styles/global'
+import ChallengerIcon from './ChallengerIcon';
+import { ACCENT_COLOR, PRIMARY_COLOR } from '../styles/global'
 import styles from '../styles/duration';
 import { formatResultTime, isRoboId } from '../utils';
 
-const Duration = ({ push, rank, windthMultiplier, longestDuration, challengerCount }) => {
-    const { challenger, duration } = push;
-    const width = (push.duration / longestDuration) * windthMultiplier;
-    const isRobo = isRoboId(challenger.id);
+const Duration = ({ result, rank, windthMultiplier, longestDuration, challengerCount, isPending }) => {
+    const { challenger, duration } = result;
+    const width = !isPending ? (duration / longestDuration) * windthMultiplier : 0;
     const [durationDisplay, setDurationDisplay] = useState('0:00');
     const [timeIndicatorElapsed, setTimeIndicatorElapsed] = useState(1);
 
@@ -45,30 +45,24 @@ const Duration = ({ push, rank, windthMultiplier, longestDuration, challengerCou
             clearInterval(interval);
         };
     });
-
     return (
-        <>
-        <View style={styles.header}>
-            <Text style={styles.rank}>#{rank}</Text>
+            <>
+            <View style={styles.header}>
+            { !isPending ? <Text style={styles.rank}>#{rank}</Text> : null }
             <Text style={styles.name}>{challenger.username}</Text>
-            { isRobo ?
-            <Icon 
-                name='robot'
-                type='font-awesome-5'
-                size={16}
-                color={ ACCENT_COLOR }
-                containerStyle={styles.robo}
-            /> : null }
-        </View>
-        <View style={styles.duration}>
-            <Animated.View style={[styles.durationTextView, {transform: [{translateX: currentWidth}]}]}>
-                <Text style={styles.durationText}>{durationDisplay}</Text>
-            </Animated.View>
-            <View style={styles.bar}/>
-        </View>
-        </>
-    );
+            <ChallengerIcon challengerId={challenger.id}/>
+            </View>
+            { !isPending ?
+            <View style={styles.duration}>
+                <Animated.View style={[styles.durationTextView, {transform: [{translateX: currentWidth}]}]}>
+                    <Text style={styles.durationText}>{durationDisplay}</Text>
+                </Animated.View>
+                <View style={styles.bar}/>
+            </View>
+            :
+            <Text style={styles.name}>Awaiting Completion</Text>
+            }
+            </>
+        );
 }
-
-
 export default Duration;

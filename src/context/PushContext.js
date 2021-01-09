@@ -16,6 +16,12 @@ const pushReducer = (state, { type, allPushOffs, pendingPushOffList, pushOff, ch
             return {...state, allPushOffs: updatedAllPushOffs, pendingPushOffList: updatedPendingPushOffs }
         case 'setChallengerData':
             return {...state, challengerData }
+        case 'createPushOff':
+            let newAll = {...state.allPushOffs};
+            newAll[pushOff.id] = pushOff;
+            let newPending = [...state.pendingPushOffList];
+            newPending.push(pushOff);
+            return {...state, pushOff, allPushOffs: newAll, pendingPushOffList: newPending}
         default:
             return state;
   }
@@ -103,8 +109,25 @@ const setChallengerData = dispatch => (data, error) => {
     }
 }
 
+const createPushOff = dispatch => (instigatorId, userChallengerIds, roboChallengerIds, createPushOffCallback) => {
+    createPushOffCallback({
+        variables: { input: { instigatorId, userChallengerIds, roboChallengerIds }}
+    })
+    .then(async ({ data }) => {
+        // if success -> go results screen
+        const pushOff = data.createPushOff;
+        dispatch({ type: 'createPushOff', pushOff });
+        // TODO: Add a trigger to start the push off
+        navigate("Home", { id: pushOff.id });
+    })
+    // if failure -> send server issue error
+    .catch(( error ) => {
+        sendServerAlert();
+    });
+}
+
 export const {Provider, Context} = createDataContext(
     pushReducer,
-    { setPushOffData, setPushOff, respondToPushOff, setChallengerData},
-    { allPushOffs: {}, pendingPushOffList: [], pushOff: null, challengerData: {}}
+    { setPushOffData, setPushOff, respondToPushOff, setChallengerData, createPushOff},
+    { allPushOffs: {}, pendingPushOffList: [], pushOff: null, challengerData: {} }
 );

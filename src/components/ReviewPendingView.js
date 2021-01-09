@@ -10,7 +10,7 @@ import styles from '../styles/reviewPending'
 
 const ReviewPendingView = ({ endReview, beginPlay }) => {
     // Context
-    const {state, setPushOff} = useContext(PushContext);
+    const { state } = useContext(PushContext);
     const { pendingPushOffList, pushOff } = state;
 
     useEffect(() => {

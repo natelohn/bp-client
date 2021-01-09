@@ -30,6 +30,22 @@ const PlayView = () => {
     const [ buttonDisplay, setButtonDisplay ] = useState(PRE_PUSH_TEXT);
     const [ pushFinalized, setPushFinalized ] = useState(false);
     const [ pushCount, setPushCount ] = useState(0);
+    
+    const reset = () => {
+        resetButton()
+        setDecisecondsElapsed(0);
+        setPushTimeElapsed(0);
+        setDecisecondPushedLast(0);
+        setButtonDisplay(PRE_PUSH_TEXT);
+        setPushFinalized(false);
+        setPushCount(0);
+        setSetShrinking(false);
+    }
+
+    useEffect(()=>{
+        // reset state
+        reset()
+    }, [pushOff]);
 
     useEffect(()=>{
         if (!pushFinalized) {
@@ -100,6 +116,15 @@ const PlayView = () => {
     const buttonScale = buttonAnimation.interpolate({inputRange, outputRange});
 
     // Animation Helpers
+    const resetButton = () => {
+        Animated.timing(buttonAnimation, {
+            toValue: 0,
+            useNativeDriver: true,
+            duration: 0
+        }).start();
+        moveButton(midWidth, midHeight,0);
+    }
+
     const shrinkButton = () => {
         if (!shrinking) {
             Animated.timing(buttonAnimation, {
@@ -191,10 +216,21 @@ const PlayView = () => {
         // TODO: Extend functionality to allow for push off creation
         return  totalOthers > 0 ? `(and ${totalOthers} ${otherText})` : 'Who wants it more?'
     }
+    const getTitleText = () => {
+        const totalOthers = pushOff.pending.length + pushOff.pushes.length - 1;
+        const other = pushOff.pushes.length > 0 ? pushOff.pushes[0] : pushOff.pending[0];
+        if (totalOthers === 1) {
+            return `${username} vs. ${other.challenger.username}` ;
+        } else if (challengerId === pushOff.instigator.id ) {
+            return `Push Off with ${other.challenger.username}`
+        } else {
+            return `${pushOff.instigator.username} Challenged You`
+        }
+    }
 
     return (
         <>
-            <Text style={styles.chalenger}>Push-Off with {pushOff.instigator.username} </Text>
+            <Text style={styles.challenger}>{getTitleText()}</Text>
             <Text style={styles.others}>{getOthersText()}</Text>
             <Text style={styles.timer}>{formatTime(pushTimeElapsed)}</Text>
             <Animated.View style={[{ ...styles.buttonView, transform: [{ scale: buttonScale }, { translateX: buttonX }, { translateY: buttonY }]}]}>

@@ -12,12 +12,10 @@ const LaunchView = ({ beginReview }) => {
     // Context
     const { state } = useContext(PushContext);
     const { pendingPushOffList } = state;
-    
 
     // Display Values/logic
     const hasPendingPushes = pendingPushOffList.length > 0;
     const newPushOffText = pendingPushOffList.length > 1 ? `New Push-Offs!` : `New Push-Off!`;
-
 
     // Callbacks
     const openMenu = () => {

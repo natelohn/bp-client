@@ -98,7 +98,7 @@ export const RESPOND_TO_PUSHOFF = gql`
           username
         }
       },
-      pushes {
+      pending {
         id
         challenger {
           id,
@@ -138,6 +138,28 @@ export const CHALLENGER_DATA = gql`
         }
       }
 
+    }
+  }
+`
+
+export const CREATE_PUSHOFF = gql`
+  mutation CreatePushOff($input: CreatePushOffInput!){
+      createPushOff(input:$input) {
+        id
+        instigator {
+          username
+        }
+        pushes {
+          challenger {
+            username
+          }
+          duration
+        }
+        pending {
+          challenger {
+            username
+          }
+      }
     }
   }
 `

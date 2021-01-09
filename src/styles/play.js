@@ -19,7 +19,7 @@ const headerText = {
     color: ACCENT_COLOR
 }
 const styles = StyleSheet.create({
-    chalenger: {
+    challenger: {
         ...headerText,
         fontSize: 24,
         top: PLAYVIEW_HEADER_TOP_PADDING,

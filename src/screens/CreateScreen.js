@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/client';
 import React, { useContext, useState } from 'react';
 import { FlatList, LayoutAnimation, Text, View } from 'react-native';
 import { Icon } from 'react-native-elements';
@@ -6,6 +7,7 @@ import Challenger from '../components/ChallengerView'
 import { navigate } from "../navigationRef";
 import styles from '../styles/create';
 import { ACCENT_COLOR } from '../styles/global'
+import { CREATE_PUSHOFF } from '../apollo/gql';
 import {Context as PushContext} from '../context/PushContext'
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -14,25 +16,26 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 
 const MAX_CHALLENGERS = 9;
 
-const CreateScreen = () => {
-
-    const { state } = useContext(PushContext);
+const CreateScreen = ({ navigation }) => {
+    const [ callCreatePushOff ] = useMutation(CREATE_PUSHOFF);
+    const rematchChallengerIds = navigation.getParam('rematchChallengerIds', []);
+    const { state, createPushOff } = useContext(PushContext);
     const { challengerId, allChallengers, unavailableChallengerIds, robos, roboChallengers, formerChallengers }  = state.challengerData;
-
-a
+    
     const navHome = () => {
-        navigate("Home");
+        navigate("Home", { id: false });
     }
 
-    const initialSelectedChallengers = [];
-    const [ selectedChallengers, setSelectedChallengers ] = useState(initialSelectedChallengers)
+    const initialSelectedChallengers = allChallengers.filter((challenger) => rematchChallengerIds.includes(challenger.id));
     
+    const [ selectedChallengers, setSelectedChallengers ] = useState(initialSelectedChallengers)
+   
     // Remove selected challengers
     const unselectedRobos = roboChallengers.filter((robo) => !selectedChallengers.includes(robo)); 
     const unselectedFormerHumans = formerChallengers.filter((former) => !selectedChallengers.includes(former) && !roboChallengers.includes(former));
     const unselectedNewHumans = allChallengers.filter((ch) => !selectedChallengers.includes(ch) && !unselectedFormerHumans.includes(ch) && !roboChallengers.includes(ch) && ch.id != challengerId);
     const [ displayList, setDisplayList ] = useState([...selectedChallengers, ...unselectedRobos, ...unselectedFormerHumans, ...unselectedNewHumans]);
-
+    
     const selectChallenger = (challenger, selected) => {
         if (selectedChallengers.length != MAX_CHALLENGERS || selectedChallengers.includes(challenger)) {
             let newSelected = [...selectedChallengers];
@@ -104,9 +107,17 @@ a
     }
     
     const beginPushOff = () => {
-        console.log('PUSH OFF W/', selectedChallengers)
+        let userChallengerIds = [];
+        const roboChallengerIds = [];
+        for( let challenger of selectedChallengers ) {
+            if (roboChallengers.includes(challenger)) {
+                roboChallengerIds.push(challenger.id);
+            } else {
+                userChallengerIds.push(challenger.id);
+            }
+        }
+        createPushOff(challengerId, userChallengerIds, roboChallengerIds, callCreatePushOff)
     }
-
 
     return (
         <View style={styles.screen}>

@@ -33,10 +33,9 @@ const ResultsScreen = ({ navigation }) => {
 
     const [ foundUser, setFoundUser ] = useState(false);
     const [ wins, setWins ] = useState(0);
-    const [ losses, setLosses ] = useState(0);
+    const [ losses, setLosses ] = useState(2);
     const [ currentIter, setCurrentIter ] = useState(1);
-    const [ displayPushList, setDisplayPushList ] = useState(pushOff.pushes);
-
+    const [ displayPushList, setDisplayPushList ] = useState([...pushOff.pushes, ...pushOff.pending]);
 
     useEffect(()=>{
         if (currentIter <= pushOff.pushes.length) {
@@ -73,11 +72,26 @@ const ResultsScreen = ({ navigation }) => {
     });
 
     const navHome = () => {
-        navigate("Home");
+        // TODO: Hide play view until state updates 
+        navigate("Home", { id: false });
     }
 
-    // TODO: Add Pending Info
+    const rematch = () => {
+        const rematchChallengerIds = [];
+        for (let push of pushOff.pushes) {
+            if (push.challenger.id != challengerId) {
+                rematchChallengerIds.push(push.challenger.id)
+            }
+        }
+        if (pushOff.instigator.id != challengerId && pushOff.pending) {
+            for (let pending of pushOff.pending) {
+                rematchChallengerIds.push(pending.challenger.id)
+            }
+        }
+        navigate("Create", { rematchChallengerIds });
+    }
 
+    // TODO: Add a "push in progress" for pending pushes
     // TODO: Either ensure the list doesn't go over the screen height or make it scrollable if it does
     return (
         <View style={styles.view}>
@@ -108,18 +122,19 @@ const ResultsScreen = ({ navigation }) => {
                         renderItem={({item, index}) => {
                             return (
                                 <Duration
-                                    push={item}
+                                    result={item}
                                     rank={index + 1}
                                     windthMultiplier={widthMultiplier}
                                     longestDuration={longestDuration}
                                     challengerCount={pushOff.pushes.length}
+                                    isPending={pushOff.pending.includes(item)}
                                 />
                             );
                         }}
                     />
                 </View>
                 <View style={styles.buttonArea}>
-                    <ButtonView displayText="Rematch" small={true}/>
+                    <ButtonView displayText="Rematch" small={true} onPressCallback={rematch}/>
                 </View>
             </View>
         </View>

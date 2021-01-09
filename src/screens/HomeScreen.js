@@ -62,10 +62,18 @@ const HomeScreen = ({ navigation }) => {
     }, [ pushOffQuery.loading, challengerQuery.loading ]);
 
     useEffect(() => {
-        const unsubscribe = navigation.addListener('didFocus', () => {
-            dispatch({ type: 'launch_state' });
-        });
-        return unsubscribe.remove;
+        const id = navigation.getParam('id');
+        if (id) {
+            const unsubscribe = navigation.addListener('didFocus', () => {
+                dispatch({ type: 'play_state' });
+            });
+            return unsubscribe.remove;
+        } else {
+            const unsubscribe = navigation.addListener('didFocus', () => {
+                dispatch({ type: 'launch_state' });
+            });
+            return unsubscribe.remove;
+        }
     }, [ navigation ]);
 
 
