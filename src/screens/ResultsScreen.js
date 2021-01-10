@@ -33,7 +33,7 @@ const ResultsScreen = ({ navigation }) => {
 
     const [ foundUser, setFoundUser ] = useState(false);
     const [ wins, setWins ] = useState(0);
-    const [ losses, setLosses ] = useState(2);
+    const [ losses, setLosses ] = useState(0);
     const [ currentIter, setCurrentIter ] = useState(1);
     const [ displayPushList, setDisplayPushList ] = useState([...pushOff.pushes, ...pushOff.pending]);
 
@@ -81,11 +81,6 @@ const ResultsScreen = ({ navigation }) => {
         for (let push of pushOff.pushes) {
             if (push.challenger.id != challengerId) {
                 rematchChallengerIds.push(push.challenger.id)
-            }
-        }
-        if (pushOff.instigator.id != challengerId && pushOff.pending) {
-            for (let pending of pushOff.pending) {
-                rematchChallengerIds.push(pending.challenger.id)
             }
         }
         navigate("Create", { rematchChallengerIds });

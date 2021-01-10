@@ -5,18 +5,19 @@ export const GET_USER_FROM_CONTEXT = gql`
     getUserFromContext {
       id
       challenger {
-        username
         id
+        username
       }
     }
   }
-`;
+`
 
 export const USERS_QUERY = gql`
   {
     users {
       id
       challenger {
+        id
         username
       }
     }
@@ -54,25 +55,25 @@ export const LOGIN_MUTATION = gql`
 export const PUSHOFF_QUERY = gql`
   query GetPushOffs($challengerId: String!) {
     getPushOffs(challengerId: $challengerId){
-      id,
-      created,
-      final,
+      id
+      created
+      final
       instigator {
-        id,
+        id
         username
-      },
+      }
       pending {
-        id,
+        id
         challenger {
-          id,
+          id
           username
         }
       }
       pushes {
-        id,
-        duration,
+        id
+        duration
         challenger {
-          id,
+          id
           username
         }
       }
@@ -83,29 +84,28 @@ export const PUSHOFF_QUERY = gql`
 export const RESPOND_TO_PUSHOFF = gql`
   mutation RespondToPushOff($input: RespondToPushOffInput!){
     respondToPushOff(input: $input) {
-      id,
-      created,
-      final,
+      id
+      created
+      final
       instigator {
         id
-      },
+      }
       pushes {
         id
-        completed,
-        duration,
-        challenger {
-          id,
-          username
-        }
-      },
-      pending {
-        id
+        completed
+        duration
         challenger {
           id,
           username
         }
       }
-      
+      pending {
+        id
+        challenger {
+          id
+          username
+        }
+      }
     }
   }
 `
@@ -115,22 +115,25 @@ export const CHALLENGER_DATA = gql`
     challengerData(challengerId: $challengerId) {
       challengerId
       allChallengers {
-        id,
-        username,
+        id
+        username
         records {
+          id
           opponent {
             id
           }
-          won,
-          lost,
+          won
+          lost
           draw
-        },
+        }
         pushes {
+          id
           duration
         }
       }
       unavailableChallengerIds
       robos {
+        id
         difficulty
         challenger {
           id
@@ -147,16 +150,21 @@ export const CREATE_PUSHOFF = gql`
       createPushOff(input:$input) {
         id
         instigator {
+          id
           username
         }
         pushes {
+          id
           challenger {
+            id
             username
           }
           duration
         }
         pending {
+          id
           challenger {
+            id
             username
           }
       }

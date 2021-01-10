@@ -20,7 +20,19 @@ const authLink = setContext(async (_, { headers }) => {
 
 const apoloClient = new ApolloClient({
   link: authLink.concat(httpLink),
-  cache: new InMemoryCache()
+  cache: new InMemoryCache({
+    typePolicies: {
+      PushOff: {
+        fields: {
+          pending: {
+            merge(existing = [], incoming) {
+              return [...existing, ...incoming];
+            }
+          }
+        }
+      }
+    }
+  })
 });
 
 export default apoloClient;
