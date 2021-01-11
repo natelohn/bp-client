@@ -229,12 +229,16 @@ const PlayView = () => {
 
     return (
         <>
+        { !pushFinalized ?
+        <>
             <Text style={styles.challenger}>{getTitleText()}</Text>
             <Text style={styles.others}>{getOthersText()}</Text>
             <Text style={styles.timer}>{formatTime(pushTimeElapsed)}</Text>
             <Animated.View style={[{ ...styles.buttonView, transform: [{ scale: buttonScale }, { translateX: buttonX }, { translateY: buttonY }]}]}>
                 <ButtonView onPressCallback={press} displayText={buttonDisplay} small={false} />
             </Animated.View>
+        </>
+        : null }
         </>
     );
 };

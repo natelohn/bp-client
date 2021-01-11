@@ -100,7 +100,7 @@ const HomeScreen = ({ navigation }) => {
             <ReviewPendingView endReview={ launchState } beginPlay={ playState }/>
         : null }
         { playing ? 
-            <PlayView endPlay={ launchState }/> 
+            <PlayView/> 
         : null }
         </View>
     );

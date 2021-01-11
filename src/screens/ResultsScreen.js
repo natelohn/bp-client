@@ -72,7 +72,6 @@ const ResultsScreen = ({ navigation }) => {
     });
 
     const navHome = () => {
-        // TODO: Hide play view until state updates 
         navigate("Home", { id: false });
     }
 
