@@ -33,15 +33,15 @@ const Challenger = ({ available, maxSelected, challenger, onSelectCallback, robo
         <View style={{ ...styles.view, opacity}}>
             <View style={styles.infoView}>
                 <View style={styles.header}> 
+                    <Text style={styles.name}>{header}</Text>
                     { roboData.isRobo ? 
                     <Icon 
                         name='robot'
                         type='font-awesome-5'
-                        size={12}
-                        color={ PRIMARY_COLOR }
+                        size={10}
+                        color={ ACCENT_COLOR }
                         containerStyle={styles.robo}
                     /> : null }
-                    <Text style={styles.name}>{header}</Text>
                 </View>
                 <Text style={styles.subText}>Overall Record: {totalRecord}</Text>
                 { roboData.isRobo ? <Text style={styles.subText}>Difficulty {roboData.difficulty}</Text> : null }

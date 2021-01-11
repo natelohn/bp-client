@@ -8,13 +8,14 @@ const ChallengerIcon = ({ challengerId }) => {
     const authContext = useContext(AuthContext);
     const isMe = challengerId === authContext.state.challengerId;
     const isRobo = isRoboId(challengerId);
-    const iconName = isMe ? 'user-check' : isRobo ? 'robot' : 'user'
+    const iconName = isMe ? 'user-check' : isRobo ? 'robot' : 'user-alt';
+    const size = isMe ? 14 : 10;
     return (
         <>
         <Icon 
             name={iconName}
             type='font-awesome-5'
-            size={16}
+            size={size}
             color={ ACCENT_COLOR }
         />
         </>
