@@ -3,7 +3,7 @@ import { sendServerAlert } from '../components/Alerts'
 import { navigate } from "../navigationRef";
 
 
-const pushReducer = (state, { type, allPushOffs, pendingPushOffList, pushOff, challengerData, newRecordData }) => {
+const pushOffReducer = (state, { type, allPushOffs, pendingPushOffList, pushOff, challengerData, newRecordData }) => {
     switch (type) {
         case 'setPushOffData':
             return {...state, allPushOffs, pendingPushOffList }
@@ -150,7 +150,7 @@ const updateRecords = dispatch => (data, error) => {
 }
 
 export const {Provider, Context} = createDataContext(
-    pushReducer,
+    pushOffReducer,
     { setPushOffData, setPushOff, respondToPushOff, setChallengerData, createPushOff, updateRecords},
     { allPushOffs: {}, pendingPushOffList: [], pushOff: null, challengerData: {} }
 );
