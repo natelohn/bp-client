@@ -91,7 +91,7 @@ const setChallengerData = dispatch => (data, error) => {
         const { challengerId, allChallengers, robos, unavailableChallengerIds } = data.challengerData;
         let roboChallengerIds = []
         for( let robo of robos){
-           roboChallengerIds.push(robo.challenger.id); 
+           roboChallengerIds.push(robo.challenger.id);
         };
         let allChallengersByID = {};
         for (let challenger of allChallengers){
@@ -107,7 +107,7 @@ const setChallengerData = dispatch => (data, error) => {
             }
         }
         const challengerData = {
-            challengerId, 
+            challengerId,
             allChallengers,
             unavailableChallengerIds,
             robos,
