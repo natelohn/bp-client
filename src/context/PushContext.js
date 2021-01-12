@@ -3,7 +3,7 @@ import { sendServerAlert } from '../components/Alerts'
 import { navigate } from "../navigationRef";
 
 
-const pushReducer = (state, { type, allPushOffs, pendingPushOffList, pushOff, challengerData }) => {
+const pushReducer = (state, { type, allPushOffs, pendingPushOffList, pushOff, challengerData, newRecordData }) => {
     switch (type) {
         case 'setPushOffData':
             return {...state, allPushOffs, pendingPushOffList }
@@ -22,6 +22,22 @@ const pushReducer = (state, { type, allPushOffs, pendingPushOffList, pushOff, ch
             let newPending = [...state.pendingPushOffList];
             newPending.push(pushOff);
             return {...state, pushOff, allPushOffs: newAll, pendingPushOffList: newPending}
+        case 'updateRecords':
+            const oldChallengerData = state.challengerData.allChallengers;
+            const newChallengerData = [];
+            const newFormerChallengers = [...state.challengerData.formerChallengers];
+            for(let challenger of oldChallengerData){
+                if(challenger.id in newRecordData){
+                    challenger = {...challenger, records: newRecordData[challenger.id]}
+                    const found = state.challengerData.formerChallengers.find(ch => ch.id === challenger.id);
+                    if (!found){
+                        newFormerChallengers.push(challenger);
+                    }
+                }
+                newChallengerData.push(challenger)
+            }
+            const updatedChallengerData = {...state.challengerData, allChallengers: newChallengerData, formerChallengers: newFormerChallengers}
+            return {...state, challengerData: updatedChallengerData}
         default:
             return state;
   }
@@ -77,14 +93,9 @@ const setChallengerData = dispatch => (data, error) => {
         for( let robo of robos){
            roboChallengerIds.push(robo.challenger.id); 
         };
-        let roboChallengers = [];
         let allChallengersByID = {};
         for (let challenger of allChallengers){
             allChallengersByID[challenger.id] = challenger;
-            if (roboChallengerIds.includes(challenger.id)) {
-                roboChallengers.push(challenger);
-                // TODO: Order the challengers
-            }
         }
         let formerChallengers = [];
         const myChallenger = allChallengersByID[challengerId];
@@ -100,7 +111,6 @@ const setChallengerData = dispatch => (data, error) => {
             allChallengers,
             unavailableChallengerIds,
             robos,
-            roboChallengers,
             formerChallengers
         }
         dispatch({ type: 'setChallengerData', challengerData });
@@ -126,8 +136,21 @@ const createPushOff = dispatch => (instigatorId, userChallengerIds, roboChalleng
     });
 }
 
+const updateRecords = dispatch => (data, error) => {
+    if (!error) {
+        const newRecordData = {};
+        for(let newRecord of data.getChallengerRecords) {
+            newRecordData[newRecord.id] = newRecord.records;
+        }
+        dispatch({type: "updateRecords", newRecordData });
+    } else {
+        sendServerAlert()
+    }
+
+}
+
 export const {Provider, Context} = createDataContext(
     pushReducer,
-    { setPushOffData, setPushOff, respondToPushOff, setChallengerData, createPushOff},
+    { setPushOffData, setPushOff, respondToPushOff, setChallengerData, createPushOff, updateRecords},
     { allPushOffs: {}, pendingPushOffList: [], pushOff: null, challengerData: {} }
 );

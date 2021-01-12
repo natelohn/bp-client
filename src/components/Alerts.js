@@ -70,7 +70,7 @@ export const showForfeitPrompt = (forfeitCallback, instigatorName, totalLosses) 
 
 export const showPendingChallengerUnavailableMessage = (challengerUsername) => {
     const mainText = `User Unavailable`;
-    const subText = `${challengerUsername} must complete the last challenge you sent them before you may send another.`;	
+    const subText = `${challengerUsername} must complete the last challenge you had with them before you can send them another challenge.`;
     const buttonText = 'Ok';
     sendOneButtonAlert(mainText, subText, buttonText)	
 }

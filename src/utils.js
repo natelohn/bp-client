@@ -95,7 +95,7 @@ export const getTotalAndVSRecords = (records, opponentId) => {
     let won = 0;
     let lost = 0;
     let draw = 0;
-    let opponentRecord = {won, lost, draw}
+    let opponentRecord = { won, lost, draw }
     for( let record of records) {
         won = won + record.won;
         lost = lost + record.lost

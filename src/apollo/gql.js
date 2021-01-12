@@ -95,7 +95,7 @@ export const RESPOND_TO_PUSHOFF = gql`
         completed
         duration
         challenger {
-          id,
+          id
           username
         }
       }
@@ -167,6 +167,23 @@ export const CREATE_PUSHOFF = gql`
             id
             username
           }
+      }
+    }
+  }
+`
+
+export const GET_CHALLENGER_RECORDS = gql`
+  query GetChallengerRecords($input: GetRecordsInput!){
+    getChallengerRecords(input: $input){
+      id
+      records {
+        id
+        opponent {
+          id
+        }
+        won
+        lost
+        draw
       }
     }
   }

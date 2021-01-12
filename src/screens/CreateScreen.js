@@ -9,6 +9,7 @@ import styles from '../styles/create';
 import { ACCENT_COLOR } from '../styles/global'
 import { CREATE_PUSHOFF } from '../apollo/gql';
 import {Context as PushContext} from '../context/PushContext'
+import { isRoboId } from '../utils';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
     UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -20,8 +21,9 @@ const CreateScreen = ({ navigation }) => {
     const [ callCreatePushOff ] = useMutation(CREATE_PUSHOFF);
     const rematchChallengerIds = navigation.getParam('rematchChallengerIds', []);
     const { state, createPushOff } = useContext(PushContext);
-    const { challengerId, allChallengers, unavailableChallengerIds, robos, roboChallengers, formerChallengers }  = state.challengerData;
-    
+    const { challengerId, allChallengers, unavailableChallengerIds, robos, formerChallengers }  = state.challengerData;
+
+
     const navHome = () => {
         navigate("Home", { id: false });
     }
@@ -31,9 +33,9 @@ const CreateScreen = ({ navigation }) => {
     const [ selectedChallengers, setSelectedChallengers ] = useState(initialSelectedChallengers)
    
     // Remove selected challengers
-    const unselectedRobos = roboChallengers.filter((robo) => !selectedChallengers.includes(robo)); 
-    const unselectedFormerHumans = formerChallengers.filter((former) => !selectedChallengers.includes(former) && !roboChallengers.includes(former));
-    const unselectedNewHumans = allChallengers.filter((ch) => !selectedChallengers.includes(ch) && !unselectedFormerHumans.includes(ch) && !roboChallengers.includes(ch) && ch.id != challengerId);
+    const unselectedRobos = allChallengers.filter((challenger) => !selectedChallengers.includes(challenger) && isRoboId(challenger.id)); 
+    const unselectedFormerHumans = formerChallengers.filter((former) => !selectedChallengers.includes(former) && !isRoboId(former.id));
+    const unselectedNewHumans = allChallengers.filter((ch) => !selectedChallengers.includes(ch) && !unselectedFormerHumans.includes(ch) && !isRoboId(ch.id) && ch.id != challengerId);
     const [ displayList, setDisplayList ] = useState([...selectedChallengers, ...unselectedRobos, ...unselectedFormerHumans, ...unselectedNewHumans]);
     
     const selectChallenger = (challenger, selected) => {
@@ -47,7 +49,7 @@ const CreateScreen = ({ navigation }) => {
                newSelected = newSelected.filter((selected) => selected.id != challenger.id);
             }
             // Remove all challengers in the selected lists from the robo, former and new challenger lists
-            const newRobo = roboChallengers.filter((unselected) => !newSelected.includes(unselected));
+            const newRobo = allChallengers.filter((unselected) => !newSelected.includes(unselected) && isRoboId(challenger.id));
             const newFormerHumans = formerChallengers.filter((unselected) => !newSelected.includes(unselected) && !newRobo.includes(unselected)); 
             const newNewHumans = allChallengers.filter((ch) => !newSelected.includes(ch) && !newRobo.includes(ch) && !newFormerHumans.includes(ch) && ch.id != challengerId);
     
@@ -110,7 +112,7 @@ const CreateScreen = ({ navigation }) => {
         let userChallengerIds = [];
         const roboChallengerIds = [];
         for( let challenger of selectedChallengers ) {
-            if (roboChallengers.includes(challenger)) {
+            if (isRoboId(challenger.id)) {
                 roboChallengerIds.push(challenger.id);
             } else {
                 userChallengerIds.push(challenger.id);

@@ -1,7 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Dimensions, FlatList, LayoutAnimation, Text, UIManager, View } from 'react-native';
-import { Icon } from 'react-native-elements'
+import { Icon } from 'react-native-elements';
+import { useQuery } from '@apollo/client';
 import { navigate } from "../navigationRef";
+import { GET_CHALLENGER_RECORDS } from '../apollo/gql';
 import { Context as AuthContext } from "../context/AuthContext";
 import { Context as PushContext } from "../context/PushContext";
 import styles from '../styles/results';
@@ -17,7 +19,7 @@ const ResultsScreen = ({ navigation }) => {
     // Context
     const authContext = useContext(AuthContext);
     const { challengerId } = authContext.state;
-    const { state } = useContext(PushContext);
+    const { state, updateRecords } = useContext(PushContext);
     const id = navigation.getParam('id');
     const pushOff = state.allPushOffs[id];
 
@@ -36,6 +38,19 @@ const ResultsScreen = ({ navigation }) => {
     const [ losses, setLosses ] = useState(0);
     const [ currentIter, setCurrentIter ] = useState(1);
     const [ displayPushList, setDisplayPushList ] = useState([...pushOff.pushes, ...pushOff.pending]);
+
+    // Update record info
+    const challengerIds = [];
+    for(let push of pushOff.pushes) {
+        challengerIds.push(push.challenger.id);
+    }
+    const getRecordsQuery = useQuery(GET_CHALLENGER_RECORDS, { variables: { input: { challengerIds }}});
+
+    useEffect(() => {
+        if (!getRecordsQuery.loading) {
+            updateRecords(getRecordsQuery.data, getRecordsQuery.error);
+        }
+    }, [ getRecordsQuery.loading ]);
 
     useEffect(()=>{
         if (currentIter <= pushOff.pushes.length) {
