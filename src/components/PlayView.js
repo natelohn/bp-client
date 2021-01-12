@@ -6,7 +6,7 @@ import styles from '../styles/play'
 import { MAIN_BUTTON_DIAMETER, PLAYVIEW_HEADER_HEIGHT, PLAY_BUTTON_TOP_MARGIN } from '../styles/global'
 import { getRandomInt, formatTime } from '../utils';
 import { Context as AuthContext } from "../context/AuthContext";
-import { Context as PushContext } from "../context/PushContext";
+import { Context as PushOffContext } from "../context/PushOffContext";
 import ButtonView from '../components/ButtonView';
 
 const DECISECONDS_BEFORE_START_BUFFER = 50; // 4 seconds
@@ -18,7 +18,7 @@ const PlayView = () => {
     const authContext = useContext(AuthContext);
     const { challengerId, username } = authContext.state;
     const [ callRespondToPushOff ] = useMutation(RESPOND_TO_PUSHOFF);
-    const { state, respondToPushOff } = useContext(PushContext);
+    const { state, respondToPushOff } = useContext(PushOffContext);
     const { pushOff } = state;
 
     // State  

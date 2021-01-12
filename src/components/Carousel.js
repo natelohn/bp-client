@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { View, ScrollView, Text, Animated} from 'react-native'
-import { Context as PushContext } from "../context/PushContext";
+import { Context as PushOffContext } from "../context/PushOffContext";
 import PendingPushInfo from './PendingPushInfo';
 import styles from '../styles/carousel'
 
@@ -15,7 +15,7 @@ const Carousel = ( props ) => {
     : props.itemsPerInterval;
 
   // Context
-  const { setPushOff, state } = useContext(PushContext);
+  const { setPushOff, state } = useContext(PushOffContext);
   const { pendingPushOffList } = state;
 
   useEffect(() => {

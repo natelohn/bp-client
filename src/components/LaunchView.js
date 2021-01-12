@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { TouchableOpacity, Text, View } from 'react-native';
 import { Icon } from 'react-native-elements'
-import { Context as PushContext } from "../context/PushContext";
+import { Context as PushOffContext } from "../context/PushOffContext";
 import { navigate } from '../navigationRef';
 import ButtonView from '../components/ButtonView';
 import styles from '../styles/launch'
@@ -10,7 +10,7 @@ import { ACCENT_COLOR } from '../styles/global'
 
 const LaunchView = ({ beginReview }) => {
     // Context
-    const { state } = useContext(PushContext);
+    const { state } = useContext(PushOffContext);
     const { pendingPushOffList } = state;
 
     // Display Values/logic

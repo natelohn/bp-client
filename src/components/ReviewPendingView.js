@@ -4,13 +4,13 @@ import { Icon } from 'react-native-elements'
 import ButtonView from './ButtonView'
 import Carousel from './Carousel' 
 import { showForfeitPrompt } from './Alerts'
-import { Context as PushContext } from '../context/PushContext';
+import { Context as PushOffContext } from '../context/PushOffContext';
 import { ACCENT_COLOR } from '../styles/global'
 import styles from '../styles/reviewPending'
 
 const ReviewPendingView = ({ endReview, beginPlay }) => {
     // Context
-    const { state } = useContext(PushContext);
+    const { state } = useContext(PushOffContext);
     const { pendingPushOffList, pushOff } = state;
 
     useEffect(() => {

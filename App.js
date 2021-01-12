@@ -7,7 +7,7 @@ import { AppLoading } from 'expo';
 
 import { setNavigator } from "./src/navigationRef"
 import { Provider as AuthProvider } from "./src/context/AuthContext";
-import { Provider as PushProvider } from "./src/context/PushContext";
+import { Provider as PushProvider } from "./src/context/PushOffContext";
 import apoloClient from './src/apollo/index';
 
 import ResolveAuthScreen from "./src/screens/ResolveAuthScreen";

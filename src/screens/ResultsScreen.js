@@ -5,7 +5,7 @@ import { useQuery } from '@apollo/client';
 import { navigate } from "../navigationRef";
 import { GET_CHALLENGER_RECORDS } from '../apollo/gql';
 import { Context as AuthContext } from "../context/AuthContext";
-import { Context as PushContext } from "../context/PushContext";
+import { Context as PushOffContext } from "../context/PushOffContext";
 import styles from '../styles/results';
 import { ACCENT_COLOR, RESULT_TIME_WIDTH } from '../styles/global'
 import Duration from '../components/Duration';
@@ -19,7 +19,7 @@ const ResultsScreen = ({ navigation }) => {
     // Context
     const authContext = useContext(AuthContext);
     const { challengerId } = authContext.state;
-    const { state, updateRecords } = useContext(PushContext);
+    const { state, updateRecords } = useContext(PushOffContext);
     const id = navigation.getParam('id');
     const pushOff = state.allPushOffs[id];
 
