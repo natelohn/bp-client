@@ -1,6 +1,6 @@
 import createDataContext from "./createDataContext";
 
-const challengerReducer = (state, { type }) => {
+const challengerReducer = (state, { type, challengerData, newRecordData}) => {
     switch (type) {
         case 'setChallengerData':
             return {...state, challengerData }

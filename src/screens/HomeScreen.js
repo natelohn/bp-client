@@ -6,6 +6,7 @@ import { CHALLENGER_DATA, PUSHOFF_QUERY } from '../apollo/gql'
 
 import { Context as AuthContext } from "../context/AuthContext";
 import { Context as PushOffContext } from "../context/PushOffContext";
+import { Context as ChallengerContext } from '../context/ChallengerContext';
 
 import LaunchView from '../components/LaunchView';
 import ReviewPendingView from '../components/ReviewPendingView';
@@ -50,7 +51,8 @@ const HomeScreen = ({ navigation }) => {
     // Other Challenger Data
     const challengerQuery = useQuery(CHALLENGER_DATA, { variables: { challengerId }, pollInterval: MS_POLLING });
 
-    const { setPushOffData, setChallengerData } = useContext(PushOffContext);
+    const { setPushOffData } = useContext(PushOffContext);
+    const { setChallengerData } = useContext(ChallengerContext);
 
     useEffect(() => {
         if (!pushOffQuery.loading) {

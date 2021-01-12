@@ -86,39 +86,6 @@ const respondToPushOff = dispatch => ( challengerId, pushOffId, duration, respon
     });
 }
 
-const setChallengerData = dispatch => (data, error) => {
-    if (!error) {
-        const { challengerId, allChallengers, robos, unavailableChallengerIds } = data.challengerData;
-        let roboChallengerIds = []
-        for( let robo of robos){
-           roboChallengerIds.push(robo.challenger.id);
-        };
-        let allChallengersByID = {};
-        for (let challenger of allChallengers){
-            allChallengersByID[challenger.id] = challenger;
-        }
-        let formerChallengers = [];
-        const myChallenger = allChallengersByID[challengerId];
-        for(let record of myChallenger.records) {
-            const hasRecord = record.won > 0 || record.lost > 0 || record.draw > 0;
-            const notMe = record.opponent.id != challengerId; // TODO: Fix this error in the data model, no challenger should have a record vs. themselves
-            if (hasRecord && notMe) {
-                formerChallengers.push(allChallengersByID[record.opponent.id]);
-            }
-        }
-        const challengerData = {
-            challengerId,
-            allChallengers,
-            unavailableChallengerIds,
-            robos,
-            formerChallengers
-        }
-        dispatch({ type: 'setChallengerData', challengerData });
-    } else {
-        sendServerAlert();
-    }
-}
-
 const createPushOff = dispatch => (instigatorId, userChallengerIds, roboChallengerIds, createPushOffCallback) => {
     createPushOffCallback({
         variables: { input: { instigatorId, userChallengerIds, roboChallengerIds }}
@@ -136,21 +103,8 @@ const createPushOff = dispatch => (instigatorId, userChallengerIds, roboChalleng
     });
 }
 
-const updateRecords = dispatch => (data, error) => {
-    if (!error) {
-        const newRecordData = {};
-        for(let newRecord of data.getChallengerRecords) {
-            newRecordData[newRecord.id] = newRecord.records;
-        }
-        dispatch({type: "updateRecords", newRecordData });
-    } else {
-        sendServerAlert()
-    }
-
-}
-
 export const {Provider, Context} = createDataContext(
     pushOffReducer,
-    { setPushOffData, setPushOff, respondToPushOff, setChallengerData, createPushOff, updateRecords},
-    { allPushOffs: {}, pendingPushOffList: [], pushOff: null, challengerData: {} }
+    { setPushOffData, setPushOff, respondToPushOff, createPushOff },
+    { allPushOffs: {}, pendingPushOffList: [], pushOff: null }
 );

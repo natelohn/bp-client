@@ -8,7 +8,8 @@ import { navigate } from "../navigationRef";
 import styles from '../styles/create';
 import { ACCENT_COLOR } from '../styles/global'
 import { CREATE_PUSHOFF } from '../apollo/gql';
-import {Context as PushOffContext} from '../context/PushOffContext'
+import { Context as PushOffContext } from '../context/PushOffContext';
+import { Context as ChallengerContext } from '../context/ChallengerContext';
 import { isRoboId } from '../utils';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -20,7 +21,8 @@ const MAX_CHALLENGERS = 9;
 const CreateScreen = ({ navigation }) => {
     const [ callCreatePushOff ] = useMutation(CREATE_PUSHOFF);
     const rematchChallengerIds = navigation.getParam('rematchChallengerIds', []);
-    const { state, createPushOff } = useContext(PushOffContext);
+    const { createPushOff } = useContext(PushOffContext);
+    const { state } = useContext(ChallengerContext)
     const { challengerId, allChallengers, unavailableChallengerIds, robos, formerChallengers }  = state.challengerData;
 
 
