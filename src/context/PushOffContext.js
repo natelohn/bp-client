@@ -3,7 +3,7 @@ import { sendServerAlert } from '../components/Alerts';
 import { navigate } from "../navigationRef";
 
 
-const pushOffReducer = (state, { type, allPushOffs, pendingPushOffList, pushOff, challengerData, newRecordData }) => {
+const pushOffReducer = (state, { type, allPushOffs, pendingPushOffList, pushOff }) => {
     switch (type) {
         case 'setPushOffData':
             return {...state, allPushOffs, pendingPushOffList }
@@ -18,6 +18,7 @@ const pushOffReducer = (state, { type, allPushOffs, pendingPushOffList, pushOff,
             let newAll = {...state.allPushOffs};
             newAll[pushOff.id] = pushOff;
             let newPending = [...state.pendingPushOffList];
+            // TODO: Handle case in which you create a Push off and then close the app/respond fails (Async storage?)
             newPending.push(pushOff);
             return {...state, pushOff, allPushOffs: newAll, pendingPushOffList: newPending}
         default:
