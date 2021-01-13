@@ -76,8 +76,7 @@ const createPushOff = dispatch => (instigatorId, userChallengerIds, roboChalleng
         // if success -> go results screen
         const pushOff = data.createPushOff;
         dispatch({ type: 'createPushOff', pushOff });
-        // TODO: Add a trigger to start the push off
-        navigate("Home", { id: pushOff.id });
+        navigate("Play");
     })
     // if failure -> send server issue error
     .catch(( error ) => {

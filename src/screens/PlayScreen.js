@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Animated, Dimensions, Text } from 'react-native';
+import { Animated, Dimensions, Text, View } from 'react-native';
 import { useMutation } from '@apollo/client';
 import {  RESPOND_TO_PUSHOFF } from '../apollo/gql'
 import styles from '../styles/play'
@@ -9,12 +9,12 @@ import { Context as AuthContext } from "../context/AuthContext";
 import { Context as PushOffContext } from "../context/PushOffContext";
 import ButtonView from '../components/ButtonView';
 
-const DECISECONDS_BEFORE_START_BUFFER = 50; // 4 seconds
+const DECISECONDS_BEFORE_START_BUFFER = 50; // 5 seconds
 const DECISECONDS_BETWEEN_PUSHES = 100; // 10 seconds
 const SHRINK_MS = 5000;
 const PRE_PUSH_TEXT = 'Ready?'
 
-const PlayView = () => {
+const PlayScreen = () => {
     const authContext = useContext(AuthContext);
     const { challengerId, username } = authContext.state;
     const [ callRespondToPushOff ] = useMutation(RESPOND_TO_PUSHOFF);
@@ -228,19 +228,15 @@ const PlayView = () => {
     }
 
     return (
-        <>
-        { !pushFinalized ?
-        <>
+        <View style={styles.view}>
             <Text style={styles.challenger}>{getTitleText()}</Text>
             <Text style={styles.others}>{getOthersText()}</Text>
             <Text style={styles.timer}>{formatTime(pushTimeElapsed)}</Text>
             <Animated.View style={[{ ...styles.buttonView, transform: [{ scale: buttonScale }, { translateX: buttonX }, { translateY: buttonY }]}]}>
                 <ButtonView onPressCallback={press} displayText={buttonDisplay} small={false} />
             </Animated.View>
-        </>
-        : null }
-        </>
+        </View>
     );
 };
 
-export default PlayView;
+export default PlayScreen;

@@ -60,10 +60,6 @@ const CreateScreen = ({ navigation }) => {
         const { unselectedRobos, unselectedFormerHumans, unselectedNewHumans } = getUnselectedLists(selectedList);
         return [ ...unselectedRobos, ...unselectedFormerHumans, ...unselectedNewHumans ];
     }
-    
-    const navHome = () => {
-        navigate("Home", { id: false });
-    }
 
     // Build display values
     const initialSelectedChallengers = allChallengers.filter((challenger) => rematchChallengerIds.includes(challenger.id) && !unavailableChallengerIds.includes(challenger.id));
@@ -148,7 +144,7 @@ const CreateScreen = ({ navigation }) => {
                 size={32}
                 color={ ACCENT_COLOR }
                 containerStyle={styles.exit}
-                onPress={ navHome }
+                onPress={ () => { navigate("Home") } }
             />
             <Text style={styles.headerText}>Select Challengers</Text>
             <FlatList 

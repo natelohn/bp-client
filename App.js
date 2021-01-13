@@ -13,6 +13,7 @@ import apoloClient from './src/apollo/index';
 import ResolveAuthScreen from "./src/screens/ResolveAuthScreen";
 import AuthScreen from "./src/screens/AuthScreen";
 import HomeScreen from './src/screens/HomeScreen';
+import PlayScreen from './src/screens/PlayScreen';
 import CreateScreen from './src/screens/CreateScreen';
 import ResultsScreen from './src/screens/ResultsScreen';
 
@@ -26,6 +27,7 @@ const switchNavigator = createSwitchNavigator({
         Home: HomeScreen,
         Create: CreateScreen,
         Results: ResultsScreen,
+        Play: PlayScreen
     }, { headerMode: 'none' }
     )
 });

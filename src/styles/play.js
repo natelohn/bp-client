@@ -1,13 +1,14 @@
 import { StyleSheet } from 'react-native';
 
 import { 
-    PLAYVIEW_HEADER_TOP_PADDING,
-    PLAYVIEW_TIMER_HEIGHT,
-    PLAYVIEW_CHALLENGER_HEIGHT,
-    PLAYVIEW_OTHERS_HEIGHT,
-    MAIN_FONT_STYLE,
     ACCENT_COLOR,
-    PLAY_BUTTON_TOP_MARGIN
+    MAIN_FONT_STYLE,
+    PLAY_BUTTON_TOP_MARGIN,
+    PLAYVIEW_CHALLENGER_HEIGHT,
+    PLAYVIEW_HEADER_TOP_PADDING,
+    PLAYVIEW_OTHERS_HEIGHT,
+    PLAYVIEW_TIMER_HEIGHT,
+    SECONDARY_COLOR
 
 } from './global'
     
@@ -19,6 +20,12 @@ const headerText = {
     color: ACCENT_COLOR
 }
 const styles = StyleSheet.create({
+    view: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        flex: 1,
+        backgroundColor: SECONDARY_COLOR
+    },
     challenger: {
         ...headerText,
         fontSize: 24,

@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { Animated, Dimensions, Text, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-elements'
+
+import { navigate } from '../navigationRef';
 import ButtonView from './ButtonView'
 import Carousel from './Carousel' 
 import { showForfeitPrompt } from './Alerts'
@@ -8,7 +10,7 @@ import { Context as PushOffContext } from '../context/PushOffContext';
 import { ACCENT_COLOR } from '../styles/global'
 import styles from '../styles/reviewPending'
 
-const ReviewPendingView = ({ endReview, beginPlay }) => {
+const ReviewPendingView = ({ endReview }) => {
     // Context
     const { state } = useContext(PushOffContext);
     const { pendingPushOffList, pushOff } = state;
@@ -53,8 +55,11 @@ const ReviewPendingView = ({ endReview, beginPlay }) => {
         const totalLosses = pushOff.pending.length + pushOff.pushes.length - 1;
         showForfeitPrompt(forfeitCallback, instigatorName, totalLosses)
     }
-    
-    
+
+    const startPushOff = () => {
+        endReview();
+        navigate("Play")
+    }
 
     return (
         <>
@@ -71,7 +76,7 @@ const ReviewPendingView = ({ endReview, beginPlay }) => {
                 style={"pending"}
                 carouselX={carouselX}
             />
-            <ButtonView displayText={'Begin'} onPressCallback={beginPlay}/>
+            <ButtonView displayText={'Begin'} onPressCallback={startPushOff}/>
             <TouchableOpacity onPress={forfeitPushOff}>
                 <Text style={styles.create}>Forfeit</Text>
             </TouchableOpacity>

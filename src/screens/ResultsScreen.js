@@ -76,7 +76,7 @@ const ResultsScreen = ({ navigation }) => {
     });
 
     const navHome = () => {
-        navigate("Home", { id: false });
+        navigate("Home");
     }
 
     // Prepare query for create screen
