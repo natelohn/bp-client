@@ -37,6 +37,10 @@ const styles = StyleSheet.create({
     text: {
         ...text,
         fontSize: 38,
+    },
+    smallText: {
+        ...text,
+        fontSize: 28
     }
 });
 

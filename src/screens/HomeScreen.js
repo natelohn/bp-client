@@ -1,12 +1,11 @@
-import React, { useContext, useEffect, useReducer, useState} from 'react';
+import React, { useContext, useEffect, useReducer } from 'react';
 import { View } from 'react-native';
 
 import { useQuery } from '@apollo/client';
-import { CHALLENGER_DATA, PUSHOFF_QUERY } from '../apollo/gql'
+import { PUSHOFF_QUERY } from '../apollo/gql'
 
 import { Context as AuthContext } from "../context/AuthContext";
 import { Context as PushOffContext } from "../context/PushOffContext";
-import { Context as ChallengerContext } from '../context/ChallengerContext';
 
 import LaunchView from '../components/LaunchView';
 import ReviewPendingView from '../components/ReviewPendingView';
@@ -24,6 +23,8 @@ const reducer = (state, { type }) => {
             return { ...state, launch: false, reviewing: true, playing: false };
         case 'play_state':
             return { ...state, launch: false, reviewing: false, playing: true };
+        case 'blank_state':
+            return { ...state, launch: false, reviewing: false, playing: false };
         default:
             return state;
     }
@@ -39,29 +40,23 @@ const HomeScreen = ({ navigation }) => {
 
     // State Management
     const [state, dispatch] = useReducer(reducer, {
-        launch: true,
+        launch: false,
         reviewing: false,
         playing: false,
     });
     const { launch, reviewing, playing } = state;
-        
-    // User's Push Data 
-    const pushOffQuery = useQuery(PUSHOFF_QUERY, { variables: { challengerId }, pollInterval: MS_POLLING });
-
-    // Other Challenger Data
-    const challengerQuery = useQuery(CHALLENGER_DATA, { variables: { challengerId }, pollInterval: MS_POLLING });
 
     const { setPushOffData } = useContext(PushOffContext);
-    const { setChallengerData } = useContext(ChallengerContext);
+
+    // User's Push Data 
+    const pushOffQuery = useQuery(PUSHOFF_QUERY, { variables: { challengerId }, pollInterval: MS_POLLING });
 
     useEffect(() => {
         if (!pushOffQuery.loading) {
             setPushOffData(pushOffQuery.data, pushOffQuery.error, challengerId);
+            dispatch({ type: 'launch_state' });
         }
-        if (!challengerQuery.loading) {
-            setChallengerData(challengerQuery.data, challengerQuery.error, challengerId);
-        }
-    }, [ pushOffQuery.loading, challengerQuery.loading ]);
+    }, [ pushOffQuery.loading ]);
 
     useEffect(() => {
         const id = navigation.getParam('id');

@@ -18,12 +18,13 @@ export const sendTwoButtonAlert = (title, message, leftText, leftCallback, right
         { cancelable: false }
     );
 
-export const sendServerAlert = () => 
-    // TODO: put in real email here
-    Alert.alert( 'CONNECTION ISSUE', 'Please check your internet connection, if your connection is stable, please contact help@buttonpush.com',
-        [ { text: 'OK' } ],
+export const sendServerAlert = (callback) => {
+        // TODO: put in real email here
+        Alert.alert( 'CONNECTION ISSUE', 'Please check your internet connection, if your connection is stable, please contact help@buttonpush.com',
+        [ { text: 'OK', onPress: callback } ],
         { cancelable: false }
     );
+}
 
 export const showSignUpError = (continueCallback) => {
     const mainText = 'SIGN UP ERROR';
@@ -70,7 +71,7 @@ export const showForfeitPrompt = (forfeitCallback, instigatorName, totalLosses) 
 
 export const showPendingChallengerUnavailableMessage = (challengerUsername) => {
     const mainText = `User Unavailable`;
-    const subText = `${challengerUsername} must complete the last challenge you had with them before you can send them another challenge.`;
+    const subText = `You and ${challengerUsername} must complete the last challenge you have together before you can send them another challenge.`;
     const buttonText = 'Ok';
     sendOneButtonAlert(mainText, subText, buttonText)	
 }

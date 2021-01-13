@@ -1,16 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Dimensions, FlatList, LayoutAnimation, Text, UIManager, View } from 'react-native';
 import { Icon } from 'react-native-elements';
-import { useQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import { navigate } from "../navigationRef";
-import { GET_CHALLENGER_RECORDS } from '../apollo/gql';
+import { CHALLENGER_DATA } from '../apollo/gql';
 import { Context as AuthContext } from "../context/AuthContext";
 import { Context as PushOffContext } from "../context/PushOffContext";
-import { Context as ChallengerContext } from "../context/ChallengerContext";
 import styles from '../styles/results';
 import { ACCENT_COLOR, RESULT_TIME_WIDTH } from '../styles/global'
 import Duration from '../components/Duration';
 import ButtonView from '../components/ButtonView';
+import LoadingView from '../components/LoadingView';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
     UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -21,11 +21,10 @@ const ResultsScreen = ({ navigation }) => {
     const authContext = useContext(AuthContext);
     const { challengerId } = authContext.state;
     const { state } = useContext(PushOffContext);
-    const { updateRecords } = useContext(ChallengerContext);
     const id = navigation.getParam('id');
     const pushOff = state.allPushOffs[id];
 
-    //Layout Values
+    // Layout Values
     const screenSize = Dimensions.get('window');
     const mainViewWidth = screenSize.width * 0.9;
     const mainViewHeight = screenSize.height * 0.9;
@@ -41,19 +40,6 @@ const ResultsScreen = ({ navigation }) => {
     const [ currentIter, setCurrentIter ] = useState(1);
     const [ displayPushList, setDisplayPushList ] = useState([...pushOff.pushes, ...pushOff.pending]);
 
-    // Update record info
-    const challengerIds = [];
-    for(let push of pushOff.pushes) {
-        challengerIds.push(push.challenger.id);
-    }
-    const getRecordsQuery = useQuery(GET_CHALLENGER_RECORDS, { variables: { input: { challengerIds }}});
-
-    useEffect(() => {
-        if (!getRecordsQuery.loading) {
-            updateRecords(getRecordsQuery.data, getRecordsQuery.error);
-        }
-    }, [ getRecordsQuery.loading ]);
-
     useEffect(()=>{
         if (currentIter <= pushOff.pushes.length) {
             let interval = setInterval(() => {
@@ -61,6 +47,7 @@ const ResultsScreen = ({ navigation }) => {
                 const nextLowestPush = sortedPushList[pushIndex];
                 let updatedDisplayList = displayPushList.filter(push => push.id != nextLowestPush.id);
                 updatedDisplayList.splice(pushIndex, 0, nextLowestPush);
+                // TODO: Fix slow/laggy transitions between screens
                 LayoutAnimation.configureNext({
                     duration: 2000,
                     create: { type: 'linear', property: 'opacity' },
@@ -78,7 +65,7 @@ const ResultsScreen = ({ navigation }) => {
                     if (foundUser) {
                         setLosses(losses + 1);
                     } else {
-                        setWins(wins + 1 );
+                        setWins(wins + 1);
                     }
                 }
             }, 1000);
@@ -92,19 +79,34 @@ const ResultsScreen = ({ navigation }) => {
         navigate("Home", { id: false });
     }
 
-    const rematch = () => {
-        const rematchChallengerIds = [];
-        for (let push of pushOff.pushes) {
-            if (push.challenger.id != challengerId) {
-                rematchChallengerIds.push(push.challenger.id)
+    // Prepare query for create screen
+    const [ getChallengers, { called, loading, data, error } ] = useLazyQuery(CHALLENGER_DATA, { variables: { challengerId }, fetchPolicy: "cache-and-network" });
+    const [ loadingChallengers, setLoadingChallengers ] = useState(false);
+    useEffect(() => {
+        setLoadingChallengers(loading)
+        if(called && !loading) {
+            if (error) {
+                sendServerAlert();
+            } else {
+                const rematchChallengerIds = [];
+                for (let push of pushOff.pushes) {
+                    if (push.challenger.id != challengerId) {
+                        rematchChallengerIds.push(push.challenger.id)
+                    }
+                }
+                const { challengerData } = data;
+                navigate('Create', { challengerData, rematchChallengerIds });
             }
         }
-        navigate("Create", { rematchChallengerIds });
-    }
+    }, [called, loading]);
 
-    // TODO: Add a "push in progress" for pending pushes
+    // TODO: Add a "push in progress" for pending pushes that are currently underway
     // TODO: Either ensure the list doesn't go over the screen height or make it scrollable if it does
     return (
+        <>
+        { loadingChallengers ?
+        <LoadingView/>
+        :
         <View style={styles.view}>
             <Icon
                 name='chevron-left'
@@ -145,10 +147,12 @@ const ResultsScreen = ({ navigation }) => {
                     />
                 </View>
                 <View style={styles.buttonArea}>
-                    <ButtonView displayText="Rematch" small={true} onPressCallback={rematch}/>
+                    <ButtonView displayText="Rematch" small={true} onPressCallback={getChallengers}/>
                 </View>
             </View>
         </View>
+        }
+        </>
     );
 };
 

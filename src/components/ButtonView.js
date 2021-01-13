@@ -5,13 +5,14 @@ import styles from '../styles/button'
 const ButtonView = ({ displayText, onPressCallback, disabled, small }) => {
     const opacity = disabled ? 0.4 : 1;
     const buttonStyle = small ? styles.smallCircle : styles.mainCircle
+    const textStyle = small ? styles.smallText : styles.text
     return (
         <View style={{ ...styles.view, opacity: opacity}}>
             <TouchableOpacity
                 disabled={disabled}
                 style={buttonStyle}
                 onPress={onPressCallback}>
-                <Text style={styles.text}>{displayText}</Text>
+                <Text style={textStyle}>{displayText}</Text>
             </TouchableOpacity>
         </View>
     );

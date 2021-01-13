@@ -110,41 +110,6 @@ export const RESPOND_TO_PUSHOFF = gql`
   }
 `
 
-export const CHALLENGER_DATA = gql`
-  query ChallengerData($challengerId: String!) {
-    challengerData(challengerId: $challengerId) {
-      challengerId
-      allChallengers {
-        id
-        username
-        records {
-          id
-          opponent {
-            id
-          }
-          won
-          lost
-          draw
-        }
-        pushes {
-          id
-          duration
-        }
-      }
-      unavailableChallengerIds
-      robos {
-        id
-        difficulty
-        challenger {
-          id
-          username
-        }
-      }
-
-    }
-  }
-`
-
 export const CREATE_PUSHOFF = gql`
   mutation CreatePushOff($input: CreatePushOffInput!){
       createPushOff(input:$input) {
@@ -172,18 +137,29 @@ export const CREATE_PUSHOFF = gql`
   }
 `
 
-export const GET_CHALLENGER_RECORDS = gql`
-  query GetChallengerRecords($input: GetRecordsInput!){
-    getChallengerRecords(input: $input){
-      id
-      records {
+export const CHALLENGER_DATA = gql`
+  query ChallengerData($challengerId: String!) {
+    challengerData(challengerId: $challengerId) {
+      allChallengers {
         id
-        opponent {
+        username
+        records {
+          opponent {
+            id
+          }
+          won
+          lost
+          draw
+        }
+      },
+      formerChallengerIds
+      unavailableChallengerIds
+      robos {
+        id
+        challenger {
           id
         }
-        won
-        lost
-        draw
+        difficulty
       }
     }
   }

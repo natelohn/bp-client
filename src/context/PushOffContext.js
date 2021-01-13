@@ -1,5 +1,5 @@
 import createDataContext from "./createDataContext";
-import { sendServerAlert } from '../components/Alerts'
+import { sendServerAlert } from '../components/Alerts';
 import { navigate } from "../navigationRef";
 
 
@@ -14,30 +14,12 @@ const pushOffReducer = (state, { type, allPushOffs, pendingPushOffList, pushOff,
             let updatedAllPushOffs = state.allPushOffs;
             updatedAllPushOffs[pushOff.id] = pushOff;
             return {...state, allPushOffs: updatedAllPushOffs, pendingPushOffList: updatedPendingPushOffs }
-        case 'setChallengerData':
-            return {...state, challengerData }
         case 'createPushOff':
             let newAll = {...state.allPushOffs};
             newAll[pushOff.id] = pushOff;
             let newPending = [...state.pendingPushOffList];
             newPending.push(pushOff);
             return {...state, pushOff, allPushOffs: newAll, pendingPushOffList: newPending}
-        case 'updateRecords':
-            const oldChallengerData = state.challengerData.allChallengers;
-            const newChallengerData = [];
-            const newFormerChallengers = [...state.challengerData.formerChallengers];
-            for(let challenger of oldChallengerData){
-                if(challenger.id in newRecordData){
-                    challenger = {...challenger, records: newRecordData[challenger.id]}
-                    const found = state.challengerData.formerChallengers.find(ch => ch.id === challenger.id);
-                    if (!found){
-                        newFormerChallengers.push(challenger);
-                    }
-                }
-                newChallengerData.push(challenger)
-            }
-            const updatedChallengerData = {...state.challengerData, allChallengers: newChallengerData, formerChallengers: newFormerChallengers}
-            return {...state, challengerData: updatedChallengerData}
         default:
             return state;
   }
