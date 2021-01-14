@@ -12,5 +12,5 @@ export const PLAYVIEW_HEADER_HEIGHT = PLAYVIEW_HEADER_TOP_PADDING + PLAYVIEW_CHA
 export const MAIN_FONT_STYLE = 'TextMeOne_400Regular';
 
 export const PRIMARY_COLOR = '#CF0000';
-export const SECONDARY_COLOR = '#DBA28D';
-export const ACCENT_COLOR = '#5C240F';
+export const SECONDARY_COLOR = '#d6c5b0';
+export const ACCENT_COLOR = '#523429';

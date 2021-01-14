@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useReducer } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View } from 'react-native';
 
 import { useQuery } from '@apollo/client';
@@ -13,32 +13,15 @@ import ReviewPendingView from '../components/ReviewPendingView';
 import styles from '../styles/home';
 
 
-
-const reducer = (state, { type }) => {
-    switch (type) {
-        case 'launch_state':
-            return { ...state, launch: true, reviewing: false };
-        case 'review_state':
-            return { ...state, launch: false, reviewing: true };
-        default:
-            return state;
-    }
-};
-
-
 const MS_POLLING = 120000; // 2 minutes
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = () => {
     // Auth Logic
     const authContext = useContext(AuthContext);
     const { challengerId } = authContext.state;
 
     // State Management
-    const [state, dispatch] = useReducer(reducer, {
-        launch: true,
-        reviewing: false,
-    });
-    const { launch, reviewing } = state;
+    const [ viewingPending, setViewingPending ] = useState(false);
 
     const { setPushOffData } = useContext(PushOffContext);
 
@@ -51,23 +34,13 @@ const HomeScreen = ({ navigation }) => {
         }
     }, [ pushOffQuery.loading ]);
     
-    //Callback Functions
-    const launchState = () => {
-        dispatch({ type: 'launch_state' });
-    }
-
-    const reviewState = () => {
-        dispatch({ type: 'review_state' });
-    }
-
-    
     return (
         <View style={ styles.view }>
-        { launch ?
-            <LaunchView beginReview={ reviewState }/>
+        { !viewingPending ?
+            <LaunchView viewPending={ () => { setViewingPending(true) } }/>
         : null }
-        { reviewing ?
-            <ReviewPendingView endReview={ launchState }/>
+        { viewingPending ?
+            <ReviewPendingView endViewPending={ () => { setViewingPending(false) }}/>
         : null }
         </View>
     );
