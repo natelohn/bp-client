@@ -101,23 +101,11 @@ const LaunchView = ({ viewPending }) => {
     const reviewIconColor = reviewOpen ? SECONDARY_COLOR : ACCENT_COLOR;
 
     const transitonToCreate = () => {
-        LayoutAnimation.configureNext({
-            duration: 100,
-            create: { type: 'linear', property: 'scaleXY' },
-            update: { type: 'spring', springDamping: 0.4 },
-            delete: { type: 'linear', property: 'scaleXY' } }
-        );
         dispatch({type: 'close_all'});
         getChallengers();
     }
 
     const transitonToViewPending = () => {
-        LayoutAnimation.configureNext({
-            duration: 100,
-            create: { type: 'linear', property: 'scaleXY' },
-            update: { type: 'spring', springDamping: 0.4 },
-            delete: { type: 'linear', property: 'scaleXY' } }
-        );
         dispatch({type: 'close_all'});
         viewPending();
     }

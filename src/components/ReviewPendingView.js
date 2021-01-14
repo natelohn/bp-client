@@ -1,19 +1,24 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { Animated, Dimensions, Text, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-elements'
-
+import { useMutation } from '@apollo/client';
+import {  RESPOND_TO_PUSHOFF } from '../apollo/gql'
 import { navigate } from '../navigationRef';
 import ButtonView from './ButtonView'
 import Carousel from './Carousel' 
 import { showForfeitPrompt } from './Alerts'
+import { Context as AuthContext } from '../context/AuthContext';
 import { Context as PushOffContext } from '../context/PushOffContext';
 import { ACCENT_COLOR } from '../styles/global'
 import styles from '../styles/reviewPending'
 
-const ReviewPendingView = ({ endReview }) => {
+const ReviewPendingView = ({ endViewPending }) => {
     // Context
-    const { state } = useContext(PushOffContext);
+    const authContext = useContext(AuthContext);
+    const { challengerId } = authContext.state;
+    const { state, respondToPushOff} = useContext(PushOffContext);
     const { pendingPushOffList, pushOff } = state;
+    const [ callRespondToPushOff ] = useMutation(RESPOND_TO_PUSHOFF);
 
     useEffect(() => {
         showCarosel();
@@ -39,15 +44,16 @@ const ReviewPendingView = ({ endReview }) => {
             useNativeDriver: true
         }).start(({ finished }) => {
             if (finished) {
-                endReview();
+                endViewPending();
             }
         });
     }
 
+
     // Callbacks
     const forfeitCallback = () => {
-        console.log("Forfeit")
-        // TODO: Add forfeit API call
+        endViewPending();
+        respondToPushOff(challengerId, pushOff.id, 0, callRespondToPushOff);
     }
     
     const forfeitPushOff = () => {
@@ -57,7 +63,7 @@ const ReviewPendingView = ({ endReview }) => {
     }
 
     const startPushOff = () => {
-        endReview();
+        endViewPending();
         navigate("Play")
     }
 

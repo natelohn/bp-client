@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Animated, Dimensions, Text, View } from 'react-native';
 import { useMutation } from '@apollo/client';
-import {  RESPOND_TO_PUSHOFF } from '../apollo/gql'
+import {  RESPOND_TO_PUSHOFF } from '../apollo/gql';
 import styles from '../styles/play'
 import { MAIN_BUTTON_DIAMETER, PLAYVIEW_HEADER_HEIGHT, PLAY_BUTTON_TOP_MARGIN } from '../styles/global'
 import { getRandomInt, formatTime } from '../utils';

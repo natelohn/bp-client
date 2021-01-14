@@ -6,17 +6,25 @@ import styles from '../styles/loading';
 import { getRandomInt } from '../utils';
 
 const LoadingView = () => {
-    // TODO: Fix the text to where it is centered (add spaces?)
-    const loadingIndicators = ['', '.', '..', '...']
     const [ iteration, setIteration ] = useState(0);
-    const [ loadingText, setLoadingText ] = useState('Loading...');
+    const [ countingUp, setCountingUp ] = useState(true);
     useEffect(()=>{
         let interval = setInterval(() => {
-            const indicator = iteration % 4;
-            const newText = 'Loading'.concat(loadingIndicators[indicator]);
-            setLoadingText(newText)
+        if (iteration >= 2){
+            if (countingUp) {
+                setIteration((i) => i + 1);
+            } else {
+                setIteration((i) => i - 1);
+            }
+            if (countingUp && iteration === 9) {
+                setCountingUp(false)
+            } else if (!countingUp && iteration === 4) {
+                setCountingUp(true)
+            }
+        } else {
             setIteration((i) => i + 1);
-        }, 500);
+        }
+        }, 100);
         return () => {
             clearInterval(interval);
         }; 
@@ -59,7 +67,7 @@ const LoadingView = () => {
     return (
         <View style={styles.view}>
             <Animated.View style={[{ ...styles.buttonView, transform: [{ translateX: buttonX }, { translateY: buttonY }]}]}>
-                <ButtonView onPressCallback={moveButtonRandomly} displayText={loadingText} small={true} />
+                <ButtonView onPressCallback={moveButtonRandomly} displayText={'Loading'} textOpacity={iteration / 10}/>
             </Animated.View>
         </View>
     );
