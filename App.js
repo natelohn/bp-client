@@ -16,6 +16,10 @@ import HomeScreen from './src/screens/HomeScreen';
 import PlayScreen from './src/screens/PlayScreen';
 import CreateScreen from './src/screens/CreateScreen';
 import ResultsScreen from './src/screens/ResultsScreen';
+import HelpScreen from './src/screens/HelpScreen';
+import SettingsScreen from './src/screens/SettingsScreen';
+import HistoryScreen from './src/screens/HistoryScreen';
+import LeaderboardScreen from './src/screens/LeaderboardScreen';
 
 // TODO: Enforce styling
 const switchNavigator = createSwitchNavigator({
@@ -27,7 +31,11 @@ const switchNavigator = createSwitchNavigator({
         Home: HomeScreen,
         Create: CreateScreen,
         Results: ResultsScreen,
-        Play: PlayScreen
+        Play: PlayScreen,
+        Help: HelpScreen,
+        Settings: SettingsScreen,
+        History: HistoryScreen,
+        Leaderboard: LeaderboardScreen
     }, { headerMode: 'none' }
     )
 });

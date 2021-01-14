@@ -9,7 +9,7 @@ import { navigate } from '../navigationRef';
 import ButtonView from '../components/ButtonView';
 import LoadingView from '../components/LoadingView';
 import styles from '../styles/launch'
-import { ACCENT_COLOR, PRIMARY_COLOR, SECONDARY_COLOR } from '../styles/global'
+import { ACCENT_COLOR, SECONDARY_COLOR } from '../styles/global'
 import { sendServerAlert } from './Alerts';
 
 const reducer = (state, { type }) => {
@@ -140,7 +140,7 @@ const LaunchView = ({ viewPending }) => {
                     size={32}
                     color={ ACCENT_COLOR }
                     containerStyle={styles.historyIcon}
-                    onPress={ () => console.log('history!') }
+                    onPress={ () => navigate('History') }
                 />
                 <Icon
                     name='trophy'
@@ -148,7 +148,7 @@ const LaunchView = ({ viewPending }) => {
                     size={32}
                     color={ ACCENT_COLOR }
                     containerStyle={styles.leaderboardIcon}
-                    onPress={ () => console.log('leaderboard!') }
+                    onPress={ () => navigate('Leaderboard') }
                 />
             </View> : null }
             { settingsOpen ?
@@ -159,7 +159,7 @@ const LaunchView = ({ viewPending }) => {
                     size={30}
                     color={ ACCENT_COLOR }
                     containerStyle={styles.userIcon}
-                    onPress={ () => console.log('user!') }
+                    onPress={ () => navigate('Settings') }
                 />
                 <Icon
                     name='question-circle'
@@ -167,7 +167,7 @@ const LaunchView = ({ viewPending }) => {
                     size={32}
                     color={ ACCENT_COLOR }
                     containerStyle={styles.helpIcon}
-                    onPress={ () => console.log('help!') }
+                    onPress={ () => navigate('Help') }
                 />
             </View> : null }
             <View style={styles.buttonArea}>
