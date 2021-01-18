@@ -1,8 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { ACCENT_COLOR, MAIN_FONT_STYLE, TOP_ICON_OFFSET, SECONDARY_COLOR, SIDE_ICON_OFFSET, PRIMARY_COLOR } from './global';
-
-
-const ICON_SIZE = 40;
+import { ACCENT_COLOR, MAIN_FONT_STYLE, RESULT_ICON_SIZE, SECONDARY_COLOR } from './global';
 
 const text = {
     fontFamily: MAIN_FONT_STYLE,
@@ -22,12 +19,13 @@ const styles = StyleSheet.create({
         height: 70
     },
     iconView: {
+        alignSelf: 'center',
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: ACCENT_COLOR,
-        height: ICON_SIZE,
-        width: ICON_SIZE,
-        borderRadius: ICON_SIZE / 2
+        height: RESULT_ICON_SIZE,
+        width: RESULT_ICON_SIZE,
+        borderRadius: RESULT_ICON_SIZE / 2
     },
     headerView: {
         flex: 1,

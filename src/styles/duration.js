@@ -50,7 +50,11 @@ const styles = StyleSheet.create({
         fontSize: 18,
         marginLeft: 5,
         width: RESULT_TIME_WIDTH
-    }
+    },
+    awaiting: {
+        ...textConstants,
+        fontSize: 14
+    },
 });
 
 export default styles;

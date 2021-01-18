@@ -60,7 +60,7 @@ const Duration = ({ result, rank, windthMultiplier, longestDuration, challengerC
                 <View style={styles.bar}/>
             </View>
             :
-            <Text style={styles.name}>Awaiting Completion</Text>
+            <Text style={styles.awaiting}>Awaiting Completion</Text>
             }
             </>
         );
