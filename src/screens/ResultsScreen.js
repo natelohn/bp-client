@@ -75,10 +75,6 @@ const ResultsScreen = ({ navigation }) => {
         }
     });
 
-    const navHome = () => {
-        navigate("Home");
-    }
-
     // Prepare query for create screen
     const [ getChallengers, { called, loading, data, error } ] = useLazyQuery(CHALLENGER_DATA, { variables: { challengerId }, fetchPolicy: "cache-and-network" });
     const [ loadingChallengers, setLoadingChallengers ] = useState(false);
@@ -114,7 +110,7 @@ const ResultsScreen = ({ navigation }) => {
                 size={32}
                 color={ ACCENT_COLOR }
                 containerStyle={styles.backIcon}
-                onPress={ navHome }
+                onPress={ () => navigate("History") }
             />
             <View style={{height: mainViewHeight, width: mainViewWidth}}>
                 <View style={styles.recordView}>

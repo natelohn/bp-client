@@ -14,3 +14,7 @@ export const MAIN_FONT_STYLE = 'TextMeOne_400Regular';
 export const PRIMARY_COLOR = '#CF0000';
 export const SECONDARY_COLOR = '#d6c5b0';
 export const ACCENT_COLOR = '#523429';
+
+export const GOLD = '#D1B000';
+export const SILVER = '#C0C0C0';
+export const BRONZE = '#a44728';

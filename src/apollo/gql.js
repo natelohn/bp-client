@@ -72,6 +72,7 @@ export const PUSHOFF_QUERY = gql`
       pushes {
         id
         duration
+        completed
         challenger {
           id
           username
@@ -120,6 +121,7 @@ export const CREATE_PUSHOFF = gql`
         }
         pushes {
           id
+          completed
           challenger {
             id
             username

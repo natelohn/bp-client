@@ -1,3 +1,6 @@
+import { BRONZE, GOLD, PRIMARY_COLOR, SILVER } from './styles/global';
+
+
 export const formatMobileNumber = (text) => {
     let formated = text.replace(/\D/g, "");
     const length = formated.length
@@ -75,6 +78,12 @@ export const formatDate = (dateString) => {
     return formattedDate
 }
 
+export const formatShortDate = (dateString) => {
+    let dateObject = new Date(dateString);
+    const formattedDate = dateObject.toLocaleDateString("en-US");
+    return formattedDate
+}
+
 export const calculateRecord = (pushOff, challengerId) => {
     const myPush = pushOff.pushes.find(p => p.challenger.id === challengerId)
     let wins = 0;
@@ -116,4 +125,35 @@ export const isRoboId = ( id ) => {
         '349e5b16-f0cc-44eb-aaa7-e1c96dbbf6c8'
     ];
     return roboIds.some(roboId => roboId === id);
+}
+
+
+// Found here: https://stackoverflow.com/questions/13627308/add-st-nd-rd-and-th-ordinal-suffix-to-a-number
+export const addOrdinalSuffix = (i) => {
+    let j = i % 10
+    let k = i % 100;
+    if (j === 1 && k != 11) {
+        return i + "st";
+    }
+    if (j === 2 && k != 12) {
+        return i + "nd";
+    }
+    if (j === 3 && k != 13) {
+        return i + "rd";
+    }
+    return i + "th";
+}
+
+
+export const getPushOffResultIcon = (rank, pushOff) => {
+    if (!pushOff.final) {
+        return { title: "question", color: PRIMARY_COLOR }
+    } else if (rank === pushOff.pushes.length) {
+        return { title: "sad-cry", color: PRIMARY_COLOR }
+    } else if (rank <= 3) {
+        const medals = [GOLD, SILVER, BRONZE]
+        return { title: "medal", color: medals[rank - 1] }
+    } else {
+        return { title: "meh", color: PRIMARY_COLOR }
+    }
 }

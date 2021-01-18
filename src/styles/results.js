@@ -36,7 +36,6 @@ const styles = StyleSheet.create({
     },
     durations: {
         flex: 3,
-        borderColor: ACCENT_COLOR
     },
     buttonArea: {
         flex: 1,
