@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { View, ScrollView, Text, Animated} from 'react-native'
 import { Context as PushOffContext } from "../context/PushOffContext";
 import PendingPushInfo from './PendingPushInfo';
+import Leaderboard from './LeaderboardList';
 import styles from '../styles/carousel'
 
 const Carousel = ( props ) => {
@@ -79,9 +80,17 @@ const Carousel = ( props ) => {
         >
           {items.map((item , index ) => {
             switch (style) {
+              case 'pending':
+                return(
+                  <PendingPushInfo key={index} pendingPush={item}/>
+                );
+              case 'leaderboard':
+                return(
+                  <Leaderboard key={index} leaderboard={item}/>
+                );
               default:
                 return (
-                  <PendingPushInfo key={index} pendingPush={item}/>
+                  <></>
                 );
             }
           })}

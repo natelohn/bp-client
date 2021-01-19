@@ -166,3 +166,52 @@ export const CHALLENGER_DATA = gql`
     }
   }
 `
+
+export const LEADERBOARD_DATA = gql`
+  query LeaderboardData($challengerId: String!) {
+    leaderboardData(challengerId: $challengerId) {
+      longestPushGlobal {
+        stat
+        challenger {
+          id
+          username
+        }
+      }
+      longestPushTotalGlobal {
+        stat
+        challenger{
+          id
+          username
+        }
+      }
+      mostWinsGlobal {
+        stat
+        challenger {
+          id
+          username
+        }
+      }
+      longestPushFriends {
+        stat
+        challenger{
+          username
+          id
+        }
+      }
+      longestPushTotalFriends {
+        stat
+        challenger {
+          username
+          id
+        }
+      }
+      mostWinsFriends {
+        stat
+        challenger{
+          id
+          username
+        }
+      }
+    }
+  }
+`

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useReducer, useState } from 'react';
 import { LayoutAnimation, TouchableOpacity, Text, View } from 'react-native';
 import { Icon } from 'react-native-elements'
 import { useLazyQuery } from '@apollo/client';
-import { CHALLENGER_DATA } from '../apollo/gql';
+import { CHALLENGER_DATA, LEADERBOARD_DATA } from '../apollo/gql';
 import { Context as AuthContext } from "../context/AuthContext";
 import { Context as PushOffContext } from "../context/PushOffContext";
 import { navigate } from '../navigationRef';
@@ -37,21 +37,35 @@ const LaunchView = ({ viewPending }) => {
     // Prepare query for create screen
     const authContext = useContext(AuthContext)
     const challengerId = authContext.state.challengerId;
-    const challengerQueryOptions = { variables: { challengerId }, fetchPolicy: "cache-and-network" };
-    const [ getChallengers, { called, loading, data, error } ] = useLazyQuery(CHALLENGER_DATA, challengerQueryOptions);
+    const queryOptions = { variables: { challengerId }, fetchPolicy: "cache-and-network" };
+    const [ getChallengers, challengers ] = useLazyQuery(CHALLENGER_DATA, queryOptions);
+    const [ getLeaderboard, leaderboard ] = useLazyQuery(LEADERBOARD_DATA, queryOptions);
     const [ loadingChallengers, setLoadingChallengers ] = useState(false);
+    const [ loadingLeaderboard, setLoadingLeaderboard ] = useState(false);
 
     useEffect(() => {
-        setLoadingChallengers(loading)
-        if(called && !loading) {
-            if (error) {
+        setLoadingChallengers(challengers.loading)
+        if(challengers.called && !challengers.loading) {
+            if (challengers.error) {
                 sendServerAlert();
             } else {
-                const { challengerData } = data;
+                const { challengerData } = challengers.data;
                 navigate('Create', { challengerData });
             }
         }
-    }, [called, loading]);
+    }, [challengers.called, challengers.loading]);
+
+    useEffect(() => {
+        setLoadingLeaderboard(leaderboard.loading)
+        if(leaderboard.called && !leaderboard.loading) {
+            if (leaderboard.error) {
+                sendServerAlert();
+            } else {
+                const { leaderboardData } = leaderboard.data;
+                navigate('Leaderboard', { leaderboardData });
+            }
+        }
+    }, [leaderboard.called, leaderboard.loading]);
 
     // Context
     const pushContext = useContext(PushOffContext);
@@ -105,6 +119,11 @@ const LaunchView = ({ viewPending }) => {
         getChallengers();
     }
 
+    const transitonToLeaderboard = () => {
+        dispatch({type: 'close_all'});
+        getLeaderboard();
+    }
+
     const transitonToViewPending = () => {
         dispatch({type: 'close_all'});
         viewPending();
@@ -112,7 +131,7 @@ const LaunchView = ({ viewPending }) => {
 
     return (
         <>
-        { loadingChallengers ?
+        { loadingChallengers || loadingLeaderboard ?
         <LoadingView/>
         :
         <>
@@ -148,7 +167,7 @@ const LaunchView = ({ viewPending }) => {
                     size={32}
                     color={ ACCENT_COLOR }
                     containerStyle={styles.leaderboardIcon}
-                    onPress={ () => navigate('Leaderboard') }
+                    onPress={ transitonToLeaderboard }
                 />
             </View> : null }
             { settingsOpen ?

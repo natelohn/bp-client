@@ -157,3 +157,11 @@ export const getPushOffResultIcon = (rank, pushOff) => {
         return { title: "meh", color: PRIMARY_COLOR }
     }
 }
+
+export const getDisplayUsername = (username) => {
+    if(username.length > 22){
+        username.slice(0, 22).concat('...')
+    } else {
+        return username;
+    }
+}

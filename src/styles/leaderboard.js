@@ -1,17 +1,83 @@
 import { StyleSheet } from 'react-native';
-import { TOP_ICON_OFFSET, SECONDARY_COLOR, SIDE_ICON_OFFSET } from './global'
+
+import { MAIN_FONT_STYLE, ACCENT_COLOR } from './global';
+
+const text = {
+    textAlign: 'center',
+    fontFamily: MAIN_FONT_STYLE,
+    color: ACCENT_COLOR,
+}
+
+const shaddowText = {
+    textShadowColor: ACCENT_COLOR,
+    textShadowOffset: {width: -0.5, height: 0.5},
+    textShadowRadius: 10,
+}
 
 const styles = StyleSheet.create({
-    view: {
-        justifyContent: 'center',
-        alignItems: 'center',
+    caroselView: {
+        flexBasis: '100%',
         flex: 1,
-        backgroundColor: SECONDARY_COLOR
+        maxWidth: '100%',
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        justifyContent: 'center',
+        alignContent: "center"
     },
-    back: {
-        position: 'absolute',
-        top: TOP_ICON_OFFSET,
-        left: SIDE_ICON_OFFSET
+    view: {
+        alignItems: 'center',
+        width: '100%'
+    },
+    title: {
+        ...text,
+        fontSize: 36,
+        textDecorationLine: 'underline'
+    },
+    myEntry: {
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    myName: {
+        ...text,
+        alignSelf: 'center',
+        fontSize: 24,
+        paddingRight: 5
+    },
+    myResults: {
+        borderLeftWidth: 1,
+        borderColor: ACCENT_COLOR,
+        paddingLeft: 5
+    },
+    resultText: {
+        ...text,
+        fontSize: 16
+    },
+    leaderboard: {
+        height: '82%',
+        width: '95%'
+    },
+    leaderboardEntry: {
+        flexDirection: 'row',
+        borderBottomWidth: 1,
+        borderColor: ACCENT_COLOR,
+        marginTop: 5
+    },
+    entryRank: {
+        ...text,
+        fontSize: 18,
+        width: 55
+    },
+    entryName: {
+        ...text,
+        fontSize: 18,
+        flex: 1,
+        textAlign: 'left'
+    },
+    entryStat: {
+        ...text,
+        fontSize: 18
     },
 });
 
