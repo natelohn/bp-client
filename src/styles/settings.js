@@ -16,6 +16,7 @@ const styles = StyleSheet.create({
     },
     editPrompt: {
         height: 40,
+        color: ACCENT_COLOR,
         borderBottomColor: ACCENT_COLOR,
         fontFamily: MAIN_FONT_STYLE,
         fontSize: 32,
@@ -23,6 +24,7 @@ const styles = StyleSheet.create({
     },
     textInput: {
         height: 40,
+        color: ACCENT_COLOR,
         fontFamily: MAIN_FONT_STYLE,
         fontSize: 36,
         marginBottom: 40
@@ -33,6 +35,7 @@ const styles = StyleSheet.create({
     logout: {
         borderBottomColor: ACCENT_COLOR,
         fontFamily: MAIN_FONT_STYLE,
+        color: ACCENT_COLOR,
         fontSize: 22,
         textDecorationLine: 'underline'
     }

@@ -1,8 +1,10 @@
 import React, { useContext } from 'react';
 import { FlatList, Text, View } from 'react-native';
+import { Icon } from 'react-native-elements';
 import { Context as AuthContex } from '../context/AuthContext';
+import { ACCENT_COLOR } from '../styles/global';
 import styles from '../styles/leaderboard';
-import { addOrdinalSuffix, getDisplayUsername } from '../utils';
+import { addOrdinalSuffix, getDisplayUsername, isRoboId } from '../utils';
 
 const Leaderboard = ({ leaderboard }) => {
     const { title, list, formatCallback } = leaderboard;
@@ -41,11 +43,23 @@ const Leaderboard = ({ leaderboard }) => {
                         renderItem={({ item, index }) => {
                             const rankText = addOrdinalSuffix(index + 1);
                             const usernameText = getDisplayUsername(item.challenger.username);
+                            const isRobo = isRoboId(item.challenger.id)
                             const formattedStat = formatCallback(item.stat)
                             return (
                                 <View style={styles.leaderboardEntry}>
                                     <Text style={styles.entryRank}>{rankText}</Text>
-                                    <Text style={styles.entryName}>{usernameText}</Text>
+                                    <View style={styles.entryNameView}>
+                                        <Text style={styles.entryName}>{usernameText}</Text>
+                                        { isRobo ?
+                                        <Icon
+                                            containerStyle={styles.roboIcon}
+                                            name='robot'
+                                            type='font-awesome-5'
+                                            size={10}
+                                            color={ ACCENT_COLOR }
+                                        />
+                                        : null}
+                                    </View>
                                     <Text style={styles.entryStat}>{formattedStat}</Text>
                                 </View>
                             );

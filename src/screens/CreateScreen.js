@@ -108,17 +108,17 @@ const CreateScreen = ({ navigation }) => {
         const showNew = unselectedNewHumans.length > 0 && index === newIndex;
         const maxReached = selectedChallengers.length >= MAX_CHALLENGERS;
         if (showSelected) {
-            return { showSeparator: true, separatorMessage: '- Selected Challengers -' };
+            return { showSeparator: true, separatorMessage: 'Selected Challengers' };
         } else if (maxReached) {
             if (index === selectedChallengers.length) {
-                return { showSeparator: true, separatorMessage: '- Max Selected -' };
+                return { showSeparator: true, separatorMessage: 'Max Selected' };
             }
         } else if (showRobo) {
-            return { showSeparator: true, separatorMessage: '- Robo Challengers -' };
+            return { showSeparator: true, separatorMessage: 'Robo Challengers' };
         } else if (showFormer) {
-            return{ showSeparator: true, separatorMessage: '- Former Challengers -' };
+            return{ showSeparator: true, separatorMessage: 'Former Challengers' };
         } else if (showNew) {
-            return{ showSeparator: true, separatorMessage: '- New Challengers -' };
+            return{ showSeparator: true, separatorMessage: 'New Challengers' };
         }
         return { showSeparator: false, separatorMessage: '' };
     };

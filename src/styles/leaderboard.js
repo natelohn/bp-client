@@ -69,11 +69,17 @@ const styles = StyleSheet.create({
         fontSize: 18,
         width: 55
     },
+    entryNameView: {
+        flex: 1,
+        flexDirection: 'row'
+    },
     entryName: {
         ...text,
         fontSize: 18,
-        flex: 1,
         textAlign: 'left'
+    },
+    roboIcon: {
+        marginLeft: 2
     },
     entryStat: {
         ...text,

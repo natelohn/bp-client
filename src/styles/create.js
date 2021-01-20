@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
         borderColor: ACCENT_COLOR,
     },
     selectView: {
+        backgroundColor: ACCENT_COLOR,
         borderColor: ACCENT_COLOR,
         borderWidth: 1
     },

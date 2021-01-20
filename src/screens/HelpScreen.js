@@ -9,7 +9,7 @@ const HelpScreen = () => {
 
     const testWillText = 'Do you and a friend want to settle a dispute? Want to test your will rather than relying on luck or skill? See who wants it more with Button Push!';
     const howToPlayText = 'To play, just keep pushing that button as it moves around the screen! If you don\'t push the button for 10 seconds, you are done and your time is logged.';
-    const howToWinText = 'You won\'t now how long you\'ll need to push for until you are done so perserverence is key. Push longer than all your friends and you win!';
+    const howToWinText = 'You won\'t know how long you\'ll need to push for until you are done so perserverence is key. Push longer than all your friends and you win!';
     const roboExplanationText = 'A few robots have really taken to Button Push and use it regularly. Some of them are more determined than others, but all of them want to test their will againt you!';
     const contactText = 'We at Button Push want to be as helpful as we can so please don\'t hesitate to contact us @ hello@natelohn.com with any and all questions or concerns. Happy Pushing!';
     return (
