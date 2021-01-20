@@ -60,7 +60,7 @@ const reducer = (state, {type, username, phone, otp}) => {
 };
 
 
-const AuthScreen = ({ navigation }) => {
+const AuthScreen = () => {
     const { signup, login } = useContext(AuthContext);
     // Apollo Client Hooks
     const [callInitiateVerification] = useMutation(INIT_VERIFICATION_MUTATION);
@@ -110,8 +110,9 @@ const AuthScreen = ({ navigation }) => {
     const mainY = useRef(new Animated.Value(0)).current;
     const subX = useRef(new Animated.Value(0)).current;
     const subY = useRef(new Animated.Value(0)).current;
+    // TODO: Fix these values to work with all size screens
     const buttonsMoveX = screenWidth / 5;
-    const buttonsMoveY = (screenHeight / 7) * -1
+    const buttonsMoveY = (screenHeight / 9) * -1
     
     const buttonsToSubmitState = () => {
         Animated.spring(mainX, {
@@ -197,6 +198,7 @@ const AuthScreen = ({ navigation }) => {
         } else {
             // send the init verification query
             if (signingUp) {
+                // TODO: Check username for profanity/hate speach
                 signup({ username, phone: usPhoneNumber(phone), otp }, callSignUp, subButtonPressed, initiateVerification);
             } else {
                 login({ phone: usPhoneNumber(phone), otp }, callLogin, subButtonPressed, initiateVerification);
@@ -244,7 +246,21 @@ const AuthScreen = ({ navigation }) => {
                         onSubmitEditing={() => phone_input.current.focus()}
                         blurOnSubmit={false} /> 
                 </Animated.View>
-                { !verifying && 
+                { verifying ?
+                <Animated.View style={[{ transform: [{ translateX: otpX }]}]}>
+                    <TextInput 
+                        style={styles.codeInput}
+                        value={otp}
+                        placeholder='Passcode'
+                        textContentType={'oneTimeCode'}
+                        keyboardType={'number-pad'}
+                        maxLength={5}
+                        onChangeText={(otp) => {dispatch({type: 'otp_edit', otp})}}
+                        returnKeyType="send"
+                        onSubmitEditing={() => mainButtonPressed()}
+                        autoFocus={verifying}/> 
+                </Animated.View>
+                :
                 <Animated.View style={[{ transform: [{ translateX: phoneX }]}]}>
                     <TextInput 
                         style={styles.textInput}
@@ -259,30 +275,17 @@ const AuthScreen = ({ navigation }) => {
                         autoFocus={submitState && !signingUp}/> 
                 </Animated.View>
                 }
-                { verifying && 
-                <Animated.View style={[{ transform: [{ translateX: otpX }]}]}>
-                    <TextInput 
-                        style={styles.codeInput}
-                        value={otp}
-                        placeholder='Passcode'
-                        textContentType={'oneTimeCode'}
-                        keyboardType={'number-pad'}
-                        maxLength={5}
-                        onChangeText={(otp) => {dispatch({type: 'otp_edit', otp})}}
-                        returnKeyType="send"
-                        onSubmitEditing={() => mainButtonPressed()}
-                        autoFocus={verifying}/> 
-                </Animated.View>
-                }
             </View>
-            <Animated.View style={[{transform: [{scale: buttonScale}, {translateX: mainX}, {translateY: mainY}]}]}>
-                <ButtonView text={mainButtonText} onPressCallback={mainButtonPressed} disabled={!formIsValid}/>
-            </Animated.View>
-            <Animated.View style={[{transform: [{translateX: subX}, {translateY: subY}]}]}>
-                <TouchableOpacity style={styles.subButton} onPress={subButtonPressed}>
-                    <Text style={styles.subButtonText}>{subButtonText}</Text>
-                </TouchableOpacity>
-            </Animated.View>
+            <View style={styles.buttonArea}>
+                <Animated.View style={[{transform: [{scale: buttonScale}, {translateX: mainX}, {translateY: mainY}]}]}>
+                    <ButtonView displayText={mainButtonText} onPressCallback={mainButtonPressed} disabled={!formIsValid}/>
+                </Animated.View>
+                <Animated.View style={[{transform: [{translateX: subX}, {translateY: subY}]}]}>
+                    <TouchableOpacity style={styles.subButton} onPress={subButtonPressed}>
+                        <Text style={styles.subButtonText}>{subButtonText}</Text>
+                    </TouchableOpacity>
+                </Animated.View>
+            </View>
         </View>
     );
 }

@@ -1,36 +1,23 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
+import styles from '../styles/button'
 
-const styles = StyleSheet.create({
-    view: {
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    circle: {
-        zIndex : 0,
-        borderWidth: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: 200,
-        width: 200,
-        borderRadius: 100,
-        backgroundColor: '#CF0000',
-        borderColor: '#5C240F'
-    },
-    text: {
-        fontSize: 42,
-        fontFamily: 'TextMeOne_400Regular',
-        color: '#5C240F'
-    },
-});
-
-const ButtonView = ({ text, onPressCallback, disabled}) => {
-    const enabledColors = { backgroundColor: '#CF0000', color: '#5C240F', borderColor: '#5C240F' };
-    const opacity = disabled ? 0.4: 1;
+const ButtonView = ({ displayText, onPressCallback, disabled, small, textOpacity }) => {
+    const opacity = disabled ? 0.4 : 1;
+    const buttonStyle = small ? styles.smallCircle : styles.mainCircle
+    const textStyle = small ? styles.smallText : styles.text
     return (
         <View style={{ ...styles.view, opacity: opacity}}>
-            <TouchableOpacity disabled={disabled} style={styles.circle} onPress={onPressCallback}>
-                {text ? <Text style={styles.text}>{text}</Text>: null}
+            <TouchableOpacity
+                disabled={disabled}
+                style={buttonStyle}
+                onPress={onPressCallback}
+            >
+                {textOpacity != null ?
+                <Text style={{...textStyle, opacity: textOpacity}}>{displayText}</Text>
+                :
+                <Text style={textStyle}>{displayText}</Text>
+                }
             </TouchableOpacity>
         </View>
     );

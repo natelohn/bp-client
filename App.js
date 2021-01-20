@@ -7,22 +7,37 @@ import { AppLoading } from 'expo';
 
 import { setNavigator } from "./src/navigationRef"
 import { Provider as AuthProvider } from "./src/context/AuthContext";
+import { Provider as PushOffProvider } from "./src/context/PushOffContext";
 import apoloClient from './src/apollo/index';
 
 import ResolveAuthScreen from "./src/screens/ResolveAuthScreen";
 import AuthScreen from "./src/screens/AuthScreen";
 import HomeScreen from './src/screens/HomeScreen';
+import PlayScreen from './src/screens/PlayScreen';
+import CreateScreen from './src/screens/CreateScreen';
+import ResultsScreen from './src/screens/ResultsScreen';
+import HelpScreen from './src/screens/HelpScreen';
+import SettingsScreen from './src/screens/SettingsScreen';
+import HistoryScreen from './src/screens/HistoryScreen';
+import LeaderboardScreen from './src/screens/LeaderboardScreen';
 
-
-
+// TODO: Enforce styling
 const switchNavigator = createSwitchNavigator({
     ResolveAuth: ResolveAuthScreen,
     authFlow: createStackNavigator({
         Auth: AuthScreen
-    }),
+    }, { headerMode: 'none' }),
     mainFlow: createStackNavigator({
         Home: HomeScreen,
-    })
+        Create: CreateScreen,
+        Results: ResultsScreen,
+        Play: PlayScreen,
+        Help: HelpScreen,
+        Settings: SettingsScreen,
+        History: HistoryScreen,
+        Leaderboard: LeaderboardScreen
+    }, { headerMode: 'none' }
+    )
 });
 
 const App = createAppContainer(switchNavigator);
@@ -36,7 +51,9 @@ export default () => {
     return (
         <ApolloProvider client={apoloClient}>
             <AuthProvider>
-                <App ref={(navigator) => setNavigator(navigator)} />
+                <PushOffProvider>
+                    <App ref={(navigator) => setNavigator(navigator)} />
+                </PushOffProvider>
             </AuthProvider>
         </ApolloProvider>
     );

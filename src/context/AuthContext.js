@@ -1,17 +1,20 @@
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage } from 'react-native'; // TODO: Update AsyncStorage 
 import createDataContext from "./createDataContext";
 import { navigate } from "../navigationRef";
 import { sendServerAlert, showOTPError } from '../components/Alerts'
 
 
-const authReducer = (state, {type, userId}) => {
+const authReducer = (state, {type, userId, challengerId, username}) => {
   switch (type) {
-      case 'signin':
-          return {...state, userId };
-      case 'signout':
-          return {...state, userId: null };
-      default:
-          return state;
+    case 'signin':
+        return {...state, userId, challengerId, username};
+    case 'signout':
+        return {...state, userId: null, challengerId: null, username: null};
+    case 'updateUsername':
+        // TODO: Always get my username from this value
+        return {...state, username };
+    default:
+        return state;
   }
 };
 
@@ -23,11 +26,17 @@ const signup = dispatch => async ({ username, phone, otp }, signUpCallback, subB
     .then( async ({data}) => {
         // if success -> go to home screen
         if (data.register.accessToken) {
-            // Persist the token in local storage     
+            // Persist the token in local storage
+            // TODO: Update to seperate local storage method
             await AsyncStorage.setItem('jwt', data.register.accessToken);
             // Update state & direct to home screen
-            dispatch({ type: 'signin', userId: data.register.userId });
-            navigate('Home');
+            dispatch({
+                type: 'signin',
+                userId: data.register.userId,
+                challengerId: data.register.challengerId,
+                username: data.register.username
+             });
+            navigate('mainFlow');
         } 
         // Handle errors if sign up failed
         else {
@@ -49,8 +58,13 @@ const login = dispatch => async ({ phone, otp }, loginCallback, subButtonPressed
             // Persist the token in local storage
             await AsyncStorage.setItem('jwt', data.login.accessToken);
             // Update state to direct to home screen
-            dispatch({ type: 'signin', userId: data.login.userId });
-            navigate('Home');
+            dispatch({
+                type: 'signin',
+                userId: data.login.userId,
+                challengerId: data.login.challengerId,
+                username: data.login.username
+             });
+            navigate('mainFlow');
         } 
         // Handle errors if login failed
         else {
@@ -68,17 +82,35 @@ const signout = dispatch => async () => {
     navigate('authFlow');
 };
 
+const updateUsername = dispatch => async( challengerId, newUsername, mutationCallback ) => {
+        mutationCallback({
+            variables: { challengerId, newUsername },
+        })
+        .then(async ({data}) => {
+            const username = data.updateUsername;
+            dispatch({type: 'updateUsername', username});
+        })
+        // if failure -> send server issue error
+        .catch(() => { sendServerAlert() });
+}
+
 const tryLocalSignIn = dispatch => async (data, error) => {
     if (!error) {
-        dispatch({type: 'signin', userId: data.userId });
-        navigate('Home');
+        const authData = {
+            userId: data.getUserFromContext.id,
+            challengerId: data.getUserFromContext.challenger.id,
+            username: data.getUserFromContext.challenger.username
+        }
+        dispatch({...authData, type: 'signin' });
+        navigate('mainFlow');
     } else {
         navigate('authFlow');
     }
 }
 
+
 export const {Provider, Context} = createDataContext(
     authReducer,
-    { login, signout, signup, tryLocalSignIn},
-    { userId: null }
+    { login, signout, signup, tryLocalSignIn, updateUsername},
+    { userId: null, challengerId: null, username: null }
 );

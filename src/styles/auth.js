@@ -1,34 +1,37 @@
 import { StyleSheet } from 'react-native';
 
+import { MAIN_FONT_STYLE, ACCENT_COLOR, SECONDARY_COLOR } from './global'
+
 const textInput = {
     height: 40,
     margin: 10,
-    borderBottomColor: '#5C240F',
+    borderBottomColor: ACCENT_COLOR,
     borderBottomWidth: 0.25,
-    fontFamily: 'TextMeOne_400Regular',
+    fontFamily: MAIN_FONT_STYLE,
     fontSize: 18
 }
 const styles = StyleSheet.create({
     view: {
         justifyContent: 'center',
-        flex: 1
+        flex: 1,
+        backgroundColor: SECONDARY_COLOR
     },
     subButton: {
         alignSelf: 'center'
     },
     subButtonText: {
         alignSelf: 'center',
-        color: '#5C240F',
+        color: ACCENT_COLOR,
         fontSize: 22,
         textDecorationLine: 'underline',
-        fontFamily: 'TextMeOne_400Regular',
+        fontFamily: MAIN_FONT_STYLE,
         margin: 20
     },
     inputView: {
         alignSelf: 'center',
         width: '80%',
         marginBottom: 20,
-        color: '#5C240F'
+        color: ACCENT_COLOR
     },
     textInput: {
         ...textInput
