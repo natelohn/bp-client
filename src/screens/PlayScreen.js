@@ -8,6 +8,7 @@ import { getRandomInt, formatTime } from '../utils';
 import { Context as AuthContext } from "../context/AuthContext";
 import { Context as PushOffContext } from "../context/PushOffContext";
 import ButtonView from '../components/ButtonView';
+import { getDisplayUsername } from '../utils'
 
 const DECISECONDS_BEFORE_START_BUFFER = 50; // 5 seconds
 const DECISECONDS_BETWEEN_PUSHES = 100; // 10 seconds
@@ -217,13 +218,22 @@ const PlayScreen = () => {
     }
     const getTitleText = () => {
         const totalOthers = pushOff.pending.length + pushOff.pushes.length - 1;
-        const other = pushOff.pushes.length > 0 ? pushOff.pushes[0] : pushOff.pending[0];
+        let other = null;
+        for(let { challenger } of [...pushOff.pushes, ...pushOff.pending]){
+            if (challenger.id != challengerId) {
+                other = challenger;
+                break
+            }
+        }
+        const myUsername = getDisplayUsername(username, 10);
+        const challengerUsername = getDisplayUsername(other.username, 10);
+        const instigatorUsername = getDisplayUsername(pushOff.instigator.username, 10);
         if (totalOthers === 1) {
-            return `${username} vs. ${other.challenger.username}` ;
+            return `${myUsername} vs. ${challengerUsername}` ;
         } else if (challengerId === pushOff.instigator.id ) {
-            return `Push Off with ${other.challenger.username}`
+            return `Push Off with ${challengerUsername}`
         } else {
-            return `${pushOff.instigator.username} Challenged You`
+            return `${instigatorUsername} Challenged You`
         }
     }
 

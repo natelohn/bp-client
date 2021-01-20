@@ -6,7 +6,7 @@ import RadioButton from './RadioButton';
 import ChallengerIcon from './ChallengerIcon';
 import { Context as AuthContext } from '../context/AuthContext';
 import styles from '../styles/challenger'
-import { getTotalAndVSRecords } from '../utils';
+import { getTotalAndVSRecords, getDisplayUsername } from '../utils';
 import { ACCENT_COLOR } from '../styles/global'
 
 const Challenger = ({ available, maxSelected, challenger, onSelectCallback, robo, isSelected }) => {
@@ -16,7 +16,8 @@ const Challenger = ({ available, maxSelected, challenger, onSelectCallback, robo
     const totalRecord = total.draw > 0 ? `${total.won}-${total.lost}-${total.draw}` : `${total.won}-${total.lost}`
     const showVs = opponentRecord.won > 0 || opponentRecord.lost > 0  || opponentRecord.draw > 0 
     const vsUserRecord = opponentRecord.draw > 0 ? `${opponentRecord.won}-${opponentRecord.lost}-${opponentRecord.draw}` : `${opponentRecord.won}-${opponentRecord.lost}`
-    const header = showVs ? `${challenger.username} (${vsUserRecord})` : `${challenger.username}`;
+    const displayName = getDisplayUsername(challenger.username)
+    const header = showVs ? `${displayName} (${vsUserRecord})` : `${displayName}`;
     const [ selected, setSelected ] = useState(isSelected);
     const opacity = available ? 1 : 0.4;
 

@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text } from 'react-native';
 import styles from '../styles/pending'
-import { formatDate } from '../utils';
+import { formatDate, getDisplayUsername } from '../utils';
 
 const PendingPushInfo = ({ pendingPush }) => {
-    const instigatorName = pendingPush.instigator.username;
+    const instigatorName = getDisplayUsername(pendingPush.instigator.username);
     const totalOtherUsersChallenged = pendingPush.pending.length + pendingPush.pushes.length - 2;
     const others = totalOtherUsersChallenged === 1 ? 'other' : 'others';
     const othersText = `(and ${totalOtherUsersChallenged} ${others})`

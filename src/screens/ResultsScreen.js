@@ -40,7 +40,13 @@ const ResultsScreen = ({ navigation }) => {
     const [ losses, setLosses ] = useState(0);
     const [ ties, setTies ] = useState(0);
     const [ currentIter, setCurrentIter ] = useState(1);
-    const [ displayPushList, setDisplayPushList ] = useState([...pushOff.pushes, ...pushOff.pending]);
+    let reorderedPushes = [...pushOff.pushes];
+    reorderedPushes.forEach((value, index, array) => {
+        if (value.challenger.id === challengerId){
+            array.push(array.splice(index, 1)[0]);
+        }
+    })
+    const [ displayPushList, setDisplayPushList ] = useState([...reorderedPushes, ...pushOff.pending]);
 
     const getUserDuration = () => {
         for (let push of pushOff.pushes) {
@@ -139,6 +145,7 @@ const ResultsScreen = ({ navigation }) => {
                         size={28}
                         color={ color }
                         containerStyle={styles.iconView}
+                        solid={true}
                     />
                     <View style={styles.recordTextView}>
                         <Text style={styles.recordText}>Record:</Text>

@@ -158,9 +158,10 @@ export const getPushOffResultIcon = (rank, pushOff) => {
     }
 }
 
-export const getDisplayUsername = (username) => {
-    if(username.length > 22){
-        username.slice(0, 22).concat('...')
+export const getDisplayUsername = (username, overrideLength) => {
+    const maxLength = overrideLength ? overrideLength : 22;
+    if(username.length > maxLength){
+        return username.slice(0, maxLength).concat('...')
     } else {
         return username;
     }

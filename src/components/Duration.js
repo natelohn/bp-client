@@ -1,10 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Animated, Text, View } from 'react-native';
-import { Icon } from 'react-native-elements'
 import ChallengerIcon from './ChallengerIcon';
-import { ACCENT_COLOR, PRIMARY_COLOR } from '../styles/global'
 import styles from '../styles/duration';
-import { formatResultTime, isRoboId } from '../utils';
+import { formatResultTime, getDisplayUsername } from '../utils';
 
 const Duration = ({ result, rank, windthMultiplier, longestDuration, challengerCount, isPending }) => {
     const { challenger, duration } = result;
@@ -45,11 +43,13 @@ const Duration = ({ result, rank, windthMultiplier, longestDuration, challengerC
             clearInterval(interval);
         };
     });
+    
+    const displayName = getDisplayUsername(challenger.username, 32)
     return (
             <>
             <View style={styles.header}>
             { !isPending ? <Text style={styles.rank}>#{rank}</Text> : null }
-            <Text style={styles.name}>{challenger.username}</Text>
+            <Text style={styles.name}>{displayName}</Text>
             <ChallengerIcon challengerId={challenger.id}/>
             </View>
             { !isPending ?

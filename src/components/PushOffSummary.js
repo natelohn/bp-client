@@ -4,7 +4,7 @@ import { Icon } from 'react-native-elements';
 import { Context as AuthContext } from '../context/AuthContext';
 import { navigate } from "../navigationRef";
 import styles from '../styles/pushOffSummary';
-import { addOrdinalSuffix, formatShortDate, formatResultTime, getPushOffResultIcon } from '../utils';
+import { addOrdinalSuffix, formatShortDate, formatResultTime, getPushOffResultIcon, getDisplayUsername } from '../utils';
 
 const PushOffSummary = ({ pushOff }) => {
     let sortedPushList = [...pushOff.pushes].sort(function(a, b){ return b.duration - a.duration });
@@ -29,7 +29,7 @@ const PushOffSummary = ({ pushOff }) => {
             return 'Awaiting Result...'
         } else {
             const strong = pushOff.pushes.length > 2 ? 'strongest' : 'stronger';
-            const winnersName = winningPush === myPush ? `Your` : `${winningPush.challenger.username.substring(0,22)}'s`;
+            const winnersName = winningPush === myPush ? `Your` : `${getDisplayUsername(winningPush.challenger.username, 28)}'s`;
             const suffix = winningPush === myPush ? `!` : `...`;
             return `${winnersName} will was ${strong}${suffix}`
         }
