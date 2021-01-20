@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
-import { TOP_ICON_OFFSET, SECONDARY_COLOR, SIDE_ICON_OFFSET } from './global'
+import { ACCENT_COLOR, MAIN_FONT_STYLE, TOP_ICON_OFFSET, SECONDARY_COLOR, SIDE_ICON_OFFSET } from './global'
+
 
 const styles = StyleSheet.create({
     view: {
@@ -13,6 +14,28 @@ const styles = StyleSheet.create({
         top: TOP_ICON_OFFSET,
         left: SIDE_ICON_OFFSET
     },
+    editPrompt: {
+        height: 40,
+        borderBottomColor: ACCENT_COLOR,
+        fontFamily: MAIN_FONT_STYLE,
+        fontSize: 32,
+        textDecorationLine: 'underline'
+    },
+    textInput: {
+        height: 40,
+        fontFamily: MAIN_FONT_STYLE,
+        fontSize: 36,
+        marginBottom: 40
+    },
+    buttonView: {
+        marginBottom: 80
+    },
+    logout: {
+        borderBottomColor: ACCENT_COLOR,
+        fontFamily: MAIN_FONT_STYLE,
+        fontSize: 22,
+        textDecorationLine: 'underline'
+    }
 });
 
 export default styles;

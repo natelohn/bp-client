@@ -44,7 +44,7 @@ const Duration = ({ result, rank, windthMultiplier, longestDuration, challengerC
         };
     });
     
-    const displayName = getDisplayUsername(challenger.username, 32)
+    const displayName = getDisplayUsername(challenger.username, 30)
     return (
             <>
             <View style={styles.header}>

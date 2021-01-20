@@ -215,3 +215,9 @@ export const LEADERBOARD_DATA = gql`
     }
   }
 `
+
+export const UPDATE_USERNAME = gql`
+  mutation UpdateUsername($challengerId: String!, $newUsername: String!){
+    updateUsername(challengerId: $challengerId, newUsername: $newUsername)
+  }
+`

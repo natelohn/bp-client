@@ -6,12 +6,14 @@ import { sendServerAlert, showOTPError } from '../components/Alerts'
 
 const authReducer = (state, {type, userId, challengerId, username}) => {
   switch (type) {
-      case 'signin':
-          return {...state, userId, challengerId, username};
-      case 'signout':
-          return {...state, userId: null, challengerId: null, username: null};
-      default:
-          return state;
+    case 'signin':
+        return {...state, userId, challengerId, username};
+    case 'signout':
+        return {...state, userId: null, challengerId: null, username: null};
+    case 'updateUsername':
+        return {...state, username };
+    default:
+        return state;
   }
 };
 
@@ -79,6 +81,18 @@ const signout = dispatch => async () => {
     navigate('authFlow');
 };
 
+const updateUsername = dispatch => async( challengerId, newUsername, mutationCallback ) => {
+        mutationCallback({
+            variables: { challengerId, newUsername },
+        })
+        .then(async ({data}) => {
+            const username = data.updateUsername;
+            dispatch({type: 'updateUsername', username});
+        })
+        // if failure -> send server issue error
+        .catch(() => { sendServerAlert() });
+}
+
 const tryLocalSignIn = dispatch => async (data, error) => {
     if (!error) {
         const authData = {
@@ -93,8 +107,9 @@ const tryLocalSignIn = dispatch => async (data, error) => {
     }
 }
 
+
 export const {Provider, Context} = createDataContext(
     authReducer,
-    { login, signout, signup, tryLocalSignIn},
+    { login, signout, signup, tryLocalSignIn, updateUsername},
     { userId: null, challengerId: null, username: null }
 );
