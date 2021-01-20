@@ -11,6 +11,7 @@ const authReducer = (state, {type, userId, challengerId, username}) => {
     case 'signout':
         return {...state, userId: null, challengerId: null, username: null};
     case 'updateUsername':
+        // TODO: Always get my username from this value
         return {...state, username };
     default:
         return state;

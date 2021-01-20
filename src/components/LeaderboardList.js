@@ -37,6 +37,7 @@ const Leaderboard = ({ leaderboard }) => {
                     <FlatList 
                         data={list}
                         keyExtractor={item => item.challenger.id}
+                        showsVerticalScrollIndicator={false}
                         renderItem={({ item, index }) => {
                             const rankText = addOrdinalSuffix(index + 1);
                             const usernameText = getDisplayUsername(item.challenger.username);
