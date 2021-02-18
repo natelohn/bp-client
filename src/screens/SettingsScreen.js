@@ -9,6 +9,8 @@ import { navigate } from "../navigationRef";
 import styles from '../styles/settings';
 import { ACCENT_COLOR } from '../styles/global';
 
+// TODO: Add delete user functionality
+
 const SettingsScreen = () => {
     const { state, signout, updateUsername } = useContext(AuthContext)
     const { challengerId, username } = state;

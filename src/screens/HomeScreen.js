@@ -13,6 +13,8 @@ import ReviewPendingView from '../components/ReviewPendingView';
 import styles from '../styles/home';
 
 
+// TODO: Add a subscription for pending challenges
+
 const MS_POLLING = 120000; // 2 minutes
 
 const HomeScreen = () => {
