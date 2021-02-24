@@ -1,19 +1,20 @@
-import { useEffect, useContext } from 'react';
-import { useQuery } from '@apollo/client';
-import { Context as AuthContext } from "../context/AuthContext";
-import { GET_USER_FROM_CONTEXT } from '../apollo/gql'
+import { useEffect } from 'react';
+import { Auth } from 'aws-amplify'
+import { navigate } from "../navigationRef";
 
 
 const ResolveAuthScreen = () => {
-    const { tryLocalSignIn } = useContext(AuthContext);
-    const { loading, error, data } = useQuery(GET_USER_FROM_CONTEXT);
-
     useEffect(() => {
-        if (!loading) {
-            tryLocalSignIn(data, error);
-        }
-    }, [loading]);
-
+        Auth.currentAuthenticatedUser()
+        .then((user) => {
+            console.log('Fuck yeah! Authenticated!', user);
+            navigate('mainFlow');
+        })
+        .catch((err) => {
+            console.log('Fuck! Not authenticated...', err);
+            navigate('authFlow');
+        });
+    }, []);
     return null;
 };
 

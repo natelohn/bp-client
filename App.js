@@ -4,6 +4,8 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { ApolloProvider } from '@apollo/client';
 import { useFonts, TextMeOne_400Regular } from '@expo-google-fonts/text-me-one';
 import { AppLoading } from 'expo';
+import Amplify, { Auth } from 'aws-amplify';
+import awsconfig from './src/aws-exports';
 
 import { setNavigator } from "./src/navigationRef"
 import { Provider as AuthProvider } from "./src/context/AuthContext";
@@ -20,6 +22,8 @@ import HelpScreen from './src/screens/HelpScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import HistoryScreen from './src/screens/HistoryScreen';
 import LeaderboardScreen from './src/screens/LeaderboardScreen';
+
+Amplify.configure(awsconfig);
 
 // TODO: Enforce styling
 const switchNavigator = createSwitchNavigator({

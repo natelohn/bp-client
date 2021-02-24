@@ -1,0 +1,39 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-buttonpush-dev-135001-authRole",
+      "UnauthRoleArn": "arn:aws:iam::358068156035:role/amplify-buttonpush-dev-135001-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::358068156035:role/amplify-buttonpush-dev-135001-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-buttonpush-dev-135001-deployment",
+      "UnauthRoleName": "amplify-buttonpush-dev-135001-unauthRole",
+      "StackName": "amplify-buttonpush-dev-135001",
+      "StackId": "arn:aws:cloudformation:us-west-2:358068156035:stack/amplify-buttonpush-dev-135001/461f5850-7233-11eb-8e84-06fb5ee41687",
+      "AmplifyAppId": "drd4dyuxx3o2z"
+    },
+    "categories": {
+      "function": {
+        "buttonpushauthCreateAuthChallenge": {
+          "CHALLENGEANSWER": "",
+          "deploymentBucketName": "amplify-buttonpush-dev-135001-deployment",
+          "s3Key": "amplify-builds/buttonpushauthCreateAuthChallenge-42596e31454c5a416f36-build.zip"
+        },
+        "buttonpushauthDefineAuthChallenge": {
+          "deploymentBucketName": "amplify-buttonpush-dev-135001-deployment",
+          "s3Key": "amplify-builds/buttonpushauthDefineAuthChallenge-34453542376130544d65-build.zip"
+        },
+        "buttonpushauthPreSignup": {
+          "deploymentBucketName": "amplify-buttonpush-dev-135001-deployment",
+          "s3Key": "amplify-builds/buttonpushauthPreSignup-52752b59704338554539-build.zip"
+        },
+        "buttonpushauthVerifyAuthChallengeResponse": {
+          "deploymentBucketName": "amplify-buttonpush-dev-135001-deployment",
+          "s3Key": "amplify-builds/buttonpushauthVerifyAuthChallengeResponse-752f51596c5259744b75-build.zip"
+        }
+      },
+      "auth": {
+        "buttonpushauth": {}
+      }
+    }
+  }
+}

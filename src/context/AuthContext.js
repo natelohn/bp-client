@@ -1,7 +1,7 @@
 import { AsyncStorage } from 'react-native'; // TODO: Update AsyncStorage 
 import createDataContext from "./createDataContext";
 import { navigate } from "../navigationRef";
-import { sendServerAlert, showOTPError } from '../components/Alerts'
+import { sendServerAlert, showOTPError } from '../components/Alerts';
 
 
 const authReducer = (state, {type, userId, challengerId, username}) => {

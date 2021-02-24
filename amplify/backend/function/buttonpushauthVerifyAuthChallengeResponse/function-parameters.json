@@ -1,0 +1,17 @@
+{
+  "trigger": true,
+  "modules": [
+    "boilerplate-verify"
+  ],
+  "parentResource": "buttonpushauth",
+  "functionName": "buttonpushauthVerifyAuthChallengeResponse",
+  "resourceName": "buttonpushauthVerifyAuthChallengeResponse",
+  "parentStack": "auth",
+  "triggerEnvs": [],
+  "triggerDir": "/Users/natelohn/.nvm/versions/node/v14.9.0/lib/node_modules/@aws-amplify/cli/node_modules/amplify-category-auth/provider-utils/awscloudformation/triggers/VerifyAuthChallengeResponse",
+  "triggerTemplate": "VerifyAuthChallengeResponse.json.ejs",
+  "triggerEventPath": "VerifyAuthChallengeResponse.event.json",
+  "roleName": "buttonpushauthVerifyAuthChallengeResponse",
+  "skipEdit": true,
+  "enableCors": false
+}
