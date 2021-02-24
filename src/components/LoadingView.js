@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState }from 'react';
 import { Animated, Dimensions, View } from 'react-native';
 import ButtonView from './ButtonView';
-import { MAIN_BUTTON_DIAMETER, PLAYVIEW_HEADER_HEIGHT, PLAY_BUTTON_TOP_MARGIN } from '../styles/global'
+import { MAIN_BUTTON_DIAMETER, PLAY_BUTTON_TOP_MARGIN } from '../styles/global'
 import styles from '../styles/loading';
 import { getRandomInt } from '../utils';
 

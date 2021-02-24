@@ -3,7 +3,6 @@ import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { ApolloProvider } from '@apollo/client';
 import { useFonts, TextMeOne_400Regular } from '@expo-google-fonts/text-me-one';
-import { AppLoading } from 'expo';
 import Amplify from 'aws-amplify';
 import awsconfig from './src/aws-exports';
 
@@ -22,6 +21,7 @@ import HelpScreen from './src/screens/HelpScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import HistoryScreen from './src/screens/HistoryScreen';
 import LeaderboardScreen from './src/screens/LeaderboardScreen';
+import LoadingView from './src/components/LoadingView';
 
 Amplify.configure(awsconfig);
 
@@ -49,7 +49,7 @@ const App = createAppContainer(switchNavigator);
 export default () => {
     let [fontsLoaded] = useFonts({ TextMeOne_400Regular });
     if (!fontsLoaded) {
-        return <AppLoading/>;
+        return null;
     }
 
     return (
