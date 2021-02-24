@@ -1,7 +1,7 @@
 import { BRONZE, GOLD, PRIMARY_COLOR, SILVER } from './styles/global';
 
 
-export const formatMobileNumber = (text) => {
+export const formatDisplayMobileNumber = (text) => {
     let formated = text.replace(/\D/g, "");
     const length = formated.length
     if (length >= 1) {
@@ -16,8 +16,14 @@ export const formatMobileNumber = (text) => {
     return formated;
 }
 
-export const usPhoneNumber = (phone) => {
-    return '+1' + phone
+export const formatSubmitMobileNumber = (text) => {
+    let formated = text.replace(/\D/g, "");
+    return '+1' + formated
+}
+
+export const validUSPhoneNumber = (text) => {
+    const formated = formatSubmitMobileNumber(text);
+    return formated.length === 12;
 }
 
 

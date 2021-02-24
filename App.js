@@ -4,7 +4,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { ApolloProvider } from '@apollo/client';
 import { useFonts, TextMeOne_400Regular } from '@expo-google-fonts/text-me-one';
 import { AppLoading } from 'expo';
-import Amplify, { Auth } from 'aws-amplify';
+import Amplify from 'aws-amplify';
 import awsconfig from './src/aws-exports';
 
 import { setNavigator } from "./src/navigationRef"
