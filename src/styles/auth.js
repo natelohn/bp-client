@@ -1,14 +1,15 @@
 import { StyleSheet } from 'react-native';
 
-import { MAIN_FONT_STYLE, ACCENT_COLOR, SECONDARY_COLOR } from './global'
+import { MAIN_FONT_STYLE, ACCENT_COLOR, SECONDARY_COLOR, TOP_ICON_OFFSET, SIDE_ICON_OFFSET} from './global'
 
 const textInput = {
     height: 40,
-    margin: 10,
     borderBottomColor: ACCENT_COLOR,
     borderBottomWidth: 0.25,
     fontFamily: MAIN_FONT_STYLE,
-    fontSize: 18
+    alignSelf: 'center',
+    textAlign: 'center',
+    color: ACCENT_COLOR
 }
 const styles = StyleSheet.create({
     view: {
@@ -16,30 +17,38 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: SECONDARY_COLOR
     },
-    subButton: {
-        alignSelf: 'center'
-    },
-    subButtonText: {
-        alignSelf: 'center',
-        color: ACCENT_COLOR,
-        fontSize: 22,
-        textDecorationLine: 'underline',
-        fontFamily: MAIN_FONT_STYLE,
-        margin: 20
+    exit: {
+        position: 'absolute',
+        top: TOP_ICON_OFFSET,
+        left: SIDE_ICON_OFFSET
     },
     inputView: {
-        alignSelf: 'center',
-        width: '80%',
-        marginBottom: 20,
-        color: ACCENT_COLOR
+        flexDirection: 'row',
     },
-    textInput: {
-        ...textInput
+    textInputView: {
+        width: '100%',
+        marginBottom: 20
+    },
+    phoneInput: {
+        ...textInput,
+        fontSize: 28,
+        width: '70%',
+        marginBottom: 5
     },
     codeInput: {
         ...textInput,
         fontSize: 38,
-        textAlign: 'center'
+        width: '60%',
+    },
+    buttonView: {
+        marginBottom: 40
+    },
+    numberReminderText: {
+        fontFamily: MAIN_FONT_STYLE,
+        fontSize: 12,
+        alignSelf: 'center',
+        textAlign: 'center',
+        color: ACCENT_COLOR
     }
 });
 
