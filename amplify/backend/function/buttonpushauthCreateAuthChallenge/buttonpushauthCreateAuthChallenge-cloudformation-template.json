@@ -105,6 +105,7 @@
           ]
         },
         "Runtime": "nodejs10.x",
+        "MemorySize": "256",
         "Timeout": "25",
         "Code": {
           "S3Bucket": {

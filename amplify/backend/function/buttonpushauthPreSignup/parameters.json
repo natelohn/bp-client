@@ -1,4 +1,4 @@
 {
-  "modules": "custom",
+  "modules": "pre-signup",
   "resourceName": "buttonpushauthPreSignup"
 }

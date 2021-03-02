@@ -16,19 +16,19 @@
         "buttonpushauthCreateAuthChallenge": {
           "CHALLENGEANSWER": "",
           "deploymentBucketName": "amplify-buttonpush-dev-135001-deployment",
-          "s3Key": "amplify-builds/buttonpushauthCreateAuthChallenge-42596e31454c5a416f36-build.zip"
+          "s3Key": "amplify-builds/buttonpushauthCreateAuthChallenge-4f4c77544c6869466d44-build.zip"
         },
         "buttonpushauthDefineAuthChallenge": {
           "deploymentBucketName": "amplify-buttonpush-dev-135001-deployment",
-          "s3Key": "amplify-builds/buttonpushauthDefineAuthChallenge-34453542376130544d65-build.zip"
+          "s3Key": "amplify-builds/buttonpushauthDefineAuthChallenge-2f6466665548462f466a-build.zip"
         },
         "buttonpushauthPreSignup": {
           "deploymentBucketName": "amplify-buttonpush-dev-135001-deployment",
-          "s3Key": "amplify-builds/buttonpushauthPreSignup-52752b59704338554539-build.zip"
+          "s3Key": "amplify-builds/buttonpushauthPreSignup-2f42537179474d34536a-build.zip"
         },
         "buttonpushauthVerifyAuthChallengeResponse": {
           "deploymentBucketName": "amplify-buttonpush-dev-135001-deployment",
-          "s3Key": "amplify-builds/buttonpushauthVerifyAuthChallengeResponse-752f51596c5259744b75-build.zip"
+          "s3Key": "amplify-builds/buttonpushauthVerifyAuthChallengeResponse-4b3055396b3664386c73-build.zip"
         }
       },
       "auth": {

@@ -49,7 +49,7 @@
     "thirdPartyAuth": false,
     "userPoolGroups": false,
     "adminQueries": false,
-    "triggers": "{\n  \"CreateAuthChallenge\": [\n    \"boilerplate-create-challenge\"\n  ],\n  \"DefineAuthChallenge\": [\n    \"boilerplate-define-challenge\"\n  ],\n  \"PreSignup\": [\n    \"custom\"\n  ],\n  \"VerifyAuthChallengeResponse\": [\n    \"boilerplate-verify\"\n  ]\n}",
+    "triggers": "{\n  \"CreateAuthChallenge\": [\n    \"create-challenge\"\n  ],\n  \"DefineAuthChallenge\": [\n    \"define-challenge\"\n  ],\n  \"PreSignup\": [\n    \"pre-signup\"\n  ],\n  \"VerifyAuthChallengeResponse\": [\n    \"verify-challenge\"\n  ]\n}",
     "hostedUI": false,
     "userPoolGroupList": [],
     "serviceName": "Cognito",

@@ -1,4 +1,4 @@
 {
-  "modules": "boilerplate-verify",
+  "modules": "verify-challenge",
   "resourceName": "buttonpushauthVerifyAuthChallengeResponse"
 }
