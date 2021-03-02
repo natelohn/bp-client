@@ -7,15 +7,15 @@ import { navigate } from '../navigationRef';
 import ButtonView from './ButtonView'
 import Carousel from './Carousel' 
 import { showForfeitPrompt } from './Alerts'
-import { Context as AuthContext } from '../context/AuthContext';
+import { Context as UserContext } from '../context/UserContext';
 import { Context as PushOffContext } from '../context/PushOffContext';
 import { ACCENT_COLOR } from '../styles/global'
 import styles from '../styles/reviewPending'
 
 const ReviewPendingView = ({ endViewPending }) => {
     // Context
-    const authContext = useContext(AuthContext);
-    const { challengerId } = authContext.state;
+    const userContext = useContext(UserContext);
+    const { challengerId } = userContext.state;
     const { state, respondToPushOff} = useContext(PushOffContext);
     const { pendingPushOffList, pushOff } = state;
     const [ callRespondToPushOff ] = useMutation(RESPOND_TO_PUSHOFF);

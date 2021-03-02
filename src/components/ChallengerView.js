@@ -4,14 +4,14 @@ import { Icon } from 'react-native-elements'
 import { showPendingChallengerUnavailableMessage } from '../components/Alerts'
 import RadioButton from './RadioButton';
 import ChallengerIcon from './ChallengerIcon';
-import { Context as AuthContext } from '../context/AuthContext';
+import { Context as UserContext } from '../context/UserContext';
 import styles from '../styles/challenger'
 import { getTotalAndVSRecords, getDisplayUsername } from '../utils';
 import { ACCENT_COLOR } from '../styles/global'
 
 const Challenger = ({ available, maxSelected, challenger, onSelectCallback, robo, isSelected }) => {
-    const authContext = useContext(AuthContext);
-    const { challengerId } = authContext.state;
+    const userContext = useContext(UserContext);
+    const { challengerId } = userContext.state;
     const { total, opponentRecord } = getTotalAndVSRecords(challenger.records, challengerId);
     const totalRecord = total.draw > 0 ? `${total.won}-${total.lost}-${total.draw}` : `${total.won}-${total.lost}`
     const showVs = opponentRecord.won > 0 || opponentRecord.lost > 0  || opponentRecord.draw > 0 

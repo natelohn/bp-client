@@ -49,6 +49,16 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         textAlign: 'center',
         color: ACCENT_COLOR
+    },
+    resendText: {
+        fontFamily: MAIN_FONT_STYLE,
+        fontSize: 24,
+        alignSelf: 'center',
+        textAlign: 'center',
+        color: ACCENT_COLOR,
+        textDecorationLine: 'underline',
+        marginTop: 10,
+        marginBottom: 20
     }
 });
 

@@ -5,7 +5,7 @@ import {  RESPOND_TO_PUSHOFF } from '../apollo/gql';
 import styles from '../styles/play'
 import { MAIN_BUTTON_DIAMETER, PLAYVIEW_HEADER_HEIGHT, PLAY_BUTTON_TOP_MARGIN } from '../styles/global'
 import { getRandomInt, formatTime } from '../utils';
-import { Context as AuthContext } from "../context/AuthContext";
+import { Context as UserContext } from "../context/UserContext";
 import { Context as PushOffContext } from "../context/PushOffContext";
 import ButtonView from '../components/ButtonView';
 import { getDisplayUsername } from '../utils'
@@ -16,8 +16,8 @@ const SHRINK_MS = 5000;
 const PRE_PUSH_TEXT = 'Ready?'
 
 const PlayScreen = () => {
-    const authContext = useContext(AuthContext);
-    const { challengerId, username } = authContext.state;
+    const userContext = useContext(UserContext);
+    const { challengerId, username } = userContext.state;
     const [ callRespondToPushOff ] = useMutation(RESPOND_TO_PUSHOFF);
     const { state, respondToPushOff } = useContext(PushOffContext);
     const { pushOff } = state;

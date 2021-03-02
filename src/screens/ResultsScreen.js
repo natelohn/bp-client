@@ -4,7 +4,7 @@ import { Icon } from 'react-native-elements';
 import { useLazyQuery } from '@apollo/client';
 import { navigate } from "../navigationRef";
 import { CHALLENGER_DATA } from '../apollo/gql';
-import { Context as AuthContext } from "../context/AuthContext";
+import { Context as UserContext } from "../context/UserContext";
 import { Context as PushOffContext } from "../context/PushOffContext";
 import styles from '../styles/results';
 import { ACCENT_COLOR, RESULT_TIME_WIDTH } from '../styles/global'
@@ -19,8 +19,8 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 
 const ResultsScreen = ({ navigation }) => {
     // Context
-    const authContext = useContext(AuthContext);
-    const { challengerId } = authContext.state;
+    const userContext = useContext(UserContext);
+    const { challengerId } = userContext.state;
     const { state } = useContext(PushOffContext);
     const id = navigation.getParam('id');
     const pushOff = state.allPushOffs[id];

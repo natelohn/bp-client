@@ -6,7 +6,7 @@ import { useMutation } from '@apollo/client';
 import ButtonView from '../components/ButtonView';
 import Challenger from '../components/ChallengerView'
 import { CREATE_PUSHOFF } from '../apollo/gql';
-import { Context as AuthContext } from '../context/AuthContext';
+import { Context as UserContext } from '../context/UserContext';
 import { Context as PushOffContext } from '../context/PushOffContext';
 import { navigate } from "../navigationRef";
 import styles from '../styles/create';
@@ -19,8 +19,8 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 const MAX_CHALLENGERS = 9;
 
 const CreateScreen = ({ navigation }) => {
-    const authContext = useContext(AuthContext)
-    const challengerId = authContext.state.challengerId;
+    const userContext = useContext(UserContext)
+    const challengerId = userContext.state.challengerId;
 
     // Navigation params
     const { allChallengers, formerChallengerIds, robos, unavailableChallengerIds } = navigation.getParam('challengerData', {});

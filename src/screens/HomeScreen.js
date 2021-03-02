@@ -4,7 +4,7 @@ import { View } from 'react-native';
 import { useQuery } from '@apollo/client';
 import { PUSHOFF_QUERY } from '../apollo/gql'
 
-import { Context as AuthContext } from "../context/AuthContext";
+import { Context as UserContext } from "../context/UserContext";
 import { Context as PushOffContext } from "../context/PushOffContext";
 
 import LaunchView from '../components/LaunchView';
@@ -19,8 +19,9 @@ const MS_POLLING = 120000; // 2 minutes
 
 const HomeScreen = () => {
     // Auth Logic
-    const authContext = useContext(AuthContext);
-    const { challengerId } = authContext.state;
+    const userContext = useContext(UserContext);
+    const { user } = userContext.state;
+    const challengerId = 'FakeIDTho';
 
     // State Management
     const [ viewingPending, setViewingPending ] = useState(false);

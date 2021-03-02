@@ -1,11 +1,14 @@
-import React, { useState, useRef } from 'react';
+import React, { useContext, useState, useRef } from 'react';
 import { Auth } from 'aws-amplify';
-import { Animated, Dimensions, Text, TextInput, View } from 'react-native';
+import { Animated, Dimensions, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'react-native-elements';
+import { navigate } from "../navigationRef";
+import { Context as UserContext } from '../context/UserContext';
 import ButtonView from '../components/ButtonView';
 import styles from '../styles/auth';
 import { ACCENT_COLOR, PRIMARY_COLOR } from '../styles/global'
 import { formatDisplayMobileNumber, formatSubmitMobileNumber, validUSPhoneNumber } from '../utils';
+import { sendServerAlert } from '../components/Alerts';
 
 const US_PHONE_LENGTH = 14
 const OTP_LENGTH = 6;
@@ -15,40 +18,35 @@ const AuthScreen = () => {
     const [ phoneNumber, setPhoneNumber ] = useState('');
     const [ otp, setOTP ] = useState('');
     const [ otpInputColor, setOtpInputColor ] = useState(ACCENT_COLOR);
+    const [ verifying, setVerifying ] = useState(false);
+    const { setUser } = useContext(UserContext);
 
-    // Animation
-    const screenWidth = Dimensions.get('window').width;
     // Text Inputs - Animation
-    const offScreenRight = screenWidth;
+    const screenWidth = Dimensions.get('window').width;
     const offScreenLeft = -1 * screenWidth;
     const onScreen = 0;
     const inputX = useRef(new Animated.Value(onScreen)).current;
     
     const signIn = () => {
         const number = formatSubmitMobileNumber(phoneNumber);
-        console.log('Signing In...', number)
         Auth.signIn(number)
         .then((result) => {
             setSession(result);
-            console.log('RESULT:', result)
+            setVerifying(true);
         })
         .catch((e) => {
             if (e.code === 'UserNotFoundException') {
-                console.log('User does not exist. Waiting for sign up...')
                 signUp();
             } else if (e.code === 'UsernameExistsException') {
-                console.log('User exists. Waiting for sign in...')
                 signIn();
             } else {
-                console.log(e.code);
-                console.error(e);
+                sendServerAlert();
             }
           });
       };
 
     const signUp = async () => {
         const number = formatSubmitMobileNumber(phoneNumber);
-        console.log('Signing up...', number)
         const requiredFakePassword = 'FakePW#' + Math.random().toString(10);
         const result = await Auth.signUp({
             username: number,
@@ -60,24 +58,16 @@ const AuthScreen = () => {
     };
 
     const verifyOtp = () => {
-        console.log('Verifying otp...');
         Auth.sendCustomChallengeAnswer(session, otp)
         .then((user) => {
-            console.log('USER FOUND:', user)
             setSession(null);
-            // TODO:
-            // Set the user in context
-            // Nav to main flow 
+            setVerifying(false);
+            setUser(user)
+            navigate('mainFlow');
         })
-        .catch((err) => {
-            console.log(err);
-            otpError()
+        .catch(() => {
+            otpError();
         });
-    };
-
-    const signOut = () => {
-        console.log('Signing Out...')
-        Auth.signOut();
     };
     
     const moveTextInputView = (x) => {
@@ -91,15 +81,16 @@ const AuthScreen = () => {
     const backToPhoneInput = () => {
         setSession(null);
         setOTP('');
+        setVerifying(false);
         moveTextInputView(onScreen);
     }
 
     const pressButton = () => {
-        if (!session) {
-            moveTextInputView(offScreenLeft);
-            signIn();
-        } else {
+        if (verifying) {
             verifyOtp();
+        } else {
+            signIn();
+            moveTextInputView(offScreenLeft);
         }
     };
 
@@ -124,18 +115,23 @@ const AuthScreen = () => {
     }
 
     const isButtonDisabled = () => {
-        if (session){
+        if (verifying){
             return otp.length != OTP_LENGTH;
         } else {
             return !validUSPhoneNumber(phoneNumber) 
         }
     }
 
-    
-    // Component
+    const resendOtp = () => {
+        setOTP('');
+        signIn();
+    }
+
+    // TODO: Delete unused auth code
+    // TODO: Add sign out to settings screen
     return (
         <View style={styles.view}>
-            { session && 
+            { verifying && 
             <Icon 
                 name='chevron-left'
                 type='font-awesome-5'
@@ -170,13 +166,17 @@ const AuthScreen = () => {
                         onChangeText={setOTP}
                         returnKeyType="send"
                         onSubmitEditing={pressButton}
-                        autoFocus={true}
+                        autoFocus={false}
                     />
                     <Text style={styles.numberReminderText}>Sent to {phoneNumber}</Text>
                 </View>
             </Animated.View>
             <View style={styles.buttonView}>
                 <ButtonView onPressCallback={pressButton} disabled={isButtonDisabled()}/>
+                { verifying && 
+                <TouchableOpacity onPress={resendOtp} >
+                    <Text style={styles.resendText}>Resend</Text>
+                </TouchableOpacity> }
             </View>
         </View>
     );

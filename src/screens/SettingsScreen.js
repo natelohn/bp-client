@@ -2,8 +2,9 @@ import React, { useState, useContext }  from 'react';
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { useMutation } from '@apollo/client';
+import { Auth } from 'aws-amplify';
 import { UPDATE_USERNAME } from '../apollo/gql';
-import { Context as AuthContext } from '../context/AuthContext';
+import { Context as UserContext } from '../context/UserContext';
 import ButtonView from '../components/ButtonView';
 import { navigate } from "../navigationRef";
 import styles from '../styles/settings';
@@ -12,7 +13,7 @@ import { ACCENT_COLOR } from '../styles/global';
 // TODO: Add delete user functionality
 
 const SettingsScreen = () => {
-    const { state, signout, updateUsername } = useContext(AuthContext)
+    const { setUser, state, updateUsername } = useContext(UserContext)
     const { challengerId, username } = state;
     const [ newUsername, setNewUsername ] = useState(username)
     const [ callUpdateUsername ] = useMutation(UPDATE_USERNAME);
@@ -22,7 +23,17 @@ const SettingsScreen = () => {
     const tryUsernameUpdate = () => {
         updateUsername(challengerId, newUsername, callUpdateUsername)
     }
-
+    
+    const signOut = async () => {
+        try {
+            await Auth.signOut();
+            setUser(null);
+            navigate('authFlow');
+        } catch (error) {
+            console.log('error signing out: ', error);
+        }
+    }
+    
     return (
         <View style={styles.view}>
             <Icon 
@@ -52,7 +63,7 @@ const SettingsScreen = () => {
                     small={true}
                 />
             </View>
-            <TouchableOpacity onPress={signout}>
+            <TouchableOpacity onPress={signOut}>
                 <Text style={styles.logout}>Logout</Text>
             </TouchableOpacity>
         </View>

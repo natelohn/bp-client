@@ -1,14 +1,14 @@
 import React, { useContext } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'react-native-elements';
-import { Context as AuthContext } from '../context/AuthContext';
+import { Context as UserContext } from '../context/UserContext';
 import { navigate } from "../navigationRef";
 import styles from '../styles/pushOffSummary';
 import { addOrdinalSuffix, formatShortDate, formatResultTime, getPushOffResultIcon, getDisplayUsername } from '../utils';
 
 const PushOffSummary = ({ pushOff }) => {
     let sortedPushList = [...pushOff.pushes].sort(function(a, b){ return b.duration - a.duration });
-    const { state } = useContext(AuthContext);
+    const { state } = useContext(UserContext);
     const { challengerId } = state;
     
     

@@ -3,7 +3,7 @@ import { LayoutAnimation, TouchableOpacity, Text, View } from 'react-native';
 import { Icon } from 'react-native-elements'
 import { useLazyQuery } from '@apollo/client';
 import { CHALLENGER_DATA, LEADERBOARD_DATA } from '../apollo/gql';
-import { Context as AuthContext } from "../context/AuthContext";
+import { Context as UserContext } from "../context/UserContext";
 import { Context as PushOffContext } from "../context/PushOffContext";
 import { navigate } from '../navigationRef';
 import ButtonView from '../components/ButtonView';
@@ -35,8 +35,8 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 
 const LaunchView = ({ viewPending }) => {
     // Prepare query for create screen
-    const authContext = useContext(AuthContext)
-    const challengerId = authContext.state.challengerId;
+    const userContext = useContext(UserContext)
+    const challengerId = userContext.state.challengerId;
     const queryOptions = { variables: { challengerId }, fetchPolicy: "cache-and-network" };
     const [ getChallengers, challengers ] = useLazyQuery(CHALLENGER_DATA, queryOptions);
     const [ getLeaderboard, leaderboard ] = useLazyQuery(LEADERBOARD_DATA, queryOptions);

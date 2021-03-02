@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { FlatList, Text, View } from 'react-native';
 import { Icon } from 'react-native-elements';
-import { Context as AuthContex } from '../context/AuthContext';
+import { Context as AuthContex } from '../context/UserContext';
 import { ACCENT_COLOR } from '../styles/global';
 import styles from '../styles/leaderboard';
 import { addOrdinalSuffix, getDisplayUsername, isRoboId } from '../utils';

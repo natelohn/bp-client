@@ -7,7 +7,7 @@ import Amplify from 'aws-amplify';
 import awsconfig from './src/aws-exports';
 
 import { setNavigator } from "./src/navigationRef"
-import { Provider as AuthProvider } from "./src/context/AuthContext";
+import { Provider as UserProvider } from "./src/context/UserContext";
 import { Provider as PushOffProvider } from "./src/context/PushOffContext";
 import apoloClient from './src/apollo/index';
 
@@ -21,7 +21,6 @@ import HelpScreen from './src/screens/HelpScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import HistoryScreen from './src/screens/HistoryScreen';
 import LeaderboardScreen from './src/screens/LeaderboardScreen';
-import LoadingView from './src/components/LoadingView';
 
 Amplify.configure(awsconfig);
 
@@ -54,11 +53,11 @@ export default () => {
 
     return (
         <ApolloProvider client={apoloClient}>
-            <AuthProvider>
+            <UserProvider>
                 <PushOffProvider>
                     <App ref={(navigator) => setNavigator(navigator)} />
                 </PushOffProvider>
-            </AuthProvider>
+            </UserProvider>
         </ApolloProvider>
     );
 };
