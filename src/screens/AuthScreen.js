@@ -26,6 +26,8 @@ const AuthScreen = () => {
     const offScreenLeft = -1 * screenWidth;
     const onScreen = 0;
     const inputX = useRef(new Animated.Value(onScreen)).current;
+    const phoneInput = useRef();
+    const otpInput = useRef();
     
     const signIn = () => {
         const number = formatSubmitMobileNumber(phoneNumber);
@@ -83,6 +85,7 @@ const AuthScreen = () => {
         setOTP('');
         setVerifying(false);
         moveTextInputView(onScreen);
+        phoneInput.current.focus();
     }
 
     const pressButton = () => {
@@ -91,6 +94,7 @@ const AuthScreen = () => {
         } else {
             signIn();
             moveTextInputView(offScreenLeft);
+            otpInput.current.focus();
         }
     };
 
@@ -149,10 +153,12 @@ const AuthScreen = () => {
                         value={formatDisplayMobileNumber(phoneNumber)}
                         autoCompleteType='tel'
                         keyboardType='phone-pad'
+                        textContentType='telephoneNumber'
                         maxLength={US_PHONE_LENGTH}
                         onChangeText={setPhoneNumber}
                         onSubmitEditing={pressButton}
-                        autoFocus={true}
+                        autoFocus={!verifying}
+                        ref={phoneInput}
                     />
                 </View>
                 <View style={ styles.textInputView }>
@@ -166,7 +172,7 @@ const AuthScreen = () => {
                         onChangeText={setOTP}
                         returnKeyType="send"
                         onSubmitEditing={pressButton}
-                        autoFocus={false}
+                        ref={otpInput}
                     />
                     <Text style={styles.numberReminderText}>Sent to {phoneNumber}</Text>
                 </View>

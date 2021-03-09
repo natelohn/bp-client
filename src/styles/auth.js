@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
         left: SIDE_ICON_OFFSET
     },
     inputView: {
-        flexDirection: 'row',
+        flexDirection: 'row'
     },
     textInputView: {
         width: '100%',
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
         width: '60%',
     },
     buttonView: {
-        marginBottom: 40
+        marginBottom: 150
     },
     numberReminderText: {
         fontFamily: MAIN_FONT_STYLE,
