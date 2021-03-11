@@ -7,11 +7,17 @@ const ResolveAuthScreen = () => {
     useEffect(() => {
         Auth.currentAuthenticatedUser()
         .then((user) => {
-            console.log('Fuck yeah! Authenticated!', user);
-            navigate('mainFlow');
+            // TODO: Add a check to see if the user has a profile yet
+            // If not, send them to the settings screen and make them sign up.
+            // If so, add it to the context and go to the mainflow
+            const userHasProfile = false;
+            if (userHasProfile) {
+                navigate('mainFlow');
+            } else {
+                navigate('Settings', { signingUp: true })
+            }
         })
         .catch((err) => {
-            console.log('Fuck! Not authenticated...', err);
             navigate('authFlow');
         });
     }, []);

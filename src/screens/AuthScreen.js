@@ -64,8 +64,9 @@ const AuthScreen = () => {
         .then((user) => {
             setSession(null);
             setVerifying(false);
-            setUser(user)
-            navigate('mainFlow');
+            setUser(user);
+            // TODO: Handle this transition w/in the context (sending to main if the user has a profile)
+            navigate('Settings', { signingUp: true })
         })
         .catch(() => {
             otpError();

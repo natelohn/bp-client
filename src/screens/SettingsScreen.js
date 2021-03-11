@@ -11,8 +11,8 @@ import styles from '../styles/settings';
 import { ACCENT_COLOR } from '../styles/global';
 
 // TODO: Add delete user functionality
-
-const SettingsScreen = () => {
+const SettingsScreen = ({ navigation }) => {
+    const signingUp = navigation.getParam('signingUp', false);
     const { setUser, state, updateUsername } = useContext(UserContext)
     const { challengerId, username } = state;
     const [ newUsername, setNewUsername ] = useState(username)
@@ -36,6 +36,7 @@ const SettingsScreen = () => {
     
     return (
         <View style={styles.view}>
+            { !signingUp && 
             <Icon 
                 name='chevron-left'
                 type='font-awesome-5'
@@ -44,6 +45,7 @@ const SettingsScreen = () => {
                 containerStyle={styles.back}
                 onPress={ () => { navigate("Home") } }
             />
+            }
             <Text style={styles.editPrompt}>Edit Username:</Text>
             <TextInput 
                 style={styles.textInput}
