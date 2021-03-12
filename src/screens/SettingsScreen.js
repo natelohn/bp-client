@@ -46,6 +46,13 @@ const SettingsScreen = ({ navigation }) => {
                 onPress={ () => { navigate("Home") } }
             />
             }
+            <Icon 
+                name='user-alt'
+                type='font-awesome-5'
+                size={64}
+                color={ ACCENT_COLOR }
+                containerStyle={styles.mainIcon}
+            />
             <Text style={styles.editPrompt}>Edit Username:</Text>
             <TextInput 
                 style={styles.textInput}

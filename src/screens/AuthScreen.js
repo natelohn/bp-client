@@ -133,7 +133,6 @@ const AuthScreen = () => {
     }
 
     // TODO: Delete unused auth code
-    // TODO: Add sign out to settings screen
     return (
         <View style={styles.view}>
             { verifying && 

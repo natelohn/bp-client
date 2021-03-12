@@ -14,6 +14,12 @@ const styles = StyleSheet.create({
         top: TOP_ICON_OFFSET,
         left: SIDE_ICON_OFFSET
     },
+    mainIcon: {
+        borderColor: ACCENT_COLOR,
+        borderWidth: 1,
+        borderRadius: 80,
+        padding: 20
+    },
     editPrompt: {
         height: 40,
         color: ACCENT_COLOR,
