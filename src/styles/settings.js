@@ -5,7 +5,6 @@ import { ACCENT_COLOR, MAIN_FONT_STYLE, TOP_ICON_OFFSET, SECONDARY_COLOR, SIDE_I
 const styles = StyleSheet.create({
     view: {
         justifyContent: 'center',
-        alignItems: 'center',
         flex: 1,
         backgroundColor: SECONDARY_COLOR
     },
@@ -14,11 +13,28 @@ const styles = StyleSheet.create({
         top: TOP_ICON_OFFSET,
         left: SIDE_ICON_OFFSET
     },
+    iconView: {
+        alignSelf: 'center'
+    },
     mainIcon: {
         borderColor: ACCENT_COLOR,
         borderWidth: 1,
         borderRadius: 80,
         padding: 20
+    },
+    editIcon: {
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        backgroundColor: SECONDARY_COLOR
+    },
+    slidingWindow: {
+        flexDirection: 'row'
+    },
+    reviewView: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%'
     },
     editPrompt: {
         height: 40,
