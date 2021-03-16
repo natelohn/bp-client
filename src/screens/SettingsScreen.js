@@ -8,14 +8,17 @@ import { Context as UserContext } from '../context/UserContext';
 import ButtonView from '../components/ButtonView';
 import { navigate } from "../navigationRef";
 import styles from '../styles/settings';
+import userIcons from '../styles/userIcons';
 import { ACCENT_COLOR, PRIMARY_COLOR } from '../styles/global';
 
 // TODO: Add delete user functionality
 const SettingsScreen = ({ navigation }) => {
     const signingUp = navigation.getParam('signingUp', false);
     const { setUser, state, updateUsername } = useContext(UserContext)
-    const { challengerId, username } = state;
+    const { challengerId, username, userIcon } = state;
     const [ newUsername, setNewUsername ] = useState(username);
+    const startingIcon = userIcon ? userIcon : userIcons[Math.floor(Math.random() * userIcons.length)];
+    const [ newUserIcon, setNewUserIcon ] = useState(startingIcon);
     const [ callUpdateUsername ] = useMutation(UPDATE_USERNAME);
     const invalidUsername = username === newUsername || newUsername.length === 0;
     const [ reviewing, setReviewing ] = useState(false);
@@ -53,6 +56,10 @@ const SettingsScreen = ({ navigation }) => {
         }).start();
     }
 
+    const setRandomIcon = () => {
+        setNewUserIcon(userIcons[Math.floor(Math.random() * userIcons.length)])
+    }
+    
     const moveSlidingWindow = (toValue) => {
         Animated.timing(reviewX, {
             toValue,
@@ -83,7 +90,7 @@ const SettingsScreen = ({ navigation }) => {
             }
             <Animated.View style={[styles.iconView, { transform: [{ translateY: iconY }]}]}>
                 <Icon 
-                    name='user-alt'
+                    name={ newUserIcon }
                     type='font-awesome-5'
                     size={64}
                     color={ ACCENT_COLOR }
@@ -125,6 +132,7 @@ const SettingsScreen = ({ navigation }) => {
                 </View>
                 <View style={styles.reviewView}>
                     <Text>Pick Icon View</Text>
+                    <ButtonView small={true} displayText={'Random'} onPressCallback={setRandomIcon}/>
                 </View>
 
             </Animated.View>
