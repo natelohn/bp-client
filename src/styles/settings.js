@@ -60,6 +60,16 @@ const styles = StyleSheet.create({
         color: ACCENT_COLOR,
         fontSize: 22,
         textDecorationLine: 'underline'
+    },
+    iconFlatList: {
+        height: '50%',
+        width: '100%',
+        borderWidth: 1,
+        borderColor: 'green'
+    },
+    iconOption: {
+        borderWidth: 1,
+        borderColor: 'blue'
     }
 });
 

@@ -1,5 +1,5 @@
 import React, { useState, useContext, useRef }  from 'react';
-import { Animated, Dimensions, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Animated, Dimensions, FlatList, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { useMutation } from '@apollo/client';
 import { Auth } from 'aws-amplify';
@@ -70,7 +70,7 @@ const SettingsScreen = ({ navigation }) => {
 
     const reviewingTransition = () => {
         setReviewing(!reviewing);
-        const iconYValue = reviewing ? 0 : -150;
+        const iconYValue = reviewing ? 0 : -50;
         moveIconSelect(iconYValue);
         const reviewXValue = reviewing ? onScreen : offScreenLeft;
         moveSlidingWindow(reviewXValue);
@@ -131,10 +131,26 @@ const SettingsScreen = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.reviewView}>
-                    <Text>Pick Icon View</Text>
+                    <FlatList
+                        data={userIcons}
+                        numColumns={5}
+                        style={styles.iconFlatList}
+                        keyExtractor={item => item}
+                        renderItem={({ item }) => {
+                            return (
+                                <View style={styles.iconOption}>
+                                    <Icon
+                                        name={item}
+                                        type='font-awesome-5'
+                                        size={32}
+                                        color={ ACCENT_COLOR }
+                                    />
+                                </View>
+                            );
+                        }}
+                    />
                     <ButtonView small={true} displayText={'Random'} onPressCallback={setRandomIcon}/>
                 </View>
-
             </Animated.View>
 
         </View>
