@@ -25,10 +25,12 @@ const SettingsScreen = ({ navigation }) => {
 
 
     const screenWidth = Dimensions.get('window').width;
-    const offScreenLeft = -1 * screenWidth;
-    const onScreen = 0;
-    const iconY = useRef(new Animated.Value(onScreen)).current;
-    const reviewX = useRef(new Animated.Value(onScreen)).current;
+    const iconReviewY = 125;
+    const iconSelectY = 0;
+    const slidingWindowReviewX = 0;
+    const slidingWindowSelectX = -1 * screenWidth;
+    const iconY = useRef(new Animated.Value(iconReviewY)).current;
+    const reviewX = useRef(new Animated.Value(slidingWindowReviewX)).current;
     const selectIcon = reviewing ? 'check-circle' : 'edit';
     const selectIconColor = reviewing ? PRIMARY_COLOR : ACCENT_COLOR;
     const selectIconSize = reviewing ? 36 : 22;
@@ -70,9 +72,9 @@ const SettingsScreen = ({ navigation }) => {
 
     const reviewingTransition = () => {
         setReviewing(!reviewing);
-        const iconYValue = reviewing ? 0 : -50;
+        const iconYValue = reviewing ? iconReviewY : iconSelectY;
         moveIconSelect(iconYValue);
-        const reviewXValue = reviewing ? onScreen : offScreenLeft;
+        const reviewXValue = reviewing ? slidingWindowReviewX : slidingWindowSelectX;
         moveSlidingWindow(reviewXValue);
     }
     
@@ -133,19 +135,22 @@ const SettingsScreen = ({ navigation }) => {
                 <View style={styles.reviewView}>
                     <FlatList
                         data={userIcons}
-                        numColumns={5}
+                        numColumns={4}
                         style={styles.iconFlatList}
                         keyExtractor={item => item}
                         renderItem={({ item }) => {
                             return (
-                                <View style={styles.iconOption}>
+                                <TouchableOpacity 
+                                    style={styles.iconOption}
+                                    onPress={() => setNewUserIcon(item)}
+                                >
                                     <Icon
                                         name={item}
                                         type='font-awesome-5'
-                                        size={32}
+                                        size={58}
                                         color={ ACCENT_COLOR }
                                     />
-                                </View>
+                                </TouchableOpacity>
                             );
                         }}
                     />

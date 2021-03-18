@@ -14,13 +14,17 @@ const styles = StyleSheet.create({
         left: SIDE_ICON_OFFSET
     },
     iconView: {
-        alignSelf: 'center'
+        alignSelf: 'center',
+        zIndex: 1
     },
     mainIcon: {
         borderColor: ACCENT_COLOR,
         borderWidth: 1,
         borderRadius: 80,
-        padding: 20
+        padding: 20,
+        width: 130,
+        height: 130,
+        justifyContent: 'center'
     },
     editIcon: {
         position: 'absolute',
@@ -62,14 +66,15 @@ const styles = StyleSheet.create({
         textDecorationLine: 'underline'
     },
     iconFlatList: {
-        height: '50%',
+        height: '60%',
         width: '100%',
         borderWidth: 1,
-        borderColor: 'green'
+        borderColor: ACCENT_COLOR,
+        marginVertical: 10
     },
     iconOption: {
-        borderWidth: 1,
-        borderColor: 'blue'
+        width: '25%',
+        marginVertical: 20
     }
 });
 
