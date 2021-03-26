@@ -2,14 +2,19 @@ import React, { useState, useContext, useRef }  from 'react';
 import { Animated, Dimensions, FlatList, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { useMutation } from '@apollo/client';
+import { createUser } from '../graphql/mutations';
 import { Auth } from 'aws-amplify';
-import { UPDATE_USERNAME } from '../apollo/gql';
 import { Context as UserContext } from '../context/UserContext';
 import ButtonView from '../components/ButtonView';
 import { navigate } from "../navigationRef";
 import styles from '../styles/settings';
 import userIcons from '../styles/userIcons';
 import { ACCENT_COLOR, PRIMARY_COLOR } from '../styles/global';
+import API, { graphqlOperation } from '@aws-amplify/api';
+
+
+
+
 
 // TODO: Add delete user functionality
 const SettingsScreen = ({ navigation }) => {
@@ -19,7 +24,6 @@ const SettingsScreen = ({ navigation }) => {
     const [ newUsername, setNewUsername ] = useState(username);
     const startingIcon = userIcon ? userIcon : userIcons[Math.floor(Math.random() * userIcons.length)];
     const [ newUserIcon, setNewUserIcon ] = useState(startingIcon);
-    const [ callUpdateUsername ] = useMutation(UPDATE_USERNAME);
     const invalidUsername = username === newUsername || newUsername.length === 0;
     const [ reviewing, setReviewing ] = useState(false);
 
@@ -36,8 +40,14 @@ const SettingsScreen = ({ navigation }) => {
     const selectIconSize = reviewing ? 36 : 22;
     const selectIconBorderRadius = reviewing ? 50 : 0;
     
+    
     const tryUsernameUpdate = () => {
         updateUsername(challengerId, newUsername, callUpdateUsername)
+    }
+
+    const creatNewUser = async () => {
+        const newUser = { username: newUsername, icon: newUserIcon};          
+        await API.graphql(graphqlOperation(createUser, { input: newUser }));
     }
     
     const signOut = async () => {
@@ -123,7 +133,7 @@ const SettingsScreen = ({ navigation }) => {
                     <View style={styles.buttonView}>
                         <ButtonView
                             displayText={'Update'}
-                            onPressCallback={tryUsernameUpdate}
+                            onPressCallback={creatNewUser}
                             disabled={invalidUsername}
                             small={true}
                         />
