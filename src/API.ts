@@ -3,7 +3,7 @@
 //  This file was automatically generated and should not be edited.
 
 export type CreateUserInput = {
-  id?: string | null,
+  phone: string,
   username: string,
   icon: string,
 };
@@ -58,25 +58,26 @@ export type ModelSizeInput = {
 
 export type User = {
   __typename: "User",
-  id?: string,
+  phone?: string,
   username?: string,
   icon?: string,
   createdAt?: string,
   updatedAt?: string,
+  owner?: string | null,
 };
 
 export type UpdateUserInput = {
-  id: string,
+  phone: string,
   username?: string | null,
   icon?: string | null,
 };
 
 export type DeleteUserInput = {
-  id?: string | null,
+  phone: string,
 };
 
 export type ModelUserFilterInput = {
-  id?: ModelIDInput | null,
+  phone?: ModelStringInput | null,
   username?: ModelStringInput | null,
   icon?: ModelStringInput | null,
   and?: Array< ModelUserFilterInput | null > | null,
@@ -84,21 +85,11 @@ export type ModelUserFilterInput = {
   not?: ModelUserFilterInput | null,
 };
 
-export type ModelIDInput = {
-  ne?: string | null,
-  eq?: string | null,
-  le?: string | null,
-  lt?: string | null,
-  ge?: string | null,
-  gt?: string | null,
-  contains?: string | null,
-  notContains?: string | null,
-  between?: Array< string | null > | null,
-  beginsWith?: string | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-  size?: ModelSizeInput | null,
-};
+export enum ModelSortDirection {
+  ASC = "ASC",
+  DESC = "DESC",
+}
+
 
 export type ModelUserConnection = {
   __typename: "ModelUserConnection",
@@ -114,11 +105,12 @@ export type CreateUserMutationVariables = {
 export type CreateUserMutation = {
   createUser?:  {
     __typename: "User",
-    id: string,
+    phone: string,
     username: string,
     icon: string,
     createdAt: string,
     updatedAt: string,
+    owner?: string | null,
   } | null,
 };
 
@@ -130,11 +122,12 @@ export type UpdateUserMutationVariables = {
 export type UpdateUserMutation = {
   updateUser?:  {
     __typename: "User",
-    id: string,
+    phone: string,
     username: string,
     icon: string,
     createdAt: string,
     updatedAt: string,
+    owner?: string | null,
   } | null,
 };
 
@@ -146,33 +139,37 @@ export type DeleteUserMutationVariables = {
 export type DeleteUserMutation = {
   deleteUser?:  {
     __typename: "User",
-    id: string,
+    phone: string,
     username: string,
     icon: string,
     createdAt: string,
     updatedAt: string,
+    owner?: string | null,
   } | null,
 };
 
 export type GetUserQueryVariables = {
-  id?: string,
+  phone?: string,
 };
 
 export type GetUserQuery = {
   getUser?:  {
     __typename: "User",
-    id: string,
+    phone: string,
     username: string,
     icon: string,
     createdAt: string,
     updatedAt: string,
+    owner?: string | null,
   } | null,
 };
 
 export type ListUsersQueryVariables = {
+  phone?: string | null,
   filter?: ModelUserFilterInput | null,
   limit?: number | null,
   nextToken?: string | null,
+  sortDirection?: ModelSortDirection | null,
 };
 
 export type ListUsersQuery = {
@@ -180,45 +177,61 @@ export type ListUsersQuery = {
     __typename: "ModelUserConnection",
     items?:  Array< {
       __typename: "User",
-      id: string,
+      phone: string,
       username: string,
       icon: string,
       createdAt: string,
       updatedAt: string,
+      owner?: string | null,
     } | null > | null,
     nextToken?: string | null,
   } | null,
 };
 
+export type OnCreateUserSubscriptionVariables = {
+  owner?: string,
+};
+
 export type OnCreateUserSubscription = {
   onCreateUser?:  {
     __typename: "User",
-    id: string,
+    phone: string,
     username: string,
     icon: string,
     createdAt: string,
     updatedAt: string,
+    owner?: string | null,
   } | null,
+};
+
+export type OnUpdateUserSubscriptionVariables = {
+  owner?: string,
 };
 
 export type OnUpdateUserSubscription = {
   onUpdateUser?:  {
     __typename: "User",
-    id: string,
+    phone: string,
     username: string,
     icon: string,
     createdAt: string,
     updatedAt: string,
+    owner?: string | null,
   } | null,
+};
+
+export type OnDeleteUserSubscriptionVariables = {
+  owner?: string,
 };
 
 export type OnDeleteUserSubscription = {
   onDeleteUser?:  {
     __typename: "User",
-    id: string,
+    phone: string,
     username: string,
     icon: string,
     createdAt: string,
     updatedAt: string,
+    owner?: string | null,
   } | null,
 };

@@ -1,7 +1,6 @@
 import React, { useState, useContext, useRef }  from 'react';
 import { Animated, Dimensions, FlatList, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'react-native-elements';
-import { useMutation } from '@apollo/client';
 import { createUser } from '../graphql/mutations';
 import { Auth } from 'aws-amplify';
 import { Context as UserContext } from '../context/UserContext';
@@ -39,15 +38,15 @@ const SettingsScreen = ({ navigation }) => {
     const selectIconColor = reviewing ? PRIMARY_COLOR : ACCENT_COLOR;
     const selectIconSize = reviewing ? 36 : 22;
     const selectIconBorderRadius = reviewing ? 50 : 0;
-    
-    
-    const tryUsernameUpdate = () => {
-        updateUsername(challengerId, newUsername, callUpdateUsername)
-    }
 
-    const creatNewUser = async () => {
-        const newUser = { username: newUsername, icon: newUserIcon};          
-        await API.graphql(graphqlOperation(createUser, { input: newUser }));
+    const createNewUser = async () => {
+        try {
+            const newUser = { username: newUsername, icon: newUserIcon};     
+            await API.graphql(graphqlOperation(createUser, { input: newUser }));
+        } catch (err) {
+            // TODO: 
+            console.log('whoopsie!', err)
+        }
     }
     
     const signOut = async () => {
@@ -133,7 +132,7 @@ const SettingsScreen = ({ navigation }) => {
                     <View style={styles.buttonView}>
                         <ButtonView
                             displayText={'Update'}
-                            onPressCallback={creatNewUser}
+                            onPressCallback={(createNewUser)}
                             disabled={invalidUsername}
                             small={true}
                         />

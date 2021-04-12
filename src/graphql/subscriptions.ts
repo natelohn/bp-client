@@ -3,35 +3,38 @@
 // this is an auto generated file. This will be overwritten
 
 export const onCreateUser = /* GraphQL */ `
-  subscription OnCreateUser {
-    onCreateUser {
-      id
+  subscription OnCreateUser($owner: String!) {
+    onCreateUser(owner: $owner) {
+      phone
       username
       icon
       createdAt
       updatedAt
+      owner
     }
   }
 `;
 export const onUpdateUser = /* GraphQL */ `
-  subscription OnUpdateUser {
-    onUpdateUser {
-      id
+  subscription OnUpdateUser($owner: String!) {
+    onUpdateUser(owner: $owner) {
+      phone
       username
       icon
       createdAt
       updatedAt
+      owner
     }
   }
 `;
 export const onDeleteUser = /* GraphQL */ `
-  subscription OnDeleteUser {
-    onDeleteUser {
-      id
+  subscription OnDeleteUser($owner: String!) {
+    onDeleteUser(owner: $owner) {
+      phone
       username
       icon
       createdAt
       updatedAt
+      owner
     }
   }
 `;

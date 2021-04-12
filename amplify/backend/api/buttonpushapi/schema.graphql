@@ -1,5 +1,5 @@
-type User @model {
-  id: ID!
+type User @model @auth(rules: [{ allow: owner }]) @key(fields: ["phone"]) {
+  phone: String!
   username: String!
   icon: String!
 }
